@@ -1,6 +1,8 @@
 Components:
     - Navbar
         - Needs information relating to user info for displaying Profile or Login button
+            - Needs to know if logged in
+            - Needs to know if the account is a user or an Attic Admin
 
     - ItemCard
         - Needs to get data for Airmen's Attic Items for display on Locations page
@@ -16,9 +18,6 @@ Components:
 
 Pages
     - About
-
-    - AtticProfile
-        -
 
     - Home
         - User isn't logged in
@@ -45,16 +44,19 @@ Pages
                 - If user clicks login, is redirected to LoginPage, an "X"/"Cancel" will also be provided
         - Search function pulls items based on name
             - *Stretch: Autofill function that procedurally loads items as user types
+        - Ability for User to post their own patches for sale
+            - Pulls user's email and name and enters them automatically, locked (As a preventative measure)
+            - Allows for a picture, appropriate and professional patch name,
 
     - Profile
-        - User
-            - Retrieves user information from state after logging in
-            - Gets user's wishlist items for patches and Airman's Attic
-            - Button to edit profile
-        - Airman's Attic Admin Account
-            - Retrieves user information from state after logging in
-            - Button to edit Airman's Attic Profile
-            - Redirect to page for adding more items to the Attic's catalog
+        - Retrieves user information from state after logging in
+        - Gets user's wishlist items for patches and Airman's Attic
+        - Button to edit profile
+
+    - AtticProfile
+        - Retrieves user information from state after logging in
+        - Button to edit Airman's Attic Profile
+        - Redirect to page for adding more items to the Attic's catalog
 
     - Shop
         - Needs to retrieve first 20 items for display on initial load
