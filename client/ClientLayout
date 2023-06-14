@@ -1,0 +1,61 @@
+Components:
+    - Navbar
+        - Needs information relating to user info for displaying Profile or Login button
+
+    - ItemCard
+        - Needs to get data for Airmen's Attic Items for display on Locations page
+
+    - Login
+        - Needs to get and compare user information to login, and store that information in state accessable elsewhere
+
+    - Register
+        - Needs to post user information to database and log them in, redirecting them to profile page or home page
+
+    - PatchCard
+        - Needs to get patch information for display on patches page
+
+Pages
+    - About
+
+    - AtticProfile
+        -
+
+    - Home
+        - User isn't logged in
+            - "About" the website and asks the user to register/login
+        - Is logged in and has a Base Of Preference (BOP) selected
+            - Grabs 5 random items from BOP
+            OR
+            - Grabs 5 items from BOP using relational tags with items user has previously purchased
+
+    - Locations
+        - Brings up registry of selectable Airman's Attics
+            - When selected pulls user to Attic's Information page with an "About Us" (describes rules and such for donations) and a redirect to Shop with the base filter selected for the viewed Attic
+        - Search function pulls Attics based on name
+            - *Stretch: Autofill function that procedurally loads attics as user types
+
+    - LoginPage
+        - Initially pulls the Login component, if Register button is clicked, loads Register component instead
+        - Redirect to home page after successful Login or Register
+
+    - Patches
+        - Needs to display first 20 patches on initial load
+        - Redirect when PatchCard is clicked to a page with more detailed information
+            - If user tries to add to cart without being logged in, they receive a popup asking them to create an account first
+                - If user clicks login, is redirected to LoginPage, an "X"/"Cancel" will also be provided
+        - Search function pulls items based on name
+            - *Stretch: Autofill function that procedurally loads items as user types
+
+    - Profile
+        - User
+            - Retrieves user information from state after logging in
+            - Gets user's wishlist items for patches and Airman's Attic
+            - Button to edit profile
+        - Airman's Attic Admin Account
+            - Retrieves user information from state after logging in
+            - Button to edit Airman's Attic Profile
+            - Redirect to page for adding more items to the Attic's catalog
+
+    - Shop
+        - Needs to retrieve first 20 items for display on initial load
+        - Filter by base and/or shippable (to the closest Airman's Attic)
