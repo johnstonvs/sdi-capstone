@@ -5,39 +5,98 @@ Components:
             - Needs to know if the account is a user or an Attic Admin
 
     - ItemCard
-        - Needs to get data for Airmen's Attic Items for display on Locations page
+        - Needs to GET data for Airmen's Attic Items for display on Locations page
 
     - Login
-        - Needs to get and compare user information to login, and store that information in state accessable elsewhere
+        - Needs to GET and compare user information to login, and store that information in state accessable elsewhere
 
     - Register
-        - Needs to post user information to database and log them in, redirecting them to profile page or home page
+        - Needs to POST user information to database and log them in, redirecting them to profile page or home page
 
     - PatchCard
-        - Needs to get patch information for display on patches page
+        - Needs to GET patch information for display on patches page
+
+    - ContactUsForm
+        - Needs to POST an email using EmailJS
+
+    - StarRating
+        - Supplies Rating form with a rating for the Attic
+
+    - RatingForm
+        - Needs to be supplied a rating, and POST the Attic rating to database
 
 Pages
     - About
+        - Displays static information about the website and its creators
 
     - Home
         - User isn't logged in
             - "About" the website and asks the user to register/login
-        - Is logged in and has a Base Of Preference (BOP) selected
+        - Is logged in and has a BOP selected
             - Grabs 5 random items from BOP
             OR
             - Grabs 5 items from BOP using relational tags with items user has previously purchased
+        - Is logged in with no BOP
+            - Grabs 5 random items from Random bases
+            OR
+            - Grabs 5 items from Random bases using relational tags with items user has previously purchased
 
     - Locations
+        - Needs to GET all Airman's Attics
         - Brings up registry of selectable Airman's Attics
-            - When selected pulls user to Attic's Information page with an "About Us" (describes rules and such for donations) and a redirect to Shop with the base filter selected for the viewed Attic
+            - When selected pulls user to Attic's Information page with an "About Us" (describes rules and such for donations) and a redirect to Shop with the base filter pre-selected for the viewed Attic
         - Search function pulls Attics based on name
             - *Stretch: Autofill function that procedurally loads attics as user types
 
+    - Profile
+        - Retrieves user information from state after logging in
+        - Needs to GET Patch wishlist patches
+        - Needs to GET Airman's Attic wishlist items
+        - Button to edit profile
+            - Allows the user to edit Name, email, double-entry password with view hidden (asterics by default)
+            - Needs to PATCH/PUT information entered
+
+    - AtticProfile
+        - Retrieves user information from state after logging in
+        - Button to edit Airman's Attic Profile
+        - Allows the user to edit Name, email, double-entry password with view hidden (asterics by default)
+            - Needs to PATCH/PUT information entered
+        - Redirect to page for adding more items to the Attic's catalog
+            - Each item can have tags applied from this list:
+              - OCP
+              - Blues
+              - Boots
+              - Shoes
+              - Outdated
+              - Hobby
+              - Electronics
+              - Furniture
+              - Baby
+              - Toddler
+              - Teen
+              - Adult
+              - Toys
+        - Needs to GET reviews and allow the attic to respond as a sub-review
+
     - LoginPage
         - Initially pulls the Login component, if Register button is clicked, loads Register component instead
-        - Redirect to home page after successful Login or Register
+        - Redirect back to page user came from after successful Login or Register
+            - If sent from Patches or Shop, gets sent back with same state (filters in Shop, viewd patch in Patches, etc.)
+            - If logged in from login page, sent to home page
+
+    - Shop
+        - Needs to GET all items for display
+        - Needs to display first 20 items for display on initial load
+        - Filter all items
+            - Filter by base
+            - Filter by tags
+            - Filter by "If Shippable" (to nearest Attic)
+        - If user tries to ship an item without being logged in, gets sent to login page with state holding all relevent page info (filters selected, item currently being viewed)
+        - Search function pulls items based on name
+            - *Stretch: Autofill function that procedurally loads items as user types
 
     - Patches
+        - Needs to GET all patches for display
         - Needs to display first 20 patches on initial load
         - Redirect when PatchCard is clicked to a page with more detailed information
             - If user tries to add to cart without being logged in, they receive a popup asking them to create an account first
@@ -46,18 +105,78 @@ Pages
             - *Stretch: Autofill function that procedurally loads items as user types
         - Ability for User to post their own patches for sale
             - Pulls user's email and name and enters them automatically, locked (As a preventative measure)
-            - Allows for a picture, appropriate and professional patch name,
+            - Allows for a picture, appropriate and professional patch name
+            - Needs to POST new patch
+
+    - Cart
+        - Pulls all selected items from (Highest Level/Local Storage)
+        - Displays image and title along with prices and total prices
+        -
+
+    -Checkout/Shipping
+        - Needs to PATCH/POST User relational tags on checkout
+        - Needs to GET all attics, setting user's BOP as default (if available) for a shipping address
+        - Needs to clear selected items from (Highest Level/Local Storage)
+
+
+Persisting State Variables
+    - Logged in user data
+        - LoginPage -> Home
+        - LoginPage -> Navbar
+        - LoginPage -> Profile
+        - LoginPage -> AtticProfile
+        - LoginPage -> Shop
+        - LoginPage -> Patches
+
+    - Previous page
+        - Shop -> LoginPage
+        - Patches -> LoginPage
+
+    - Item or Patch
+        - Home -> Shop
+        - Home -> Patches
+
+    - Cart
+        - Shop -> (Highest Level/Local Storage)
+        - Patches -> (Highest Level/Local Storage)
+        - (Highest Level/Local Storage) -> Cart
+        - Cart -> Checkout
+
+
+Needed Endpoints
+    - ItemCard
+        - Needs to GET data for Airmen's Attic Items for display on Locations page
+
+    - Login
+        - Needs to GET and compare user information to login, and store that information in state accessable elsewhere
+
+    - Register
+        - Needs to POST user information to database and log them in, redirecting them to profile page or home page
+
+    - PatchCard
+        - Needs to GET patch information for display on patches page
+
+    - Locations
+        - Needs to GET all Airman's Attics
+        - Needs to GET average of all review stars, if none, say not rated
 
     - Profile
-        - Retrieves user information from state after logging in
-        - Gets user's wishlist items for patches and Airman's Attic
-        - Button to edit profile
+        - Needs to GET Patch wishlist patches
+        - Needs to GET Airman's Attic wishlist items
+        - Needs to PATCH/PUT information entered
 
     - AtticProfile
-        - Retrieves user information from state after logging in
-        - Button to edit Airman's Attic Profile
-        - Redirect to page for adding more items to the Attic's catalog
+        - Needs to PATCH/PUT information entered
+        - Needs to GET reviews and allow the attic to respond as a sub-review
 
     - Shop
-        - Needs to retrieve first 20 items for display on initial load
-        - Filter by base and/or shippable (to the closest Airman's Attic)
+        - Needs to GET all items for display
+
+    - Patches
+        - Needs to GET all patches for display (Already handled with PatchCard)
+        - Needs to POST new patch
+
+    - Checkout
+        - Needs to PATCH/POST User relational tags on checkout
+
+

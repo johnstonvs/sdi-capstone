@@ -6,3 +6,4 @@ export { default as LoginPage } from "./LoginPage/LoginPage";
 export { default as Patches } from "./Patches/Patches";
 export { default as Profile } from "./Profile/Profile";
 export { default as Shop } from "./Shop/Shop";
+export { default as Cart } from "./Cart/Cart";

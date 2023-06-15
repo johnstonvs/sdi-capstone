@@ -1,0 +1,50 @@
+version: '3'
+
+volumes:
+  capstone:
+
+services:
+  database:
+    image: postgres:latest
+    container_name: attic
+    environment:
+      DATABASE_HOST: database
+      POSTGES-USER: /run/secrets/db_user
+      POSTGRES_PASSWORD: /run/secrets/db_password
+    secrets:
+      - db_password
+      - db_user
+    ports:
+      - 5432:5432
+    volumes:
+      - capstone:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  client:
+    build: ./client
+    depends_on:
+      - backend
+    ports:
+      - 3000:3000
+    volumes:
+      - './client:/src/container'
+
+  backend:
+    build: ./backend
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    volumes:
+      - './backend:/src/container'
+
+secrets:
+  db_password:
+    file: ./compose-secrets/db_password
+  db_user:
+    file: ./compose-secrets/db_user

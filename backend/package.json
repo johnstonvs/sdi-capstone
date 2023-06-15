@@ -1,15 +1,17 @@
 {
   "dependencies": {
     "dotenv": "^16.1.4",
+    "emailjs": "^4.0.2",
     "express": "^4.18.2",
     "knex": "^2.4.2",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "pg": "^8.11.0"
   },
   "name": "back-end",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "npx knex migrate:rollback && npx knex migrate:latest && npx knex seed:run && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

@@ -29,11 +29,11 @@ const Register = () => {
     return (
         <div className='RegisterContainer'>
             <h1 className='RegisterTitle'>Create Account</h1>
-            <input name='email' className='RegisterEmail' placeholder='Enter you military email' type='text' required onChange={(e) => handleChange(e)}/>
+            <input name='email' className='RegisterEmail' placeholder='Enter your military email' type='text' required onChange={(e) => handleChange(e)}/>
             <input name='name' className='RegisterName' placeholder='Enter your full name' type='text' required onChange={(e) => handleChange(e)}/>
             <input name='base' className='RegisterBase' placeholder='Enter your base' type='text' onChange={(e) => handleChange(e)}/>
             <input name='password' className='RegisterPassword' placeholder='Enter your password' type='text' required onChange={(e) => handleChange(e)}/>
-            <input className='RegisterReEnter' placeholder='Please renter you password' type='text' required onChange={(e) => handleChange(e)} />
+            <input className='RegisterReEnter' placeholder='Please renter your password' type='text' required onChange={(e) => setReentry(e.target.value)} />
             <p className='PassMatch'>{rentery ? (rentery === user.password ? 'Passwords match'(<p className='Check'>&#10003;</p>)  : 'Passwords do not match'(<p className='X'>&#120;</p>)): null}</p>
             <button className='RegisterButt' onClick={() => submit()}>Submit</button>
         </div>

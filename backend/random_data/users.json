@@ -1,0 +1,98 @@
+[
+  {
+    "name": "Matthus Merryman",
+    "email": "mmerryman0@posterous.com",
+    "base": "Khwahan Airport",
+    "hashed_password": "$2a$04$1atOLDh3xJajVcYSFsfUY.GoDW1v9W2yZwLvVJhlN.QmL5DROiZQC",
+    "attic_admin": false,
+    "attic_id": null
+  },
+  {
+    "name": "Jade Lille",
+    "email": "jlille1@hexun.com",
+    "base": "Khwahan Airport",
+    "hashed_password": "$2a$04$2j2bkZ3.Wvr56ycVL9care7WxKA1h49hr3PP7ezaxoVgpP1YNHtCu",
+    "attic_admin": true,
+    "attic_id": 6
+  },
+  {
+    "name": "Mitchael Loyndon",
+    "email": "mloyndon2@buzzfeed.com",
+    "base": "Daniel Oduber Quiros International Airport",
+    "hashed_password": "$2a$04$Iac8NY.eH/i0OfXxE9wgxuPSrFi42s3Ie8ts1pQz3F6yp4UqsNUu.",
+    "attic_admin": false,
+    "attic_id": null
+  },
+  {
+    "name": "Reuven Blackway",
+    "email": "rblackway3@1und1.de",
+    "base": "Summer Beaver Airport",
+    "hashed_password": "$2a$04$SjkxcawIOKBglilEp12Yye.9DNul99OPvEOBmpzN1YobtNOTVsA.2",
+    "attic_admin": false,
+    "attic_id": null
+  },
+  {
+    "name": "Wernher Stiller",
+    "email": "wstiller4@nymag.com",
+    "base": "Daniel Oduber Quiros International Airport",
+    "hashed_password": "$2a$04$JZ.gPxSzlF0oBQaIA57Hf.X1wNzkIQHXwuR2P0X49hyoC51hUbtNW",
+    "attic_admin": true,
+    "attic_id": 5
+  },
+  {
+    "name": "Portie Myerscough",
+    "email": "pmyerscough5@bbb.org",
+    "base": "Summer Beaver Airport",
+    "hashed_password": "$2a$04$/CPtggZj3FCUAdVwAl40xerCg8bDaNrYCSJc7UdPUll04qwWpW0Ku",
+    "attic_admin": true,
+    "attic_id": 4
+  },
+  {
+    "name": "Dale Grosier",
+    "email": "dgrosier6@tinyurl.com",
+    "base": "North Island Naval Air Station-Halsey Field",
+    "hashed_password": "$2a$04$PydtTMBZD2Dkpaq/QQu7QOBB/OrUnlmfA3caHkAO289lCvI6kn.PW",
+    "attic_admin": false,
+    "attic_id": null
+  },
+  {
+    "name": "Rudy Church",
+    "email": "rchurch7@ed.gov",
+    "base": "Oryol Yuzhny Airport",
+    "hashed_password": "$2a$04$mrUZ/d18F762rhzOhSTt1.DaS6Sw2xhr4iXBnPB.RhJ5drMjs1TVO",
+    "attic_admin": false,
+    "attic_id": null
+  },
+  {
+    "name": "Cary Leebetter",
+    "email": "cleebetter8@squidoo.com",
+    "base": "King Cove Airport",
+    "hashed_password": "$2a$04$V.hFCOjcEHyIFSqIQgmn0erTquy2qCCXjCZnx1zphm5PrfATcA1Be",
+    "attic_admin": false,
+    "attic_id": null
+  },
+  {
+    "name": "Lanette Szymanski",
+    "email": "lszymanski9@goo.ne.jp",
+    "base": "North Island Naval Air Station-Halsey Field",
+    "hashed_password": "$2a$04$eMK/R3TcBnuP5zHjV3Oluu5evA6BloBq/TgQx2FhwPRGpMrLJL1i.",
+    "attic_admin": true,
+    "attic_id": 3
+  },
+  {
+    "name": "Deborah Catlette",
+    "email": "dcatlettea@usa.gov",
+    "base": "Oryol Yuzhny Airport",
+    "hashed_password": "$2a$04$kc.pKD6pEYeOYRjzTpWSTeNU9/8PR/rN63xZtimMX2sRcLUgLo1Eq",
+    "attic_admin": true,
+    "attic_id": 2
+  },
+  {
+    "name": "Peggie Perago",
+    "email": "pperagob@imdb.com",
+    "base": "King Cove Airport",
+    "hashed_password": "$2a$04$hc3PAyUQ29AHkr8NhMsjVuYAc2KRrKJXYYPPNaUW.pMYulPg0D54O",
+    "attic_admin": true,
+    "attic_id": 1
+  }
+]

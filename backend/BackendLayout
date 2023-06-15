@@ -1,0 +1,94 @@
+Needed Endpoints
+    - ItemCard
+        - Needs to GET data for Airmen's Attic Items for display on Locations page
+
+        "SELECT *
+        FROM items"
+
+    - Login
+        - Needs to GET and compare user information to login, and store that information in state accessable elsewhere
+
+        "SELECT *
+        FROM users"
+
+    - Register
+        - Needs to POST user information to database and log them in, redirecting them to profile page or home page
+
+        "
+
+    - PatchCard
+        - Needs to GET patch information for display on patches page
+
+        "SELECT *
+        FROM patches"
+
+    - Locations
+        - Needs to GET all Airman's Attics
+
+        "SELECT location
+        FROM attics"
+
+        Or just get all the info idk
+
+        - Needs to GET all Attic's reviews
+
+    - Profile
+        - Needs to GET Patch wishlist patches
+            - Match user id wuth wishlist user id
+
+            "SELECT patch_id
+            FROM patches_wishlist
+            WHERE users.id = (requested user)"
+
+            - Grab the patches' information
+
+            "SELECT *
+            FROM patches
+            WHERE id = patch_id"
+
+        - Needs to GET Airman's Attic wishlist items
+            - Match user id with wishlist user id
+
+            "SELECT item_id
+            FROM items_wishlist
+            WHERE users.id = (requested user)"
+
+            - Grab the items' information
+
+            "SELECT *
+            FROM items
+            WHERE id = item_id"
+
+        - Needs to PATCH/PUT (user) information entered
+
+
+    - AtticProfile
+        - Needs to PATCH/PUT (attic-user) information entered
+        - Needs to GET reviews
+
+            "SELECT *
+            FROM attic_reviews
+            WHERE attic_id = (requested attic)"
+
+        - (PATCH) Allow the attic to respond as a sub-review (Review id is passed to backend here)
+            - Get the review for the Attic
+
+            "SELECT *
+            FROM attic_reviews
+            WHERE id = (requested id)"
+
+            - Patch in the response into the attic_review
+
+    - Shop
+        - Needs to GET all items for display
+
+            "SELECT *
+            FROM items"
+
+    - Patches
+        - Needs to POST new patch
+
+
+    -Checkout
+        - Needs to PATCH/POST User relational tags on checkout
+

@@ -1,21 +1,108 @@
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import {
+  AiOutlineShoppingCart,
+  AiOutlineHome,
+  AiOutlineShop,
+  AiOutlineQuestionCircle,
+  AiOutlineLogin
+} from 'react-icons/ai';
+import { TbLocation } from "react-icons/tb";
+import { LoggedInContext } from '../../App'
 
 const Navbar = () => {
-  return (
-<div className='NavbarContainer flex justify-between items-center bg-[#1F2833] p-4'>
-  <div className='NavbarImageContainer flex items-center'>
-    <img className='NavbarImage w-12 h-12' src='../assets/.jpg' alt="Airman's Attic Logo" />
-  </div>
-  <div className='NavbarLinksContainer flex gap-2'>
-    <Link className='NavbarLinks rounded border-solid p-1 bg-[#C5C6C7] text-gray-800 hover:text-gray-600 px-2 py-1' to='/'>Home</Link>
-    <Link className='NavbarLinks rounded border-solid p-1 bg-[#C5C6C7] text-gray-800 hover:text-gray-600 px-2 py-1' to='/shop'>Shop</Link>
-    <Link className='NavbarLinks rounded border-solid p-1 bg-[#C5C6C7] text-gray-800 hover:text-gray-600 px-2 py-1' to='/location'>Location</Link>
-    <Link className='NavbarLinks rounded border-solid p-1 bg-[#C5C6C7] text-gray-800 hover:text-gray-600 px-2 py-1' to='/patches'>Patches</Link>
-    <Link className='NavbarLinks rounded border-solid p-1 bg-[#C5C6C7] text-gray-800 hover:text-gray-600 px-2 py-1' to='/about'>About</Link>
-    <Link className='NavbarLinks rounded border-solid p-1 bg-[#C5C6C7] text-gray-800 hover:text-gray-600 px-2 py-1' to='/login'>Login</Link>
-  </div>
-</div>
-  )
-}
+  const { loggedIn } = useContext(LoggedInContext)
 
-export default Navbar
+  return (
+    <div className="NavbarContainer flex justify-between items-center bg-neutral-700/25 p-4">
+      <div className="NavbarImageContainer flex items-center">
+        <img
+          className="NavbarImage w-12 h-12"
+          src="../assets/logo.jpg"
+          alt="Airman's Attic Logo"
+        />
+      </div>
+      <div className="NavbarLinksContainer flex gap-3">
+        <Link
+          className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/"
+        >
+          <div className="flex items-center justify-center">
+            <AiOutlineHome className="mr-1" /> Home
+          </div>
+        </Link>
+        <Link
+          className="NavbarLinks justify-center rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/shop"
+        >
+          <div className="flex items-center justify-center">
+            <AiOutlineShop className="mr-1" /> Shop
+          </div>
+        </Link>
+        <Link
+          className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/location"
+        >
+          <div className="flex items-center justify-center">
+            <TbLocation className="mr-1" /> Location
+          </div>
+        </Link>
+        <Link
+          className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/patches"
+        >
+          <div className="flex items-center justify-center">
+            <img
+              className="w-4 h-4 mr-1"
+              src="https://cdn-icons-png.flaticon.com/128/2047/2047136.png"
+              alt="Patches"
+            />
+            Patches
+          </div>
+        </Link>
+        <Link
+          className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/about"
+        >
+          <div className="flex items-center justify-center">
+            <AiOutlineQuestionCircle className="mr-1" /> About
+          </div>
+        </Link>
+        {loggedIn.isLoggedIn ? (
+        <>
+        <Link
+          className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/login"
+        >
+          <div className="flex items-center justify-center">
+            <AiOutlineLogin className="mr-1" /> Logout
+            {/* Come back and create a logout */}
+          </div>
+        </Link>
+        <Link
+          className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/cart"
+        >
+          <div className="flex items-center justify-center">
+            <AiOutlineShoppingCart className="mr-1" /> Cart
+          </div>
+        </Link>
+        </>
+        ) : (
+          <>
+          <Link
+          className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          to="/login"
+        >
+          <div className="flex items-center justify-center">
+            <AiOutlineLogin className="mr-1" /> Login
+          </div>
+        </Link>
+        </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;
