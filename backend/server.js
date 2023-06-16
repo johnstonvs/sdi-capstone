@@ -5,43 +5,13 @@ const knex = require("knex")(
 const server = express();
 const port = 8080;
 const bodyParser = require('body-parser');
-
-let email;
-import('emailjs').then((emailjs) => {
-  email = emailjs;
-});
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 server.use(express.json())
 server.use(bodyParser.json());
 
 require('dotenv').config()
-const myEmail = process.env.EMAIL;
-const password = process.env.PASSWORD;
-
-// POST
-server.post('/email', (req, res) => {
-  const server  = email.server.connect({
-      user:    myEmail,
-      password: password,
-      host:    "smtp.gmail.com",
-      ssl:     true
-  });
-
-  server.send({
-      text:    req.body.Body,
-      from:    myEmail,
-      to:      myEmail,
-      cc:      "",
-      subject: req.body.Email + req.body.Type + " " + req.body.Name
-  }, function(err, message) {
-      if (err) {
-          console.log(err);
-          res.status(500).send("Email not sent");
-      } else {
-          res.status(200).send("Email sent");
-      }
-  });
-});
 
 server.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -57,9 +27,54 @@ server.get('/', (req, res) => {
   res.status(200).send("Server is up and running. Maybe it'll win the race.")
 })
 
-// GET
-server.get('/users', (req, res) => {
+// BCRYPT
+
+server.post('/authenticate', (req, res) => {
+  const reqPassword = req.body.password;
+  const reqEmail = req.body.email;
+  // console.log(reqPassword, reqEmail);
+
   knex('users')
+    .where('email', reqEmail)
+    .then(data => {
+      bcrypt.compare(reqPassword, data[0].hashed_password)
+      .then(auth => {
+          // console.log(data);
+          if (auth) {
+            res.status(200).json({
+              id: data[0].id,
+              name: data[0].name,
+              admin: data[0].is_admin,
+              isLoggedIn: true,
+              BOP: data[0].base
+            })
+          } else {
+            res.status(404).json({
+              id: 0,
+              name: '',
+              admin: false,
+              isLoggedIn: false,
+              BOP: ''
+            })
+          }
+        })
+        .catch(err => res.json({
+          error: `bcrypt: ${err}`
+        }))
+    })
+    .catch(err => res.json({
+      error: `user does not exist`
+    }))
+})
+
+// GET
+server.get('/users?', (req, res) => {
+  knex('users')
+    .modify((soFar) => {
+      if (req.query?.email) {
+        soFar.where('email', req.query.email)
+      }
+    })
     .then(data => res.status(200).json(data))
     .catch(err => res.status(404).json({
       message: `Could not get users: ${err}`
@@ -71,11 +86,22 @@ server.get('/items?', (req, res) => {
     .modify((soFar) => {
       if (req.query?.attic_id) {
         soFar.where('attic_id', req.query.attic_id)
+      } else if (req.query?.can_ship) {
+        soFar.where('can_ship', req.query.can_ship)
       }
     })
     .then(data => res.status(200).json(data))
     .catch(err => res.status(404).json({
       message: `Could not get items: ${err}`
+    }))
+})
+
+server.get('/items/:id', (req, res) => {
+  knex('items')
+    .where('id', req.params.id)
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get item with id ${req.params.id}: ${err}`
     }))
 })
 
@@ -141,6 +167,33 @@ server.get('/user_preference', (req, res) => {
 })
 
 // POST
+
+server.post('/users', (req, res) => {
+  const newUser = req.body;
+
+  // hash the requested password
+  bcrypt.hash(newUser.password, saltRounds)
+    .then(hash => {
+      const hashedUser = {
+        name: newUser.name,
+        email: newUser.email,
+        base: newUser.base,
+        hashed_password: hash,
+        attic_admin: false,
+        attic_id: null
+      }
+      knex('users')
+        .insert(hashedUser, ['*'])
+        .then(data => {
+          res.status(200).json(data)
+        })
+        .catch(err => {
+          res.status(404).json({
+            message: `Could not post user: ${err}`
+          })
+        })
+    })
+})
 
 // PATCH
 

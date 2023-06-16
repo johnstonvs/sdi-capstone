@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import {
   AiOutlineShoppingCart,
@@ -11,7 +11,20 @@ import { TbLocation } from "react-icons/tb";
 import { LoggedInContext } from '../../App'
 
 const Navbar = () => {
-  const { loggedIn } = useContext(LoggedInContext)
+  const { loggedIn, setLoggedIn } = useContext(LoggedInContext)
+  const nav = useNavigate()
+
+  const onLogout = () => {
+    setLoggedIn({
+      id: 0,
+      name:'',
+      admin: false,
+      isLoggedIn:false,
+      BOP:''
+    })
+    console.log('h1')
+    nav('/')
+  }
 
   return (
     <div className="NavbarContainer flex justify-between items-center bg-neutral-700/25 p-4">
@@ -74,9 +87,8 @@ const Navbar = () => {
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
           to="/login"
         >
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center" onClick={onLogout}>
             <AiOutlineLogin className="mr-1" /> Logout
-            {/* Come back and create a logout */}
           </div>
         </Link>
         <Link

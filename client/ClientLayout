@@ -76,6 +76,11 @@ Pages
               - Teen
               - Adult
               - Toys
+              - Sports
+              - Outdoor
+              - Workout
+              - Housewares
+              - Books
         - Needs to GET reviews and allow the attic to respond as a sub-review
 
     - LoginPage
