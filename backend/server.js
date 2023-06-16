@@ -88,6 +88,10 @@ server.get('/items?', (req, res) => {
         soFar.where('attic_id', req.query.attic_id)
       } else if (req.query?.can_ship) {
         soFar.where('can_ship', req.query.can_ship)
+      } else if (req.query?.base) {
+        soFar.join('attics', 'items.attic_id', 'attics.id')
+          .where('attics.location', req.query.base)
+          .select('items.id', 'items.name', 'items.price', 'items.picture_url', 'items.can_ship', 'items.attic_id', 'items.tags')
       }
     })
     .then(data => res.status(200).json(data))
