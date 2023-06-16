@@ -27,21 +27,26 @@ const Register = () => {
                 password: user.password
             })
         })
+        setUser({
+            email: '',
+            name: '',
+            base: '',
+            password: ''
+        })
         // comfirmation modal
-
     }
 
     return (
         <form className='RegisterContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner w-96' onSubmit={submit}>
             <h1 className='RegisterTitle text-[#45A29E] text-3xl font-semibold mb-10 text-center'>Create Account</h1>
             <label className='BodyLabel text-[#222222]'>Email:</label>
-            <input name='email' className='RegisterEmail w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Enter your military email' type='text' required onChange={(e) => handleChange(e)}/>
+            <input name='email' className='RegisterEmail w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={user.email} placeholder='Enter your military email' type='text' required onChange={(e) => handleChange(e)}/>
             <label className='BodyLabel text-[#222222]'>Full Name:</label>
-            <input name='name' className='RegisterName w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Enter your full name' type='text' required onChange={(e) => handleChange(e)}/>
+            <input name='name' className='RegisterName w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={user.name} placeholder='Enter your full name' type='text' required onChange={(e) => handleChange(e)}/>
             <label className='BodyLabel text-[#222222]'>Base:</label>
-            <input name='base' className='RegisterBase w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Enter your base' type='text' onChange={(e) => handleChange(e)}/>
+            <input name='base' className='RegisterBase w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={user.base} placeholder='Enter your base' type='text' onChange={(e) => handleChange(e)}/>
             <label className='BodyLabel text-[#222222]'>Password:</label>
-            <input name='password' className='RegisterPassword w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Enter your password' type='text' required onChange={(e) => handleChange(e)}/>
+            <input name='password' className='RegisterPassword w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={user.password} placeholder='Enter your password' type='text' required onChange={(e) => handleChange(e)}/>
             <label className='BodyLabel text-[#222222]'>Re-enter Password:</label>
             <input className='RegisterReEnter w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Re-enter your password' type='text' required onChange={(e) => setReentry(e.target.value)} />
             <p className='PassMatch'>{rentery ? (rentery === user.password ? <p className='flex flex-row items-center gap-2'><AiOutlineCheck className='text-green-500'/> Passwords match! </p>  : <p className='flex flex-row items-center gap-2'><AiOutlineClose className='text-red-500'/>Passwords do not match! </p>): null}</p>

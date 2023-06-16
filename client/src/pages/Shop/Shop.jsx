@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
 import { Link } from 'react-router-dom';
-import {LoggedInContext} from "../../App.js";
-
+import { LoggedInContext } from "../../App.js";
+import { ItemCard } from '../../components/index.js';
+import Item from './Item'
 
 const Shop = () => {
   const [items, setItems] = useState([]);
@@ -54,21 +55,22 @@ const Shop = () => {
 
   return (
     <div className='Shop'>
-      <button className='ShopDrop'>Base Select</ button>
-        <div className='ShopDropCont'>
-          <button className='CanShip' onClick={() => setBase('Can Ship')}>Can ship</ button>
+      <div className='DropCont relative inline-block '>
+      <button className='ShopDrop bg-[#267458] hover:ShopDropCont:block'>Base Select</ button>
+        <div className='ShopDropCont hidden absolute shadow-2xl'>
+          <button className='CanShip bg-[#45A29E] block' onClick={() => setBase('Can Ship')}>Can ship</ button>
           {baseList ? baseList.map((loc, index) => (
-            <button className='Base' onClick={() => base !== loc.location ? setBase(loc.id) : null}>{loc.location}</ button>
+            <button key={index} className='Base bg-[#45A29E] block' onClick={() => base !== loc.location ? setBase(loc.id) : null}>{loc.location}</ button>
           )) : null}
           </ div>
-      {items ? items.map((item, index) => (
-        <Link to={`/shop/item/${item.id}`} key={index} className='Item' params={ {item: item}} >
-          <img className='ItemImage' src={item.picture_url} alt={item.name} />
-          <p className='ItemName'>{item.name}</p>
-          <p className='ItemPrice'>{item.cost}</p>
-          <p className='ItemShip'>{item.can_ship ? 'Can be shipped' : 'Cannot be shipped'}</p>
-        </Link>
-      )) : null}
+          </ div>
+          <div className='ItemsContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4'>
+            {items ? items.map((item, index) => (
+              <Link to={{pathname: `/shop/item/${item.id}`}} key={index} className='Item' >
+                <ItemCard item={item} />
+              </Link>
+            )) : null}
+          </div>
       </ div>
   )
 }

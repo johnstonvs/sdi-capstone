@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LoggedInContext } from '../../App';
 import { PatchCard, ItemCard, StarRating } from '../../components/index.js';
 
@@ -9,18 +9,41 @@ const Home = () => {
   const { loggedIn } = useContext(LoggedInContext);
   const nav = useNavigate();
 
+  useEffect(() => {
+
+    fetch('http://localhost:8080/patches')
+      .then(res => res.json())
+      .then(data => setPatches(data.slice(0, 5)))
+
+    if (loggedIn.isLoggedIn && loggedIn.BOP) {
+      fetch(`http://localhost:8080/items?base=${loggedIn.BOP}`)
+        .then(res => res.json())
+        .then(data => setItems(data.slice(0, 5)))
+    } else {
+      fetch('http://localhost:8080/items')
+        .then(res => res.json())
+        .then(data => setItems(data.slice(0, 5)))
+    }
+  }, [])
+
   return (
     <div className="HomeContainer">
       {loggedIn.isLoggedIn ? (
         loggedIn.BOP ? (
-          <div className="LoggedInBOPContainer flex flex-col">
-            <div className="LoggedInBOPItems">
-              <h1 className="LoggedInBOPItemsHeader">Personalized Products</h1>
-              <ItemCard item={items} />
+          <div className="LoggedInBOPContainer flex flex-col space-y-6 justify-center">
+            <div className="LoggedInBOPItems flex flex-row space-x-4 justify-center">
+              <h1 className="LoggedInBOPItemsHeader self-center rotate-45">Personalized Products</h1>
+              {items.map((item, index) => {
+                return (
+                  <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
+                    <ItemCard item={item} />
+                  </Link>
+                )
+              })}
             </div>
-            <div className="LoggedInBOPPatches">
-              <h1 className="LoggedInBOPPatchesHeader">Personalized Patches</h1>
-              <PatchCard patch={patches} />
+            <div className="LoggedInBOPPatches flex flex-row space-x-4 justify-center">
+              <h1 className="LoggedInBOPPatchesHeader self-center rotate-45">Personalized Patches</h1>
+              {patches.map(patch => <PatchCard patch={patch} />)}
             </div>
           </div>
         ) : (
@@ -36,7 +59,7 @@ const Home = () => {
           </div>
         )
       ) : (
-        <div className="NotLoggedInContainer flex flex-col gap-10 m-4 mt-10">
+        <div className="NotLoggedInContainer flex flex-col w-100 gap-10 m-4 mt-10">
           <div className="CallToLoginContainer bg-gray-300 flex flex-col items-center p-2 rounded gap-4">
             <h1 className="CallToLoginHeader text-3xl text-[#45A29E]">
               New here? Click the button below to create an account and login!

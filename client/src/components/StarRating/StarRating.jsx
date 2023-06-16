@@ -21,11 +21,11 @@ const onClick = (ratingValue) => {
 };
 
 return (
-    <div className="flex justify-center">
+    <div className="flex justify-center bg-neutral-400 p-1 rounded">
         {[...Array(5)].map((_, i=1) => (
             <div
                 key={i}
-                className={ "cursor-pointer " + ((rating || hoverRating) > i ? 'text-yellow-500' : 'text-gray-300') }
+                className={ "cursor-pointer " + ((rating || hoverRating) > i ? 'text-yellow-300' : 'text-white') }
                 onMouseEnter={() => onMouseEnter(i + 1)}
                 onMouseLeave={onMouseLeave}
                 onClick={() => onClick(i + 1)}
