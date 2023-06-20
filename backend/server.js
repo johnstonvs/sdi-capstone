@@ -38,7 +38,7 @@ server.post('/authenticate', (req, res) => {
     .where('email', reqEmail)
     .then(data => {
       bcrypt.compare(reqPassword, data[0].hashed_password)
-      .then(auth => {
+        .then(auth => {
           // console.log(data);
           if (auth) {
             res.status(200).json({
@@ -78,6 +78,15 @@ server.get('/users?', (req, res) => {
     .then(data => res.status(200).json(data))
     .catch(err => res.status(404).json({
       message: `Could not get users: ${err}`
+    }))
+})
+
+server.get('/users/:id', (req, res) => {
+  knex('users')
+    .where('id', req.params.id)
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get item with id ${req.params.id}: ${err}`
     }))
 })
 
@@ -130,6 +139,15 @@ server.get('/attics', (req, res) => {
     }))
 })
 
+server.get('/attics/:id', (req, res) => {
+  knex('attics')
+    .where('id', req.params.id)
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get item with id ${req.params.id}: ${err}`
+    }))
+})
+
 server.get('/attic_reviews', (req, res) => {
   knex('attic_reviews')
     .then(data => res.status(200).json(data))
@@ -146,6 +164,15 @@ server.get('/patches', (req, res) => {
     }))
 })
 
+server.get('/patches/:id', (req, res) => {
+  knex('patches')
+    .where('id', req.params.id)
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get item with id ${req.params.id}: ${err}`
+    }))
+})
+
 server.get('/patches_wishlist', (req, res) => {
   knex('patches_wishlist')
     .then(data => res.status(200).json(data))
@@ -154,19 +181,60 @@ server.get('/patches_wishlist', (req, res) => {
     }))
 })
 
-server.get('/users', (req, res) => {
-  knex('users')
+server.get('/user_preference', (req, res) => {
+  knex('user_preference')
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get user preferences: ${err}`
+    }))
+})
+
+server.get('/posts?', (req, res) => {
+  knex('posts')
+    .modify((soFar) => {
+      if (req.query?.attic_id) {
+        soFar.where('attic_id', req.query.attic_id)
+      }
+    })
     .then(data => res.status(200).json(data))
     .catch(err => res.status(404).json({
       message: `Could not get users: ${err}`
     }))
 })
 
-server.get('/user_preference', (req, res) => {
-  knex('user_preference')
+server.get('/posts/:id', (req, res) => {
+  knex('posts')
+    .where('id', req.params.id)
     .then(data => res.status(200).json(data))
     .catch(err => res.status(404).json({
-      message: `Could not get user preferences: ${err}`
+      message: `Could not get users: ${err}`
+    }))
+})
+
+server.get('/comments?', (req, res) => {
+  knex('comments')
+  .join('users', 'comments.user_id', 'users.id')
+  .select('comments.*', 'users.name')
+  .modify((soFar) => {
+    if (req.query?.review_id) {
+      soFar.where('comments.review_id', req.query.review_id)
+    } else if (req.query?.post_id) {
+      soFar.where('comments.post_id', req.query.post_id)
+    }
+  })
+  .then(data => res.status(200).json(data))
+  .catch(err => res.status(404).json({
+    message: `Could not get users: ${err}`
+  }))
+})
+
+
+server.get('/comments/:id', (req, res) => {
+  knex('comments')
+    .where('id', req.params.id)
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get users: ${err}`
     }))
 })
 
@@ -197,6 +265,17 @@ server.post('/users', (req, res) => {
           })
         })
     })
+})
+
+
+server.post('/comments', (req, res) => {
+  console.log(req.body)
+  knex('comments')
+    .insert(req.body)
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not post comment: ${err}`
+    }))
 })
 
 // PATCH

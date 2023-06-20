@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LoggedInContext } from '../../App';
 import { PatchCard, ItemCard, StarRating } from '../../components/index.js';
+import { AiOutlineArrowRight, AiOutlineCaretRight } from 'react-icons/ai';
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -27,12 +28,50 @@ const Home = () => {
   }, [])
 
   return (
-    <div className="HomeContainer">
+    <div className="HomeContainer flex flex-col h-fit">
+      <h1 className="AboutHeader flex text-3xl text-[#45A29E] self-center">Airmen's Warehouse</h1>
       {loggedIn.isLoggedIn ? (
         loggedIn.BOP ? (
-          <div className="LoggedInBOPContainer flex flex-col space-y-6 justify-center">
+          <div className="LoggedInBOPContainer mt-6 flex flex-col space-y-6 justify-center">
             <div className="LoggedInBOPItems flex flex-row space-x-4 justify-center">
-              <h1 className="LoggedInBOPItemsHeader self-center rotate-45">Personalized Products</h1>
+              <h1 className="LoggedInBOPItemsHeader text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">{loggedIn.BOP} Products</h1>
+              {items ? items.map((item, index) => {
+                return (
+                  <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
+                    <ItemCard item={item} />
+                  </Link>
+                )
+              }) : <p>No Items From Base {loggedIn.BOP}</p>}
+              <Link
+                className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1 h-9 self-center"
+                to="/shop">
+                <div className="flex items-center justify-center flex-column">
+                  More<AiOutlineArrowRight />
+                </div>
+              </Link>
+            </div>
+            <div className="LoggedInBOPPatches flex flex-row space-x-4 justify-center">
+              <h1 className="LoggedInBOPPatchesHeader text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Patches</h1>
+              {patches.map((patch, index) => {
+                return (
+                  <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
+                    <PatchCard patch={patch} />
+                  </Link>
+                )
+              })}
+              <Link
+                className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1 h-9 self-center"
+                to="/patches">
+                <div className="flex items-center justify-center flex-column">
+                  More<AiOutlineArrowRight />
+                </div>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="LoggedInContainer mt-6 flex flex-col space-y-6 justify-center">
+            <div className="LoggedInItems flex flex-row space-x-4 justify-center">
+              <h1 className="LoggedInItemsHeader text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Products</h1>
               {items.map((item, index) => {
                 return (
                   <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
@@ -40,21 +79,30 @@ const Home = () => {
                   </Link>
                 )
               })}
+              <Link
+                className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1 h-9 self-center"
+                to="/shop">
+                <div className="flex items-center justify-center flex-column">
+                  More<AiOutlineArrowRight />
+                </div>
+              </Link>
             </div>
-            <div className="LoggedInBOPPatches flex flex-row space-x-4 justify-center">
-              <h1 className="LoggedInBOPPatchesHeader self-center rotate-45">Personalized Patches</h1>
-              {patches.map(patch => <PatchCard patch={patch} />)}
-            </div>
-          </div>
-        ) : (
-          <div className="LoggedInContainer">
-            <div className="LoggedInItems">
-              <h1 className="LoggedInItemsHeader">Personalized Products</h1>
-              <ItemCard item={items} />
-            </div>
-            <div className="LoggedInPatches">
-              <h1 className="LoggedInPatchesHeader">Personalized Patches</h1>
-              <PatchCard patch={patches} />
+            <div className="LoggedInPatches flex flex-row space-x-4 justify-center">
+              <h1 className="LoggedInPatchesHeader text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Patches</h1>
+              {patches.map((patch, index) => {
+                return (
+                  <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
+                    <PatchCard patch={patch} />
+                  </Link>
+                )
+              })}
+              <Link
+                className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1 h-9 self-center"
+                to="/patches">
+                <div className="flex items-center justify-center flex-column">
+                  More<AiOutlineArrowRight />
+                </div>
+              </Link>
             </div>
           </div>
         )
@@ -123,6 +171,20 @@ const Home = () => {
           </div>
         </div>
       )}
+      <div className='InfoCardContainer flex flex-row justify-center w-full items-start'>
+        <div className='StoreInfo flex flex-col justify-center p-4 rounded shadow-inner w-64 mt-6'>
+          <h1 className='StoreInfoHeading text-center font-semibold text-xl text-[#45A29E]'>Browse the Shop</h1>
+          <p className='StoreInfoBody bg-gray-300 rounded p-3 text-center text-center'>Visit the shop page to browse affordable items at your base's Airman's Attic or shippable items at other bases.</p>
+        </div>
+        <div className='LocationsInfo flex flex-col justify-center p-4 shadow-inner w-64 mt-6'>
+          <h1 className='LocationsInfoHeading text-center font-semibold text-xl text-[#45A29E]'>Find Attic's</h1>
+          <p className='LocationsInfoBody bg-gray-300 rounded p-3 text-center'>Use the location page to find Attics at other bases and browse their selections.</p>
+        </div>
+        <div className='PatchesInfo flex flex-col justify-center p-4 shadow-inner w-64 mt-6'>
+          <h1 className='PatchesInfoHeading text-center font-semibold text-xl text-[#45A29E]'>Trade Patches</h1>
+          <p className='PatchesInfoBody bg-gray-300 rounded p-3 text-center'>Visit the patches page to find patches you may like, or post your patches online to sell or trade with other patch connoisseurs.</p>
+        </div>
+      </div>
     </div>
   );
 };

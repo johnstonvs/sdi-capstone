@@ -1,7 +1,7 @@
 import React, { useContext, useState, createContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, Shop, Locations, Patches, About, LoginPage, Cart, Profile, Item } from './pages/index.js';
-import { Navbar } from './components/index.js';
+import { Home, Shop, Locations, Patches, About, LoginPage, Cart, Profile, Item, Patch } from './pages/index.js';
+import { Navbar, BottomNavbar } from './components/index.js';
 
 
 export const LoggedInContext = createContext()
@@ -22,13 +22,14 @@ function App() {
   })
 
   return (
-    <Router>
+    <Router className='RoutesContainer flex h-full w-full'>
       <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }} >
         <Navbar />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/shop' element={<Shop />} />
           <Route path='/shop/item/:id' element={<Item />} />
+          <Route path='/shop/patch/:id' element={<Patch />} />
           <Route path='/location' element={<Locations />} />
           <Route path='/patches' element={<Patches />} />
           <Route path='/about' element={<About />} />
@@ -36,7 +37,8 @@ function App() {
           <Route path='/cart' element={<Cart />} />
           <Route path='/profile/:id' element={<Profile />} />
         </Routes>
-      </ LoggedInContext.Provider >
+        <BottomNavbar className='BottomNavbar flex self-end'/>
+      </LoggedInContext.Provider >
     </Router>
   );
 }

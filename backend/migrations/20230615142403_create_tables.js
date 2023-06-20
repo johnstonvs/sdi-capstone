@@ -9,6 +9,8 @@ exports.up = function(knex) {
     table.varchar('phone', [19]);
     table.string('email');
     table.string('address');
+    table.string('hours');
+    table.string('picture_url');
     table.string('about');
   })
   .createTable('users', (table) => {
@@ -25,6 +27,7 @@ exports.up = function(knex) {
     table.increments('id');
     table.string('body');
     table.integer('stars');
+    table.timestamps(true, true);
     table.integer('user_id');
     table.foreign('user_id').references('users.id').onUpdate('CASCADE').onDelete('SET NULL');
     table.integer('attic_id');
@@ -68,6 +71,27 @@ exports.up = function(knex) {
     table.integer('patch_id');
     table.foreign('patch_id').references('patches.id').onUpdate('CASCADE').onDelete('SET NULL');
   })
+  .createTable('posts', (table) => {
+    table.increments('id');
+    table.integer('user_id');
+    table.integer('attic_id');
+    table.string('header');
+    table.string('body', 500);
+    table.timestamps(true, true);
+    table.foreign('attic_id').references('users.id').onUpdate('CASCADE').onDelete('SET NULL');
+    table.foreign('user_id').references('users.id').onUpdate('CASCADE').onDelete('SET NULL');
+  })
+  .createTable('comments',  (table) => {
+    table.increments('id');
+    table.integer('review_id');
+    table.integer('post_id');
+    table.integer('user_id');
+    table.string('comment');
+    table.timestamps(true, true);
+    table.foreign('user_id').references('users.id').onUpdate('CASCADE').onDelete('SET NULL');
+    table.foreign('post_id').references('posts.id').onUpdate('CASCADE').onDelete('SET NULL');
+    table.foreign('review_id').references('attic_reviews.id').onUpdate('CASCADE').onDelete('SET NULL');
+  })
 };
 
 /**
@@ -75,7 +99,9 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists('patches_wishlist')
+  return knex.schema.dropTableIfExists('comments')
+  .dropTableIfExists('posts')
+  .dropTableIfExists('patches_wishlist')
   .dropTableIfExists('patches')
   .dropTableIfExists('items_wishlist')
   .dropTableIfExists('user_preference')

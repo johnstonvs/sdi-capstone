@@ -7,7 +7,7 @@
   },
   {
     "body": "Corney Abraham",
-    "stars": 10,
+    "stars": 5,
     "user_id": 3,
     "attic_id": 5
   },
@@ -19,19 +19,19 @@
   },
   {
     "body": "Jo-anne Brennenstuhl",
-    "stars": 4,
+    "stars": 2,
     "user_id": 7,
     "attic_id": 6
   },
   {
     "body": "Pansy Stoakley",
-    "stars": 7,
+    "stars": 4,
     "user_id": 10,
     "attic_id": 3
   },
   {
     "body": "Horacio Pichan",
-    "stars": 3,
+    "stars": 1,
     "user_id": 4,
     "attic_id": 2
   },
@@ -43,7 +43,7 @@
   },
   {
     "body": "Edin Gianettini",
-    "stars": 8,
+    "stars": 3,
     "user_id": 10,
     "attic_id": 1
   }

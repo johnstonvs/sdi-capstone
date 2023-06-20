@@ -13,6 +13,7 @@ import { LoggedInContext } from '../../App'
 const Navbar = () => {
   const { loggedIn, setLoggedIn } = useContext(LoggedInContext)
   const nav = useNavigate()
+  const savedCart = localStorage.getItem('cart');
 
   const onLogout = () => {
     setLoggedIn({
@@ -31,7 +32,7 @@ const Navbar = () => {
       <div className="NavbarImageContainer flex items-center">
         <img
           className="NavbarImage w-12 h-12"
-          src="../assets/logo.jpg"
+          src="../../assets/logo.jpg"
           alt="Airman's Attic Logo"
         />
       </div>
@@ -96,7 +97,8 @@ const Navbar = () => {
           to="/cart"
         >
           <div className="flex items-center justify-center">
-            <AiOutlineShoppingCart className="mr-1" /> Cart
+            <AiOutlineShoppingCart className="mr-1" />Cart<span class="badge badge-info">{savedCart ? savedCart.length : null}</span>
+            <span class="sr-only">amount of cart items</span>
           </div>
         </Link>
         </>

@@ -6,6 +6,8 @@ const patches_wishlist = require('../random_data/patches_wishlist.json');
 const patches = require('../random_data/patches.json');
 const user_preference = require('../random_data/user_preference.json');
 const users = require('../random_data/users.json');
+const comments = require('../random_data/comments.json');
+const posts = require('../random_data/posts.json');
 
 /**
  * @param { import("knex").Knex } knex
@@ -13,6 +15,8 @@ const users = require('../random_data/users.json');
  */
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
+  await knex('comments').del();
+  await knex('posts').del();
   await knex('patches_wishlist').del();
   await knex('patches').del();
   await knex('items_wishlist').del();
@@ -31,4 +35,6 @@ exports.seed = async function(knex) {
   await knex('items_wishlist').insert(items_wishlist);
   await knex('patches').insert(patches);
   await knex('patches_wishlist').insert(patches_wishlist);
+  await knex('posts').insert(posts);
+  await knex('comments').insert(comments);
 };

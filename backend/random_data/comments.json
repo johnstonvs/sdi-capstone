@@ -1,0 +1,74 @@
+[
+  {
+    "review_id": 1,
+    "post_id": null,
+    "user_id": 3,
+    "comment": "Proin interdum mauris non ligula pellentesque ultrices."
+  },
+  {
+    "review_id": 6,
+    "post_id": null,
+    "user_id": 8,
+    "comment": "Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis."
+  },
+  {
+    "review_id": 1,
+    "post_id": null,
+    "user_id": 6,
+    "comment": "Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa."
+  },
+  {
+    "review_id": 5,
+    "post_id": null,
+    "user_id": 4,
+    "comment": "Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui."
+  },
+  {
+    "review_id": 4,
+    "post_id": null,
+    "user_id": 3,
+    "comment": "Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci."
+  },
+  {
+    "review_id": 3,
+    "post_id": null,
+    "user_id": 7,
+    "comment": "Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui."
+  },
+  {
+    "review_id": null,
+    "post_id": 3,
+    "user_id": 1,
+    "comment": "Maecenas rhoncus aliquam lacus."
+  },
+  {
+    "review_id": null,
+    "post_id": 10,
+    "user_id": 11,
+    "comment": "Ut tellus. Nulla ut erat id mauris vulputate elementum."
+  },
+  {
+    "review_id": null,
+    "post_id": 4,
+    "user_id": 1,
+    "comment": "Fusce posuere felis sed lacus."
+  },
+  {
+    "review_id": null,
+    "post_id": 6,
+    "user_id": 7,
+    "comment": "Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros."
+  },
+  {
+    "review_id": null,
+    "post_id": 5,
+    "user_id": 1,
+    "comment": "Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci."
+  },
+  {
+    "review_id": null,
+    "post_id": 2,
+    "user_id": 4,
+    "comment": "Praesent lectus."
+  }
+]
