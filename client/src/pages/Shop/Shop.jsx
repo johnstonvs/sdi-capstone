@@ -59,7 +59,12 @@ const Shop = () => {
 
     })
 
-    let moreFilter = filteredArr
+    let moreFilter = filteredArr.filter(item => {
+      if (ship === 'Can Ship' && item.can_ship) {
+        return true
+      }
+      return false
+    })
     // filter can ship
     let evenMoreFiltering = moreFilter
     // filter on tags
@@ -79,6 +84,8 @@ const Shop = () => {
 
 
     console.log('filtered:', filteredArr)
+    console.log('more filtered:', moreFilter)
+    console.log('evenMoreFilter:', evenMoreFiltering)
     setFiltered(filteredArr);
   }, [showModal])
 
