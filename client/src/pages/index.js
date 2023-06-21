@@ -9,3 +9,4 @@ export { default as Shop } from "./Shop/Shop";
 export { default as Cart } from "./Cart/Cart";
 export { default as Item} from "./Shop/Item";
 export { default as Patch } from "./Patches/Patch";
+export { default as Checkout } from "./Cart/Checkout";

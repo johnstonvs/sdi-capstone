@@ -1,16 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { LoggedInContext } from "../../App.js";
-import { ItemCard } from '../../components/index.js';
-import Item from './Item'
+import { LoggedInContext, TagsContext } from "../../App.js";
+import { ItemCard, FilterModal } from '../../components/index.js';
 
 const Shop = () => {
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const { loggedIn } = useContext(LoggedInContext);
-  const [base, setBase] = useState('');
+  // const {tags} = useContext(TagsContext);
   const [baseList, setBaseList] = useState([]);
-  const [on, setOn] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [bases, setBases] = useState([]);
+  const [ship, setShip] = useState('');
+  const [tag, setTag] = useState([]);
+
 
 
   useEffect(() => {
@@ -24,59 +27,92 @@ const Shop = () => {
 
   useEffect(() => {
     let bop = loggedIn.BOP;
-    console.log(bop)
     let filteredArr = [];
     fetch('http://localhost:8080/items')
       .then(res => res.json())
       .then(data => {
-        setItems(data)
+        let newData = addLocation(data);
+        newData = fixTags(newData);
+        console.log(newData)
+
+        setItems(newData)
         if (loggedIn.isLoggedIn) {
           let bopID = undefined;
           baseList.forEach(attic => {
             if (attic.location === bop) {
-              bopID = attic.id
-              console.log('id:', bopID)
+              bopID = attic.id;
             }
           })
-          filteredArr = items.filter(item => item.attic_id === bopID)
+          filteredArr = newData.filter(item => item.attic_id === bopID)
         }
-        console.log(filteredArr)
         setFiltered(filteredArr);
       })
   }, [baseList])
 
-  useEffect(() => {
-    let filteredArr = [];
-    if (base !== 'Can Ship' && base !== 'All Items' && base !== '') {
-      items.forEach(item => {
-        if (item.attic_id === base) {
-          return filteredArr.push(item);
-        }
-      })
-    } else if (base === 'Can Ship') {
-      items.forEach(item => {
-        if (item.can_ship) {
-          return filteredArr.push(item);
-        }
-      })
-    }
+  useEffect( () => {
+    let filteredArr = items.filter((item) => {
+      if (bases.some(base => base === item.attic_id)) {
+        return true
+      }
+
+      return false
+
+    })
+
+    let moreFilter = filteredArr
+    // filter can ship
+    let evenMoreFiltering = moreFilter
+    // filter on tags
+    // if (filters.includes('Can Ship') && item.can_ship) {
+    //   return true
+    // }
+
+    // if (filters.some(filter => filter === item.attic_id)) {
+    //   return true
+    // }
+
+    // for (let tag of item.tags) {
+    //   if (filters.includes(tag) && (!filters.includes('Can Ship') || item.can_ship) ) {
+    //     return true;
+    //   }
+    // }
+
+
+    console.log('filtered:', filteredArr)
     setFiltered(filteredArr);
-  }, [base])
+  }, [showModal])
+
+  const addLocation = (data) => {
+    let item = data;
+    for (let i = 0; i < baseList.length; i++) {
+      for (let j = 0; j < item.length; j++) {
+        if (baseList[i].id === item[j].attic_id) {
+          item[j].location = baseList[i].location;
+        }
+      }
+    }
+    return item;
+  }
+
+  const fixTags = (data) => {
+    let item = data;
+    for (let i = 0; i < item.length; i++) {
+      let tags = item[i].tags.replace(/[{}]/g,'').split(',').map(tag => tag.trim().replace(/['"]/g, ''))
+      item[i].tags = tags
+      // item = JSON.parse(item[i].tags)
+    }
+    return item;
+  }
 
   return (
+    <>
     <div className='Shop'>
-      <div className='DropCont inline-block ' >
-        <button className='ShopDrop bg-[#267458] group z-50' onMouseOver={(e) => {e.stopPropagation(); setOn(!on)}} >Base Select</ button>
-      </ div>
-      <div className={on ? 'ShopDropCont flex shadow-2xl z-50 gap-x-5' : 'ShopDropCont hidden absolute shadow-2xl'} onMouseOut={() => setOn(!on)}>
-        <button className='CanShip bg-[#45A29E] block hover: bg-[#267458]' onClick={() => setBase('Can Ship')} >Can ship</ button>
-        <button className='AllItems bg-[#45A29E] block hover: bg-[#267458]' onClick={() => setBase('All Items')}>All items</ button>
-        {baseList ? baseList.map((loc, index) => (
-          <button key={index} className='Base bg-[#45A29E] block hover: bg-[#267458]' onClick={() => base !== loc.location ? setBase(loc.id) : null}>{loc.location}</ button>
-        )) : null}
+      <div className='FilterContainer'>
+        <button className='FilterButt bg-[#45A29E] rounded border-solid text-gray-800 hover:scale-105 hover:scale-105 hover:bg-[#267458]' onClick={() => {setShowModal(true)}}>Filter</ button>
+        <FilterModal baseList={baseList} show={showModal} handleClose={() => setShowModal(false)} setTag={setTag} tag={tag} bases={bases} setBases={setBases} ship={ship} setShip={setShip}/>
       </ div>
       <div className='ItemsContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4'>
-        {filtered.length ? filtered.map((item, index) => (
+        {filtered.length ? filtered.map((item, index) =>  (
           <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
             <ItemCard item={item} />
           </Link>
@@ -86,7 +122,8 @@ const Shop = () => {
           </Link>
         ))}
       </div>
-    </ div>
+      </div>
+    </>
   )
 }
 

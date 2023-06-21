@@ -10,7 +10,7 @@ const Patch = () => {
     const location = useLocation();
     let split = location.pathname.split('/');
     const id = split[3];
-    const [cart, setCart] = useState([]);
+    var cart = [];
 
 
     useEffect(() => {
@@ -28,15 +28,32 @@ const Patch = () => {
     },[patch])
 
     const addCartItem = () => {
-        if(localStorage.getItem('patchCart').length > 0) {
-            setCart(JSON.parse(localStorage.getItem('patchCart')));
+        if(localStorage.getItem('patchCart')) {
+            cart = JSON.parse(localStorage.getItem('patchCart'));
             console.log(cart);
         }
-        cart.push([patch.id]);
-        console.log(cart);
+        cart.push(patch.id);
         localStorage.setItem('patchCart', JSON.stringify(cart));
-        var retrievedObject = JSON.parse(localStorage.getItem('patchCart'));
-        console.log('retrievedObject: ', retrievedObject);
+
+        //Test the items being added to localStorage with these
+        //var retrievedObject = localStorage.getItem('patchCart');
+        //console.log('retrievedObject: ', retrievedObject);
+    }
+
+    const addToWishlist = () => {
+      fetch(`http://localhost:8080/patches_wishlist`, {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: loggedIn.id,
+          patch_id: patch.id
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      })
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch(err => console.log(err))
     }
 
   return (
@@ -49,7 +66,7 @@ const Patch = () => {
             <h3 className='PatchPrice text-[#[#222222]] text-2xl mb-4'>${patch.price}</h3>
             <div className='PatchButtons flex justify-between w-full'>
                 <button className='AddToCartButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => {addCartItem()}} >Add to Cart</button>
-                <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105'>Add to Wishlist</button>
+                <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
             </div>
         </ div>
         :

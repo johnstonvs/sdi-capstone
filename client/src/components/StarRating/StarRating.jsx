@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { FaStar, FaStarHalf } from 'react-icons/fa';
+import { RatingContext } from '../RatingForm/RatingForm'
 
 const StarRating = ({ onRate }) => {
   const [hoverRating, setHoverRating] = useState(0);
-  const [rating, setRating] = useState(0);
+  const {rating, setRating} = useContext(RatingContext);
 
   const onMouseEnter = (ratingValue) => {
     setHoverRating(ratingValue);

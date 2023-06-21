@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home, Shop, Locations, Patches, About, LoginPage, Cart, Profile, Item, Patch } from './pages/index.js';
 import { Navbar, BottomNavbar } from './components/index.js';
 
-
-export const LoggedInContext = createContext()
+export const TagsContext = createContext();
+export const LoggedInContext = createContext();
 
 function App() {
 
@@ -16,6 +16,7 @@ function App() {
     BOP:''
   };
 
+  const [tags] = useState(['OCP', 'Blues', 'Boots', 'Shoes', 'Outdated', 'Hobby', 'Electronics', 'Furniture', 'Baby', 'Toddler', 'Teen', 'Adult', 'Toys', 'Sports', 'Outdoor', 'Workout', 'Housewares', 'Books'])
   const [loggedIn, setLoggedIn] = useState(() => {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : defaultLogin;
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <Router className='RoutesContainer flex h-full w-full'>
+      <TagsContext.Provider value={{tags}}>
       <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }} >
         <Navbar />
         <Routes>
@@ -37,8 +39,9 @@ function App() {
           <Route path='/cart' element={<Cart />} />
           <Route path='/profile/:id' element={<Profile />} />
         </Routes>
-        <BottomNavbar className='BottomNavbar flex self-end'/>
+        <BottomNavbar className='BottomNavbar flex self-end justify-self-end'/>
       </LoggedInContext.Provider >
+      </ TagsContext.Provider >
     </Router>
   );
 }

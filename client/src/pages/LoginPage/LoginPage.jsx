@@ -7,6 +7,10 @@ const LoginPage = () => {
   const [login, setLogin] = useState(true);
   const {loggedIn} = useContext(LoggedInContext);
 
+  const sendToLogin = () => {
+    setLogin(true)
+  }
+
   return (
     <>
       {login ?
@@ -15,7 +19,7 @@ const LoginPage = () => {
         <button className='mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105' onClick={() => setLogin(!login)}>Register</button>
       </div> :
       <div className='flex flex-col items-center p-4 rounded'>
-      <Register />
+      <Register sendToLogin={sendToLogin}/>
       <button className='mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105' onClick={() => setLogin(!login)}>Back to login</button>
       </div>
       }

@@ -4,7 +4,14 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      translate: {
+      'full': '100%',
+      }
+    },
+    variants: {
+      translate: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
+    },
   },
   plugins: [],
 }

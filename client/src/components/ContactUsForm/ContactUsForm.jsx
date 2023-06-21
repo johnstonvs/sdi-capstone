@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
+import { ConfirmationModal } from '../index';
 
 const ContactUsForm = () => {
   const [formInfo, setFormInfo] = useState({
@@ -12,8 +13,7 @@ const ContactUsForm = () => {
   const serviceId = process.env.REACT_APP_SERVICE_ID;
   const templateId = process.env.REACT_APP_TEMPLATE_ID;
   const emailKey = process.env.REACT_APP_EMAIL_JS_KEY;
-
-  console.log(serviceId)
+  const [showModal, setShowModal] = useState(false);
 
   const handleChange = (e) => {
     setFormInfo({ ...formInfo, [e.target.name]: e.target.value})
@@ -33,10 +33,11 @@ const ContactUsForm = () => {
       email:'',
       body:''
     })
-    // make submission modal
+    setShowModal(true);
   };
 
   return (
+    <div>
     <div className='ContactUsFormContainer bg-gray-300 flex flex-col items-center justify-center p-4 rounded shadow-inner'>
       <h1 className='ContactUsHeader text-[#45A29E] text-3xl font-semibold mb-10'>Contact Us</h1>
       <form onSubmit={handleSubmit}>
@@ -60,6 +61,18 @@ const ContactUsForm = () => {
               </button>
       </form>
     </div>
+          <ConfirmationModal
+          message="You have successfully submitted a contact form!"
+          show={showModal}
+          handleClose={() => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+            setShowModal(false)
+          }}
+        />
+      </div>
   )
 }
 

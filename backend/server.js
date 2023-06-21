@@ -150,6 +150,19 @@ server.get('/attics/:id', (req, res) => {
 
 server.get('/attic_reviews', (req, res) => {
   knex('attic_reviews')
+    .join('users', 'attic_reviews.user_id', 'users.id')
+    .select('attic_reviews.*', 'users.name')
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get attic reviews: ${err}`
+    }))
+})
+
+server.get('/attic_reviews/:attic_id', (req, res) => {
+  knex('attic_reviews')
+    .join('users', 'attic_reviews.user_id', 'users.id')
+    .select('attic_reviews.*', 'users.name')
+    .where('attic_reviews.attic_id', req.params.attic_id)
     .then(data => res.status(200).json(data))
     .catch(err => res.status(404).json({
       message: `Could not get attic reviews: ${err}`
@@ -213,19 +226,19 @@ server.get('/posts/:id', (req, res) => {
 
 server.get('/comments?', (req, res) => {
   knex('comments')
-  .join('users', 'comments.user_id', 'users.id')
-  .select('comments.*', 'users.name')
-  .modify((soFar) => {
-    if (req.query?.review_id) {
-      soFar.where('comments.review_id', req.query.review_id)
-    } else if (req.query?.post_id) {
-      soFar.where('comments.post_id', req.query.post_id)
-    }
-  })
-  .then(data => res.status(200).json(data))
-  .catch(err => res.status(404).json({
-    message: `Could not get users: ${err}`
-  }))
+    .join('users', 'comments.user_id', 'users.id')
+    .select('comments.*', 'users.name')
+    .modify((soFar) => {
+      if (req.query?.review_id) {
+        soFar.where('comments.review_id', req.query.review_id)
+      } else if (req.query?.post_id) {
+        soFar.where('comments.post_id', req.query.post_id)
+      }
+    })
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({
+      message: `Could not get users: ${err}`
+    }))
 })
 
 
@@ -271,17 +284,77 @@ server.post('/users', (req, res) => {
 server.post('/comments', (req, res) => {
   console.log(req.body)
   knex('comments')
-    .insert(req.body)
-    .then(data => res.status(200).json(data))
+    .insert(req.body, ['*'])
+    .then(data => res.status(201).json(data))
     .catch(err => res.status(500).json({
       message: `Could not post comment: ${err}`
     }))
 })
 
+server.post('/attic_reviews', (req, res) => {
+  knex('attic_reviews')
+    .insert(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not post your attic review: ${err}`
+    }))
+})
+
+server.post('/items_wishlist', (req, res) => {
+  knex('items_wishlist')
+    .insert(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not post to items wishlist: ${err}`
+    }))
+})
+
+server.post('/patches_wishlist', (req, res) => {
+  knex('patches_wishlist')
+    .insert(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not post to patches wishlist: ${err}`
+    }))
+})
+
 // PATCH
+
+server.patch('/users/:id', (req, res) => {
+  knex('users')
+    .where('id', req.params.id)
+    .update(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not update user with id ${req.params.id}: ${err}`
+    }))
+})
 
 // DELETE
 
+server.delete('/items_wishlist', (req, res) => {
+  knex('items_wishlist')
+    .where('item_id', req.body.item_id)
+    .andWhere('user_id', req.body.user_id)
+    .del()
+    .then(data => res.status(204).json(data))
+    .catch(err => res.status(400).json({
+      message: `Could not delete wishlist item with item id ${req.body.item_id} and user id ${req.body.user_id}: ${err}`
+    }))
+})
+
+server.delete('/patches_wishlist', (req, res) => {
+  knex('patches_wishlist')
+    .where('patch_id', req.body.patch_id)
+    .andWhere('user_id', req.body.user_id)
+    .del()
+    .then(data => res.status(204).json(data))
+    .catch(err => res.status(400).json({
+      message: `Could not delete wishlist patch with item id ${req.body.patch_id} and user id ${req.body.user_id}: ${err}`
+    }))
+})
+
+// SERBER LISTEN
 server.listen(port, () =>
   console.log(`Server running on http://localhost:${port}`)
 );

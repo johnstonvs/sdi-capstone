@@ -1,21 +1,22 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { LoggedInContext } from '../../App'
+import { FaStar, FaStarHalf } from 'react-icons/fa';
 
-const LocationFeed = ({ selectedAttic }) => {
-  const [posts, setPosts] = useState([])
+const LocationReviews = ({ selectedAttic }) => {
+  const [reviews, setReviews] = useState([])
   const { loggedIn } = useContext(LoggedInContext)
 
-  const postCommment = (postId, content) => {
+  const postCommment = (reviewId, content) => {
     fetch('http://localhost:8080/comments', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({comment: content,
         user_id: loggedIn.id,
-        post_id: postId})
+        review_id: reviewId})
     })
     .then(res => res.json())
     .then(data => console.log(data))
-    .then(() => fetchPostsWithComments())
+    .then(() => fetchReviewsWithComments())
     .catch(err => console.log(err))
   }
 
@@ -30,38 +31,50 @@ const LocationFeed = ({ selectedAttic }) => {
     return formattedDate
   }
 
-  const fetchPostsWithComments = () => {
+  const fetchReviewsWithComments = () => {
 
     if (selectedAttic) {
-      fetch(`http://localhost:8080/posts?attic_id=${selectedAttic.id}`)
+      fetch(`http://localhost:8080/attic_reviews/${selectedAttic.id}`)
       .then(res => res.json())
       .then(async data => {
-        const postsWithComments = await Promise.all(data.map(async post => {
-          const res = await fetch(`http://localhost:8080/comments?post_id=${post.id}`);
+        const reviewsWithComments = await Promise.all(data.map(async review => {
+          const res = await fetch(`http://localhost:8080/comments?review_id=${review.id}`);
           const comments = await res.json();
-          return {...post, comments};
+          return {...review, comments};
         }));
-        setPosts(postsWithComments);
+        setReviews(reviewsWithComments);
       })
       .catch(err => console.log(err))
     }
   }
 
   useEffect(() => {
-    fetchPostsWithComments()
+    fetchReviewsWithComments()
   }, []);
 
   return (
     <>
-    {posts.length > 0 ? (
-      <div className='FeedContainer gap-10 p-4 mt-4 justify-center items-center w-2/3'>
-      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md shadow text-center p-4 w-1/5 ml-4'>Attic Feed:</h1>
-        {posts.map(post => (
-            <div key={post.id} className='PostContainer flex flex-col m-4 p-4 bg-gray-300 rounded-md shadow'>
-                <h1 className='PostHeader text-[#45A29E] text-3xl font-semibold mb-10'>{post.header}</h1>
-                <p className='PostBody text-[#222222] mb-10'>{post.body}</p>
+    {reviews.length > 0 ? (
+      <div className='FeedContainer w-2/3 gap-10 p-4 mt-4 justify-center items-center'>
+      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md shadow p-4 w-1/5 text-center ml-4'>Attic Reviews:</h1>
+        {reviews.map(review => (
+            <div key={review.id} className='PostContainer flex flex-col m-4 p-4 bg-gray-300 rounded-md shadow'>
+                <p className='PostBody text-[#222222] mb-10'>{review.name}</p>
+                <div className='flex flex-row space-x-10'>
+                <div className="flex justify-center p-1 rounded">
+                      {[...Array(5)].map((_, i=1) => (
+                          <div
+                              key={i}
+                              className={ "cursor-pointer " + ((review.stars) > i ? 'text-yellow-300' : 'text-white') }
+                          >
+                              <FaStar  className='transform -scale-x-100 mr-1 hover:scale-105' size={25} />
+                          </div>
+                      ))}
+                  </div>
+                <p className='PostBody text-[#222222] mb-10 p-1'>{review.body}</p>
+                </div>
                 <h2 className='CommentsHeader text-[#45A29E] text-xl font-semibold mb-2'>Comments</h2>
-                {post.comments && post.comments.map(comment => (
+                {review.comments && review.comments.map(comment => (
                   <div className='CommentCard shadow-md rounded-md mb-4 p-2'>
                     <p className='PostDate text-[#222222]'>{comment.name} on {parseDate(comment.created_at)}</p>
                     <p key={comment.id} className='Comments text-[#222222] mb-2'>{comment.comment}</p>
@@ -75,13 +88,13 @@ const LocationFeed = ({ selectedAttic }) => {
                       placeholder='Add a comment...'
                       onKeyDown={event => {
                         if (event.key === 'Enter') {
-                            postCommment(post.id, event.target.value);
+                            postCommment(review.id, event.target.value);
                             event.target.value = '';
                         }
                     }}
                   />
                 </div>) : null}
-                <p className='PostDate text-[#222222] text-left'>Post Created: {parseDate(post.created_at)}</p>
+                <p className='PostDate text-[#222222] text-left'>Review Created: {parseDate(review.created_at)}</p>
             </div>
         ))}
     </div>
@@ -91,4 +104,4 @@ const LocationFeed = ({ selectedAttic }) => {
 
 }
 
-export default LocationFeed
+export default LocationReviews

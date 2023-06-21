@@ -7,10 +7,17 @@ import { AiOutlineArrowRight, AiOutlineCaretRight } from 'react-icons/ai';
 const Home = () => {
   const [items, setItems] = useState([]);
   const [patches, setPatches] = useState([]);
+  const [baseList, setBaseList] = useState()
   const { loggedIn } = useContext(LoggedInContext);
   const nav = useNavigate();
 
   useEffect(() => {
+
+    fetch('http://localhost:8080/attics')
+      .then(res => res.json())
+      .then(data => setBaseList(data))
+
+    console.log(baseList)
 
     fetch('http://localhost:8080/patches')
       .then(res => res.json())
