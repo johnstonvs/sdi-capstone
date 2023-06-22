@@ -1,6 +1,5 @@
 
-
-const PatchCard = ({ patch }) => {
+const WishlistPatch = ({ patch }) => {
 
   return (
     <div className='PatchCardContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner gap-3 hover:scale-105'>
@@ -11,4 +10,4 @@ const PatchCard = ({ patch }) => {
   )
 }
 
-export default PatchCard;
+export default WishlistPatch;

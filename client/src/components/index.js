@@ -11,3 +11,7 @@ export { default as RatingForm } from "./RatingForm/RatingForm";
 export { default as LocationFeed } from "./LocationFeed/LocationFeed";
 export { default as LocationReviews } from "./LocationReviews/LocationReviews";
 export { default as FilterModal } from "./FilterModal/FilterModal";
+export { default as WishlistItem } from "./WishlistCards/WishlistItem";
+export { default as WishlistPatch } from "./WishlistCards/WishlistPatch";
+export { default as Dependant } from "./Dependant/Dependant";
+export { default as UploadPatch } from "./UploadPatch/UploadPatch";

@@ -1,18 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { LoggedInContext, TagsContext } from "../../App.js";
+import { LoggedInContext } from "../../App.js";
 import { ItemCard, FilterModal } from '../../components/index.js';
 
 const Shop = () => {
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const { loggedIn } = useContext(LoggedInContext);
-  // const {tags} = useContext(TagsContext);
   const [baseList, setBaseList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [bases, setBases] = useState([]);
   const [ship, setShip] = useState('');
   const [tag, setTag] = useState([]);
+  const [search, setSearch] = useState('');
+  const[searchResults, setSearchResults] = useState([]);
 
 
 
@@ -33,14 +34,15 @@ const Shop = () => {
       .then(data => {
         let newData = addLocation(data);
         newData = fixTags(newData);
-        console.log(newData)
 
-        setItems(newData)
+        setItems(newData);
+        setSearchResults(newData);
         if (loggedIn.isLoggedIn) {
           let bopID = undefined;
           baseList.forEach(attic => {
             if (attic.location === bop) {
               bopID = attic.id;
+              setBases([bopID]);
             }
           })
           filteredArr = newData.filter(item => item.attic_id === bopID)
@@ -49,45 +51,40 @@ const Shop = () => {
       })
   }, [baseList])
 
-  useEffect( () => {
-    let filteredArr = items.filter((item) => {
+  useEffect(() => {
+    let filteredArr = searchResults.filter((item) => {
       if (bases.some(base => base === item.attic_id)) {
         return true
       }
-
       return false
-
     })
-
+    if (!filteredArr.length) {
+      filteredArr = searchResults;
+    }
     let moreFilter = filteredArr.filter(item => {
       if (ship === 'Can Ship' && item.can_ship) {
         return true
       }
       return false
     })
-    // filter can ship
-    let evenMoreFiltering = moreFilter
-    // filter on tags
-    // if (filters.includes('Can Ship') && item.can_ship) {
-    //   return true
-    // }
+    if (!moreFilter.length) {
+      moreFilter = filteredArr;
+    }
+    let evenMoreFiltering = moreFilter.filter(item => {
+      if(tag.some(tag => item.tags.includes(tag))) {
+        return true
+      }
+      return false
+    })
+    if(!evenMoreFiltering.length) {
+      evenMoreFiltering = moreFilter;
+    }
+    setFiltered(evenMoreFiltering);
+  }, [showModal, searchResults])
 
-    // if (filters.some(filter => filter === item.attic_id)) {
-    //   return true
-    // }
-
-    // for (let tag of item.tags) {
-    //   if (filters.includes(tag) && (!filters.includes('Can Ship') || item.can_ship) ) {
-    //     return true;
-    //   }
-    // }
-
-
-    console.log('filtered:', filteredArr)
-    console.log('more filtered:', moreFilter)
-    console.log('evenMoreFilter:', evenMoreFiltering)
-    setFiltered(filteredArr);
-  }, [showModal])
+  useEffect(() => {
+    setSearchResults(items.filter(item => item.name.toLowerCase().includes(search.toLowerCase())))
+  }, [search])
 
   const addLocation = (data) => {
     let item = data;
@@ -106,7 +103,6 @@ const Shop = () => {
     for (let i = 0; i < item.length; i++) {
       let tags = item[i].tags.replace(/[{}]/g,'').split(',').map(tag => tag.trim().replace(/['"]/g, ''))
       item[i].tags = tags
-      // item = JSON.parse(item[i].tags)
     }
     return item;
   }
@@ -114,8 +110,9 @@ const Shop = () => {
   return (
     <>
     <div className='Shop'>
-      <div className='FilterContainer'>
-        <button className='FilterButt bg-[#45A29E] rounded border-solid text-gray-800 hover:scale-105 hover:scale-105 hover:bg-[#267458]' onClick={() => {setShowModal(true)}}>Filter</ button>
+      <div className='FilterContainer mb-10'>
+        <input type='text' className='SearchBar w-full mt-5 mb-5 p-2 bg-white shadow mt-1' placeholder='Search . . .' onChange={(e) => setSearch(e.target.value)}/>
+        <button className='FilterButt bg-[#2ACA90] ml-4 text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => {setShowModal(true)}}>Filter</ button>
         <FilterModal baseList={baseList} show={showModal} handleClose={() => setShowModal(false)} setTag={setTag} tag={tag} bases={bases} setBases={setBases} ship={ship} setShip={setShip}/>
       </ div>
       <div className='ItemsContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4'>

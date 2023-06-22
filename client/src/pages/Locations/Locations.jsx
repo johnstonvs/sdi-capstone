@@ -106,14 +106,15 @@ const Locations = () => {
                             </div>
                         ))}
                         <p className='ml-2'>{filteredReviews ? `(${filteredReviews.length})` : null}</p>
-                    </div>
+            </div>
+            <img className='w-96 h-96 mb-10 m-auto' src={selectedAttic.picture_url} alt='AtticImage'/>
             <h2 className='LocationHeader text-[#222222] mb-2'><span className='font-semibold'>Hours of operation: </span>{selectedAttic.hours}</h2>
             <p className='LocationPhone mb-2'><span className='font-semibold'>Phone #: </span>{selectedAttic.phone}</p>
             <p className='LocationEmail mb-2'><span className='font-semibold'>Email: </span>{selectedAttic.email}</p>
             <p className='LocationAddress mb-4'><span className='font-semibold'>Address: </span>{selectedAttic.address}</p>
           </div>
           <p className='LocationContent font-semibold'>About:</p>
-          <p className='LocationContent mb-5'>{selectedAttic.about}</p>
+          <p className='LocationContent mb-10'>{selectedAttic.about}</p>
           <button className='BackButton bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] w-1/4 text-center hover:scale-105' onClick={()=> {
             setSelectedAttic('');
             setSearchTerm('');
@@ -123,7 +124,7 @@ const Locations = () => {
 
         <div className="relative inline-block w-10 ml-2 align-middle select-none transition duration-200 ease-in">
             <input type="checkbox" name="toggle" id="toggle" onChange={toggleView} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all"/>
-          <label htmlFor="toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+          <label htmlFor="toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
         </div>
         <div className="ml-3 text-[#45A29E] text-3xl font-semibold">
           {view === 'reviews' ? 'Reviews' : 'Feed'}
@@ -136,6 +137,7 @@ const Locations = () => {
         </>
       ) : (
       <div className='LocationsSearchContainer bg-gray-300 flex flex-col items-center justify-center m-4 p-4 rounded-md'>
+        <h1 className='text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4 mb-10'>Search for a location!</h1>
         <h1 className='text-[#45A29E] text-2xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4'>Just looking around?</h1>
         <div className='LocationsDropDownContainer mb-4'>
           {attics ? (

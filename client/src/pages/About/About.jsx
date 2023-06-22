@@ -4,8 +4,8 @@ import { ContactUsForm } from '../../components/index';
 const About = () => {
 
   return (
-    <div className="AboutContainer flex flex-col gap-10 m-4 mt-10">
-      <div className="AboutUs bg-gray-300 flex flex-col items-center p-4 rounded gap-4">
+    <div className="AboutContainer flex flex-col w-2/3 gap-10 m-auto mt-10">
+      <div className="AboutUs bg-gray-300 flex flex-col items-center p-4 rounded gap-10">
         <h1 className="AboutHeader font-semibold text-3xl text-[#45A29E]">About Us</h1>
         <p className="AboutContent text-[#222222]">
           We are a team of dedicated Air Force enlisted members who have come together to create a
@@ -22,8 +22,8 @@ const About = () => {
           donations and costs. We believe that by addressing this crucial issue, we can have a
           direct and positive impact on the lives of our fellow service members.
         </p>
-        <h2 className="AboutHeader2 font-semibold text-2xl text-[#45A29E]">Key Objectives</h2>
-        <ul className="text-[#222222]">
+        <h2 className="AboutHeader2 font-semibold text-3xl text-[#45A29E]">Key Objectives</h2>
+        <ul className="text-[#222222] list-disc p-4">
           <li className="p-2">
             Centralized Donation Tracking: We strive to create a centralized platform that enables
             seamless tracking of donations, making it easier to manage and distribute resources
@@ -65,7 +65,7 @@ const About = () => {
         </p>
       </div>
       <div className="AboutContact w-50 flex flex-col items-center justify-center p-2 ">
-        <ContactUsForm />
+        <ContactUsForm id='ContactUsForm'/>
       </div>
     </div>
   );

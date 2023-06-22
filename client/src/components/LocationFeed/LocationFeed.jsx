@@ -55,7 +55,7 @@ const LocationFeed = ({ selectedAttic }) => {
     <>
     {posts.length > 0 ? (
       <div className='FeedContainer gap-10 p-4 mt-4 justify-center items-center w-2/3'>
-      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md shadow text-center p-4 w-1/5 ml-4'>Attic Feed:</h1>
+      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md shadow text-center p-4 w-1/5 ml-4'>Feed:</h1>
         {posts.map(post => (
             <div key={post.id} className='PostContainer flex flex-col m-4 p-4 bg-gray-300 rounded-md shadow'>
                 <h1 className='PostHeader text-[#45A29E] text-3xl font-semibold mb-10'>{post.header}</h1>

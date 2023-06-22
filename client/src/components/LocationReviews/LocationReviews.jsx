@@ -56,10 +56,10 @@ const LocationReviews = ({ selectedAttic }) => {
     <>
     {reviews.length > 0 ? (
       <div className='FeedContainer w-2/3 gap-10 p-4 mt-4 justify-center items-center'>
-      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md shadow p-4 w-1/5 text-center ml-4'>Attic Reviews:</h1>
+      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md shadow p-4 w-1/5 text-center ml-4'>Reviews:</h1>
         {reviews.map(review => (
             <div key={review.id} className='PostContainer flex flex-col m-4 p-4 bg-gray-300 rounded-md shadow'>
-                <p className='PostBody text-[#222222] mb-10'>{review.name}</p>
+                <p className='PostBody text-[#222222] mb-10 font-semibold'>{review.name}</p>
                 <div className='flex flex-row space-x-10'>
                 <div className="flex justify-center p-1 rounded">
                       {[...Array(5)].map((_, i=1) => (

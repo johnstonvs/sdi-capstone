@@ -38,7 +38,7 @@ const ContactUsForm = () => {
 
   return (
     <div>
-    <div className='ContactUsFormContainer bg-gray-300 flex flex-col items-center justify-center p-4 rounded shadow-inner'>
+    <div className='ContactUsFormContainer bg-gray-300 flex flex-col w-2/4 m-auto items-center justify-center p-4 rounded shadow-inner'>
       <h1 className='ContactUsHeader text-[#45A29E] text-3xl font-semibold mb-10'>Contact Us</h1>
       <form onSubmit={handleSubmit}>
       <label className='TypeLabel text-[#222222]'>Type:</label>

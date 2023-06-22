@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PatchCard from '../../components/PatchCard/PatchCard';
+import { PatchCard, UploadPatch } from '../../components/index';
 import Patch from './Patch';
 
 const Patches = () => {
@@ -8,6 +8,15 @@ const Patches = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchTyped, setSearchTyped] = useState(false);
   const [filteredPatches, setFilteredPatches] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  }
 
   useEffect(() => {
     fetch('http://localhost:8080/patches')
@@ -37,7 +46,7 @@ const Patches = () => {
   return (
     <div className='PatchesPageContainer'>
       <div className='PatchesSearchBarContainer'>
-        <input className='LocationsSearchBar w-full p-2 bg-white rounded-md shadow mt-1'
+        <input className='LocationsSearchBar w-full mt-5 p-2 bg-white shadow mt-1'
           placeholder='Enter a patch name...'
           value={searchTerm}
           onChange={searchBarChange} />
@@ -47,14 +56,16 @@ const Patches = () => {
             return <p className='SearchResult bg-white cursor-pointer p-2 shadow' onClick={() => setSearchTerm(patch.name)}>{patch.name}</p>
         })
         ) : null}
+        <button className='bg-[#2ACA90] mt-5 ml-4 text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={openModal}>Upload a Patch!</button>
       </div>
-      <div className='PatchesContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4'>
+      <div className='PatchesContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4 mt-10'>
         {filteredPatches ? filteredPatches.map((patch, index) => (
           <Link to={{pathname: `/shop/patch/${patch.id}`}} key={index} className='Patch' >
             <PatchCard patch={patch} />
           </Link>
         )) : null}
       </div>
+      <UploadPatch isOpen={isModalOpen} closeModal={closeModal} />
     </div>
   )
 }

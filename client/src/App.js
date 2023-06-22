@@ -1,6 +1,6 @@
 import React, { useContext, useState, createContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, Shop, Locations, Patches, About, LoginPage, Cart, Profile, Item, Patch } from './pages/index.js';
+import { Home, Shop, Locations, Patches, About, LoginPage, Cart, Checkout, Profile, Item, Patch } from './pages/index.js';
 import { Navbar, BottomNavbar } from './components/index.js';
 
 export const TagsContext = createContext();
@@ -23,7 +23,7 @@ function App() {
   })
 
   return (
-    <Router className='RoutesContainer flex h-full w-full'>
+    <Router className='App flex h-full w-full'>
       <TagsContext.Provider value={{tags}}>
       <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }} >
         <Navbar />
@@ -37,9 +37,10 @@ function App() {
           <Route path='/about' element={<About />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/cart' element={<Cart />} />
+          <Route path='/cart/checkout' element={<Checkout />} />
           <Route path='/profile/:id' element={<Profile />} />
         </Routes>
-        <BottomNavbar className='BottomNavbar flex self-end justify-self-end'/>
+        <BottomNavbar className='BottomNavbar mt-auto'/>
       </LoggedInContext.Provider >
       </ TagsContext.Provider >
     </Router>

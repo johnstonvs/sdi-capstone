@@ -8,6 +8,19 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+const awsKeyId= process.env.AWS_KEY_ID
+const awsAccessKey= process.env.AWS_ACCESS_KEY
+const awsRegion= process.env.AWS_REGION
+const awsBuket= process.env.AWS_BUCKET
+
+const AWS = require('aws-sdk');
+
+AWS.config.update({
+    accessKeyId: awsKeyId,
+    secretAccessKey: awsAccessKey,
+    region: awsRegion
+});
+
 server.use(express.json())
 server.use(bodyParser.json());
 
@@ -186,11 +199,16 @@ server.get('/patches/:id', (req, res) => {
     }))
 })
 
-server.get('/patches_wishlist', (req, res) => {
+server.get('/patches_wishlist?', (req, res) => {
   knex('patches_wishlist')
+    .modify((soFar) => {
+      if (req.query?.user_id) {
+        soFar.where('user_id', req.query.user_id)
+      }
+    })
     .then(data => res.status(200).json(data))
     .catch(err => res.status(404).json({
-      message: `Could not get patches_wishlist: ${err}`
+      message: `Could not get patches wishlist: ${err}`
     }))
 })
 
@@ -318,6 +336,41 @@ server.post('/patches_wishlist', (req, res) => {
     }))
 })
 
+server.post('/patches', (req, res) => {
+
+  console.log(req.body)
+
+  var s3 = new AWS.S3();
+
+  var awsImgUrl = ''
+
+  var params = {
+    Bucket: awsBuket,
+    Key: req.body.imageUrl,
+    Body: fileContent
+  };
+
+  s3.upload(params, function(err, data) {
+    if (err) {
+        throw err;
+    }
+    awsImgUrl = data.Location
+    console.log(`File uploaded successfully. ${data.Location}`);
+ });
+
+ req.body.imageUrl = awsImgUrl
+ console.log(awsImgUrl)
+ console.log(req.body.imageUrl)
+
+  knex('patches')
+    .insert(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not post the patch: ${err}`
+    }))
+})
+
+
 // PATCH
 
 server.patch('/users/:id', (req, res) => {
@@ -329,6 +382,7 @@ server.patch('/users/:id', (req, res) => {
       message: `Could not update user with id ${req.params.id}: ${err}`
     }))
 })
+
 
 // DELETE
 

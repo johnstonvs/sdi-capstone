@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
+    "aws-sdk": "^2.1403.0",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.1.4",
     "emailjs": "^4.0.2",
@@ -13,7 +14,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "npx knex migrate:rollback && npx knex migrate:latest && npx knex seed:run && nodemon server.js",
+    "start": "nodemon server.js",
+    "start-dev": "npx knex migrate:rollback && npx knex migrate:latest && npx knex seed:run && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
