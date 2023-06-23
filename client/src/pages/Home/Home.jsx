@@ -36,7 +36,7 @@ const Home = () => {
       .then(res => res.json())
       .then(data => setBaseList(data))
 
-    console.log(baseList)
+    //console.log(baseList)
 
     fetch('http://localhost:8080/patches')
       .then(res => res.json())
@@ -54,7 +54,7 @@ const Home = () => {
   }, [])
 
   return (
-    <div className="HomeContainer flex flex-col h-fit">
+    <div className="HomeContainer mt-20 mb-20 flex flex-col h-fit">
       <Slider {...settings}>
 
       <div className='StoreInfo flex flex-col justify-center p-4 rounded shadow-inner w-96 mt-6'>

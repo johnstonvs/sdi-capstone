@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LoggedInContext } from '../../App';
+import { LoggedInContext, TagsContext } from '../../App';
 import { WishlistPatch, WishlistItem } from '../../components/index.js';
 
 const Profile = () => {
 
+  const { tags } = useContext(TagsContext);
   const { loggedIn, setLoggedIn } = useContext(LoggedInContext);
   const [userData, setUserData] = useState({});
   const [itemWishList, setItemWishList] = useState([]);
@@ -15,13 +16,37 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [posting, setPosting] = useState(false);
+  const [stocking, setStocking] = useState(false);
   const [newUser, setNewUser] = useState({
     name: '',
     base: ''
   });
+  const [newPost, setNewPost] = useState({
+    header: '',
+    body: ''
+  })
+  const [newItem, setNewItem] = useState({
+    name: '',
+    price: '',
+    can_ship: false,
+    tags: []
+  })
+  const [imageUrl, setImageUrl] = useState('')
 
 
   useEffect(() => {
+    // set loggedIn admin status
+    fetch(`http://localhost:8080/users/${loggedIn.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setLoggedIn({
+          ...loggedIn,
+          admin: data[0].attic_admin
+        })
+        setUserData(data[0]);
+      })
+      .catch(err => console.log(err))
+
     // fetch attics for base information
     fetch('http://localhost:8080/attics')
       .then(res => res.json())
@@ -44,7 +69,7 @@ const Profile = () => {
 
   useEffect(() => {
 
-    setPatchList(patchWishList)
+    // setPatchList(patchWishList)
     // fetch all patches
     fetch('http://localhost:8080/patches')
       .then(res => res.json())
@@ -63,10 +88,6 @@ const Profile = () => {
     fetch(`http://localhost:8080/users/${loggedIn.id}`)
       .then(res => res.json())
       .then(data => {
-        setLoggedIn({
-          ...loggedIn,
-          admin: data[0].attic_admin
-        })
         setUserData(data[0]);
       })
       .catch(err => console.log(err))
@@ -106,6 +127,66 @@ const Profile = () => {
     });
   }
 
+  const handlePost = () => {
+    if (newPost.header && newPost.body) {
+      fetch(`http://localhost:8080/posts`, {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: userData.id,
+          attic_id: userData.attic_id,
+          header: newPost.header,
+          body: newPost.body
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          setPosting(false)
+          setNewPost({
+            header: '',
+            body: ''
+          });
+        })
+        .catch(err => console.log(err))
+    }
+  }
+
+  const handleStock = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', newItem.name);
+    formData.append('price', newItem.price);
+    formData.append('can_ship', newItem.can_ship);
+    formData.append('tags', JSON.stringify(newItem.tags));
+    formData.append('image', imageUrl);
+    formData.append('attic_id', userData.attic_id);
+
+    console.log(newItem)
+    console.log(formData)
+
+    fetch('http://localhost:8080/items', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setStocking(false);
+        setNewItem({
+          name: '',
+          price: '',
+          can_ship: false,
+          tags: []
+        })
+      })
+      .catch((err) => console.error(err));
+
+  }
+
   const handleDiscard = () => {
     setEditing(false);
     setSubmitting(false);
@@ -117,11 +198,40 @@ const Profile = () => {
 
   const handlePostDiscard = () => {
     setPosting(false);
+    setNewPost({
+      header: '',
+      body: ''
+    })
+  }
+
+  const handleStockDiscard = () => {
+    setStocking(false);
+    setNewItem({
+      name: '',
+      price: '',
+      can_ship: false,
+      tags: []
+    })
   }
 
   const handleChange = (e) => {
     setNewUser({ ...newUser, [e.target.name]: e.target.value });
   };
+
+  const handlePostChange = (e) => {
+    setNewPost({ ...newPost, [e.target.name]: e.target.value });
+  }
+
+  const handleItemChange = (e) => {
+    setNewItem({ ...newItem, [e.target.name]: e.target.value });
+  }
+
+  const handleCheckedTag = (e) => {
+    setNewItem({
+      ...newItem,
+      tags: newItem.tags.includes(e.target.name) ? newItem.tags.filter(item => item !== e.target.name) : newItem.tags.concat([e.target.name])
+    })
+  }
 
   const removeItem = (thing_id, user_id) => {
 
@@ -165,7 +275,7 @@ const Profile = () => {
 
   //Need to add another Ternary to check if logged in user is accessing profile for their userid
   return (
-    <div className='ProfilePageContainer flex flex-row justify-center space-x-4'>
+    <div className='ProfilePageContainer mt-28 flex flex-row justify-center space-x-4'>
       {loggedIn.admin ?
         <div className='AdminProfile w-2/5 max-w-lg mt-7 space-y-4'>
           <div className='AdminInformation bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner'>
@@ -184,8 +294,8 @@ const Profile = () => {
                       })
                     ) : null}
                   </select>
-                  <div className='EditButtons flex flex-row content-center'>
-                    <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB]' onClick={() => setSubmitting(true)}>Submit</button>
+                  <div className='EditButtons flex flex-row content-center space-x-4'>
+                    <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB] ' onClick={() => setSubmitting(true)}>Submit</button>
                     <button className='EditDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff9980]' onClick={handleDiscard}>Discard</button>
                   </div>
                 </div> : /*On first submit, user is shown what they're about to change*/
@@ -194,7 +304,7 @@ const Profile = () => {
                   {newUser.name ? <p>Name: <span className='text-[#45A29E] font-semibold'>{newUser.name}</span> </p> : null}
                   {newUser.base ? <p>Base: <span className='text-[#45A29E] font-semibold'>{newUser.base}</span> </p> : null}
                   <div className='EditButtons flex flex-row content-center space-x-4'>
-                    <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB]' onClick={handleSubmit}>Submit</button>
+                    <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB] space-x-4' onClick={handleSubmit}>Submit</button>
                     <button className='EditDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff9980]' onClick={handleDiscard}>Discard</button>
                   </div>
                 </div>
@@ -212,17 +322,62 @@ const Profile = () => {
           <div className='AdminTools bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner'>
             { // if admin is posting, show posting tool
               posting ?
-                <div className='PostingTool'> {/* posting tool */}
+                <div className='PostTool'> {/* posting tool */}
                   <h1 className='Name text-2xl text-[#45A29E] font-semibold mb-3 text-center'>Make a Post</h1>
-                  <button className='PostDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff9980]' onClick={handlePostDiscard}>Discard</button>
-                </div> :
-                <>
-                  <h1 className='Name text-2xl text-[#45A29E] font-semibold mb-3 text-center'>Admin Tools</h1>
-                  <div className='AdminButtons flex flex-row justify-center space-x-4'>
-                    <button className='PostButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setPosting(true)}>Post to feed</button>
-                    <button className='AddItemsButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]'>Add items</button>
+                  <label className='NameLabel text-[#222222]'>Header</label>
+                  <input name='header' className='EditHeader w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Something eye catching...' type='text' required onChange={(e) => handlePostChange(e)} />
+                  <label className='NameLabel text-[#222222]'>Body</label>
+                  <textarea name='body' className='EditBody w-full p-2 mt-1 mb-10 h-32 bg-white rounded-md shadow' placeholder='This will go on your attic feed, state your business...' type='text' required onChange={(e) => handlePostChange(e)} />
+                  <div className='EditButtons flex flex-row content-center space-x-4'>
+                    <button className='PostSubmit bg-[#003b4d] text-white p-2 rounded mt-4 w-16 hover:bg-[#006280]' onClick={handlePost}>Post</button>
+                    <button className='PostDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff9980]' onClick={handlePostDiscard}>Discard</button>
                   </div>
-                </>
+                </div> :
+                stocking ?
+                  <form className='StockTool'> {/* stocking tool */}
+                    <h1 className='Name text-2xl text-[#45A29E] font-semibold mb-3 text-center'>Add an Item</h1>
+                    <label className='NameLabel text-[#222222]'>Item Name</label>
+                    <input name='name' className='EditHeader w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Steel Toe Watchcap...' type='text' required onChange={(e) => handleItemChange(e)} />
+                    <div className='PriceAndShip flex'>
+                      <div className='PriceContainer flex flex-col pr-12'>
+                        <label className='Price text-[#222222]'>Price</label>
+                        <div>$ <input name='price' className='EditPrice w-24 p-2 mb-4 bg-white rounded-md shadow mt-1' type='number' step='0.01' min='0.00' required onChange={(e) => handleItemChange(e)} /></div>
+                      </div>
+                      <div>
+                        <label className='ShippableLabel text-[#222222]'>Shippable</label>
+                        <div><input name='can_ship' type='radio' value={true} onClick={(e) => handleItemChange(e)} /> Yes</div>
+                        <div><input name='can_ship' type='radio' value={false} onClick={(e) => handleItemChange(e)} /> No</div>
+                      </div>
+                    </div>
+                    <div className='Tags'>
+                      <label className='TagsLabel'>Tags</label>
+                      <div className='TagContainer flex flex-row flex-wrap'>
+                        {tags.map((tag, index) => {
+                          return <label key={index} className='pr-4'><input type='checkbox' name={tag} onChange={(e) => handleCheckedTag(e)} /> {tag}</label>
+                        })}
+                      </div>
+                    </div>
+                    <div className='Image mt-3'>
+                      <label>Upload Image</label>
+                      <input
+                        className="w-full p-2 border-2 border-[#45A29E] rounded mb-4"
+                        type="file"
+                        onChange={(e) => setImageUrl(e.target.files[0])}
+                      />
+                    </div>
+                    <div className='StockButtons flex flex-row content-center space-x-4'>
+                      <button type='submit' className='PostSubmit bg-[#003b4d] text-white p-2 rounded mt-4 w-16 hover:bg-[#006280]' onClick={handleStock}>Add</button>
+                      <button className='PostDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff9980]' onClick={handleStockDiscard}>Discard</button>
+                    </div>
+                  </form>
+                  :
+                  <>
+                    <h1 className='Name text-2xl text-[#45A29E] font-semibold mb-3 text-center'>Admin Tools</h1>
+                    <div className='AdminButtons flex flex-row justify-center space-x-4'>
+                      <button className='PostButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setPosting(true)}>Post to feed</button>
+                      <button className='AddItemsButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setStocking(true)}>Add items</button>
+                    </div>
+                  </>
             }
           </div>
         </div>

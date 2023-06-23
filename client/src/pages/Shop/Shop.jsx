@@ -109,7 +109,7 @@ const Shop = () => {
 
   return (
     <>
-    <div className='Shop'>
+    <div className='Shop mt-28'>
       <div className='FilterContainer mb-10'>
         <input type='text' className='SearchBar w-full mt-5 mb-5 p-2 bg-white shadow mt-1' placeholder='Search . . .' onChange={(e) => setSearch(e.target.value)}/>
         <button className='FilterButt bg-[#2ACA90] ml-4 text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => {setShowModal(true)}}>Filter</ button>

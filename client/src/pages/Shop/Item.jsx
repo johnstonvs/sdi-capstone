@@ -68,7 +68,7 @@ const Item = (props) => {
 
   return (
     <>
-      <div className='ItemContainer place-content-center bg-gray-300 p-4 rounded shadow-inner m-8'>
+      <div className='ItemContainer place-content-center bg-gray-300 mt-28 p-4 rounded shadow-inner m-8'>
         <h1 className='ItemTitle text-[#45A29E] text-5xl'>{item.name}</ h1>
         <img className='ItemImage' src={item.picture_url} alt={item.name} />
         <h3 className='ItemPrice text-2xl text-[#45A29E]'>${item.price}</ h3>
@@ -82,7 +82,10 @@ const Item = (props) => {
             </div>
           </>
           :
-          <h3 className='ItemShip text-2xl text-[#45A29E]'>'Item cannot be shipped to your local Attic.'</ h3>
+          <div className='NoShip flex justify-between w-full'>
+            <h3 className='ItemShip text-2xl text-[#45A29E]'>'Item cannot be shipped to your local Attic.'</ h3>
+            <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
+          </div>
         }
       </ div>
     </>

@@ -15,3 +15,6 @@ export { default as WishlistItem } from "./WishlistCards/WishlistItem";
 export { default as WishlistPatch } from "./WishlistCards/WishlistPatch";
 export { default as Dependant } from "./Dependant/Dependant";
 export { default as UploadPatch } from "./UploadPatch/UploadPatch";
+export { default as Veteran } from "./Veteran/Veteran";
+export { default as ShipTo } from "./ShipTo/ShipTo";
+export { default as ReportForm } from "./ReportForm/ReportForm";

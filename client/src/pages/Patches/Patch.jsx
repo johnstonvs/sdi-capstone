@@ -1,13 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { LoggedInContext } from "../../App.js";
+import { MdReport } from "react-icons/md";
+import { ReportForm } from '../../components/index'
 
 const Patch = () => {
     const [patch, setPatch] = useState([]);
     const [userName, setUserName] = useState('');
     const { loggedIn } = useContext(LoggedInContext);
     const location = useLocation();
+
+    const [showReportForm, setShowReportForm] = useState(false);
+
     let split = location.pathname.split('/');
     const id = split[3];
     var cart = [];
@@ -59,8 +63,11 @@ const Patch = () => {
   return (
     <>
         {loggedIn.isLoggedIn ?
-        <div className='PatchContainer flex flex-col p-8 gap-4 bg-gray-300 rounded-md shadow-inner m-8'>
-            <h1 className='PatchTitle text-[#45A29E] text-4xl mb-4'>{patch.name}</h1>
+        <div className='PatchContainer flex flex-col p-8 gap-4 bg-gray-300 rounded-md shadow-inner m-8 mt-28'>
+          <div className='justify-between flex flex-row'>
+          <h1 className='PatchTitle text-[#45A29E] text-4xl mb-4'>{patch.name}</h1>
+          <button className='AddToCartButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => setShowReportForm(true)} ><div className='flex items-center justify-center'><MdReport /> Report</div></button>
+          </div>
             <img className='PatchImage w-96 object-contain' src={patch.picture_url} alt={patch.name} />
             <h3 className='PatchPoster text-[#[#222222]] text-2xl mb-2'>Posted By: {userName}</h3>
             <h3 className='PatchPrice text-[#[#222222]] text-2xl mb-4'>${patch.price}</h3>
@@ -75,6 +82,7 @@ const Patch = () => {
             <Link to='/login' className='LoginLink bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] hover:scale-105 text-[#45A29E] text-1xl'>Login Here!</Link>
         </div>
         }
+        {showReportForm && <ReportForm patch={patch} closeForm={() => setShowReportForm(false)} />}
     </>
   )
 }

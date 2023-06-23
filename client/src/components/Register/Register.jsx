@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
-import { ConfirmationModal, Dependant } from '../index';
+import { ConfirmationModal, Dependant, Veteran } from '../index';
 
 const Register = ({ sendToLogin }) => {
     const [user, setUser] = useState({
         email: '',
         name: '',
+        sponsorName: '',
+        sponsorDOD: '',
         base: '',
         password: ''
     });
@@ -28,7 +30,8 @@ const Register = ({ sendToLogin }) => {
     };
 
     const submit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        console.log(user);
 
         fetch('http://localhost:8080/users', {
             method: 'POST',
@@ -36,6 +39,8 @@ const Register = ({ sendToLogin }) => {
             body: JSON.stringify({
                 email: user.email,
                 name: user.name,
+                sponsor_name: user.sponsorName,
+                sponsor_DOD_ID: user.sponsorDOD,
                 base: user.base,
                 password: user.password
             })
@@ -61,10 +66,10 @@ const Register = ({ sendToLogin }) => {
     return (
         <div>
             {dependant ?
-            (<Dependant submit={submit} baseList={baseList} handleChange={handleChange} sendToLogin={sendToLogin}/>)
+                <Dependant submit={submit} baseList={baseList} handleChange={handleChange} sendToLogin={sendToLogin} user={user} setUser={setUser} />
                 :
                 veteran ?
-                null
+                <Veteran baseList={baseList} handleChange={handleChange} sendToLogin={sendToLogin} user={user} setUser={setUser} />
                 //display veteran card
             : <form className='RegisterContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner w-96' onSubmit={submit}>
                 <h1 className='RegisterTitle text-[#45A29E] text-3xl font-semibold mb-10 text-center'>Create Account</h1>
@@ -96,8 +101,8 @@ const Register = ({ sendToLogin }) => {
                     setShowModal(false)
                     sendToLogin()
                 }}/>
-            <button {dependant ? null : className='mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => setDependant(true)}>Depedant?</ button>
-            <button className='mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105' onClick={() => setVeteran(true)}>Veteran?</ button>
+            <button className={dependant ? 'hidden' : 'mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => setDependant(true)}>Dependant?</ button>
+            <button className={veteran ? 'hidden' : 'mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => setVeteran(true)}>Veteran?</ button>
         </div>
     )
 }

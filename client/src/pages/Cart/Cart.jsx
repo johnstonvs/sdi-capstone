@@ -7,15 +7,16 @@ import Checkout from './Checkout';
 const Cart = () => {
 
   //Patch state variables
-  const [patchCartItems, setPatchCartItems] = useState([])
+  const [patchCartItems, setPatchCartItems] = useState(JSON.parse(localStorage.getItem('patchCart')) || [])
   const [allPatches, setAllPatches] = useState([]);
   const [matchingPatches, setMatchingPatches] = useState([])
 
   //Item state variables
-  const [itemCartItems, setItemCartItems] = useState([])
+  const [itemCartItems, setItemCartItems] = useState(JSON.parse(localStorage.getItem('itemCart')) || [])
   const [allItems, setAllItems] = useState([]);
   const [matchingItems, setMatchingItems] = useState([])
 
+  /* *TEMPORARILY SET TO TRUE FOR TESTING, PLEASE RESET TO FALSE AFTER* */
   const [checkingOut, setCheckingOut] = useState(false);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Cart = () => {
     var matchPatch = [];
     if (patchCartItems) {
       for (let i = 0; i < allPatches.length; i++) {
-        patchCartItems.map((savedPatchID) => {
+        patchCartItems.forEach((savedPatchID) => {
           if (savedPatchID === allPatches[i].id) {
             matchPatch.push(allPatches[i])
           }
@@ -48,13 +49,13 @@ const Cart = () => {
       }
       setMatchingPatches(matchPatch)
     }
-  }, [allPatches])
+  }, [allPatches, patchCartItems])
 
   useEffect(() => {
     var matchItem = [];
     if (itemCartItems) {
       for (let i = 0; i < allItems.length; i++) {
-        itemCartItems.map((savedItemID) => {
+        itemCartItems.forEach((savedItemID) => {
           if (savedItemID === allItems[i].id) {
             matchItem.push(allItems[i])
           }
@@ -62,14 +63,7 @@ const Cart = () => {
       }
       setMatchingItems(matchItem)
     }
-  }, [allItems])
-
-  const clearTheCart = () => {
-    localStorage.removeItem("patchCart");
-    localStorage.removeItem("itemCart");
-    setAllPatches([])
-    setAllItems([])
-  };
+  }, [allItems, itemCartItems])
 
   const displayTotals = () => {
     let patchTotal = 0;
@@ -90,92 +84,126 @@ const Cart = () => {
     );
   };
 
+  const removePatch = (patch) => {
+    //Updating local storage
+    let patches = JSON.parse(localStorage.getItem('patchCart')); //ids
+    let index = patches.indexOf(patch.id); //Find index of patch
+    let newPatches = [...patches]; //Reassign patches
+    newPatches.splice(index, 1); //Remove the unwanted, unloved patch
+    localStorage.setItem('patchCart', JSON.stringify(newPatches)); //Reset the localStorage
+
+    //Updating the page
+    setPatchCartItems(JSON.parse(localStorage.getItem('patchCart'))) //Update State
+  };
+
+  const removeItem = (item) => {
+    //Updating local storage
+    let items = JSON.parse(localStorage.getItem('itemCart')); //ids
+    let index = items.indexOf(item.id); //Find index of item
+    let newItems = [...items]; //Reassign items
+    newItems.splice(index, 1); //Remove the unwanted, unloved item
+    localStorage.setItem('itemCart', JSON.stringify(newItems)); //Reset the localStorage
+
+    //Updating the page
+    setItemCartItems(JSON.parse(localStorage.getItem('itemCart'))); //Update State
+  };
+
   return (
-  <>
-    {checkingOut ?
     <>
-      <Checkout matchingPatches={matchingPatches} matchingItems={matchingItems} />
-    </>
-    :
-    <div className='CartContainer flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-5'>
-      <div className='PatchCartContainer w-full md:w-1/3 bg-gray-300 rounded-md shadow p-4'>
-        {
-          patchCartItems ?
-            matchingPatches.map((patch, index) => {
-              return (
-                <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
-                  <div className='PatchCardContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner gap-3'>
-                    <img className='PatchImage h-52 object-cover object-center w-40 h-40' src={patch.picture_url} alt={patch.name} />
-                    <h2 className='PatchName text-center font-semibold text-[#45A29E]'>{patch.name}</h2>
-                    <h1 className='PatchPrice text-center font-semibold text-[#222222]'>${patch.price}</h1>
-                  </div>
-                </Link>
-              );
-            })
-            :
-            <div className='text-center py-4'>
-              <h1 className='text-xl font-semibold text-[#45A29E]'>You have no patches in your cart!</h1>
-            </div>
-        }
-      </div>
-      <div className='ItemCartContainer w-full md:w-1/3 bg-gray-300 rounded-md shadow p-4'>
-        {
-          itemCartItems ?
-            matchingItems.map((item, index) => {
-              return (
-                <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
-                  <div className='ItemCardContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner gap-3 z-5'>
-                    <img className='ItemImage h-52 object-cover object-center w-40 h-40' src={item.picture_url} alt={item.name} />
-                    <h2 className='ItemName text-center font-semibold text-[#45A29E]'>{item.name}</h2>
-                    <h1 className='ItemPrice text-center font-semibold text-[#222222]'>${item.price}</h1>
-                    <p className='ItemShip text-center text-[#222222]'>{item.can_ship ? 'Item can be shipped' : 'Item cannot be shipped'}</p>
-                    <p className='ItemLocation text-center text-[#222222]'>Location: {item.location}</p>
-                  </div>
-                </Link>
-              );
-            })
-            :
-            <div className='text-center py-4'>
-              <h1 className='text-xl font-semibold text-[#45A29E]'>You have no items in your cart!</h1>
-            </div>
-        }
-      </div>
-      <div className='ItemizedList w-full md:w-1/3 bg-gray-300 shadow-lg rounded-lg p-4'>
-        <div className='Patches mb-4'>
-          {
-            matchingPatches.map((patch, index) => {
-              return (
-                <div className='flex justify-between border-b py-2'>
-                  <span className=''>{patch.name}</span>
-                  <span className=''>{patch.price}</span>
+      {checkingOut ?
+        <>
+          <Checkout matchingPatches={matchingPatches} matchingItems={matchingItems} displayTotals={displayTotals} />
+        </>
+        :
+        <div className='CartContainer  mt-28 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-5'>
+          <div className='PatchCartContainer w-full md:w-1/3 bg-gray-300 rounded-md shadow p-4'>
+            {
+              patchCartItems ?
+                matchingPatches.map((patch, index) => {
+                  return (
+                    <>
+                      <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
+                        <div className='PatchCardContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner gap-3'>
+                          <img className='PatchImage h-52 object-cover object-center w-40 h-40' src={patch.picture_url} alt={patch.name} />
+                          <h2 className='PatchName text-center font-semibold text-[#45A29E]'>{patch.name}</h2>
+                          <h1 className='PatchPrice text-center font-semibold text-[#222222]'>${patch.price}</h1>
+                        </div>
+                      </Link>
+                      <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => removePatch(patch)}>Remove From Cart</button>
+                    </>
+                  );
+                })
+                :
+                <div className='text-center py-4'>
+                  <h1 className='text-xl font-semibold text-[#45A29E]'>You have no patches in your cart!</h1>
                 </div>
-              );
-            })
-          }
-        </div>
-        <div className='Items'>
-          {
-            matchingItems.map((item, index) => {
-              return (
-                <div className='flex justify-between border-b py-2'>
-                  <span className=''>{item.name}</span>
-                  <span className=''>{item.price}</span>
-                </div>
-              );
-            })
-          }
-        </div>
-        <div className='Totals justify-between py-4 flex items-center'>
-          <div>
-            {displayTotals()}
+            }
           </div>
-          <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105'onClick={() => setCheckingOut(true)}>Checkout</button>
-          <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => clearTheCart()}>CLEAR CART</button>
+          <div className='ItemCartContainer w-full md:w-1/3 bg-gray-300 rounded-md shadow p-4'>
+            {
+              itemCartItems ?
+                matchingItems.map((item, index) => {
+                  return (
+                    <>
+                      <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
+                        <div className='ItemCardContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner gap-3 z-5'>
+                          <img className='ItemImage h-52 object-cover object-center w-40 h-40' src={item.picture_url} alt={item.name} />
+                          <h2 className='ItemName text-center font-semibold text-[#45A29E]'>{item.name}</h2>
+                          <h1 className='ItemPrice text-center font-semibold text-[#222222]'>${item.price}</h1>
+                          <p className='ItemShip text-center text-[#222222]'>{item.can_ship ? 'Item can be shipped' : 'Item cannot be shipped'}</p>
+                          <p className='ItemLocation text-center text-[#222222]'>Location: {item.location}</p>
+                        </div>
+                      </Link>
+                      <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => removeItem(item)}>Remove From Cart</button>
+                    </>
+                  );
+                })
+                :
+                <div className='text-center py-4'>
+                  <h1 className='text-xl font-semibold text-[#45A29E]'>You have no items in your cart!</h1>
+                </div>
+            }
+          </div>
+          <div className='ItemizedList w-full md:w-1/3 bg-gray-300 shadow-lg rounded-lg p-4'>
+            <div className='Patches mb-4'>
+              {
+                matchingPatches.map((patch, index) => {
+                  return (
+                    <div className='flex justify-between border-b py-2'>
+                      <span className=''>{patch.name}</span>
+                      <span className=''>{patch.price}</span>
+                    </div>
+                  );
+                })
+              }
+            </div>
+            <div className='Items'>
+              {
+                matchingItems.map((item, index) => {
+                  return (
+                    <div className='flex justify-between border-b py-2'>
+                      <span className=''>{item.name}</span>
+                      <span className=''>{item.price}</span>
+                    </div>
+                  );
+                })
+              }
+            </div>
+            <div className='Totals justify-between py-4 flex items-center'>
+              <div>
+                {displayTotals()}
+              </div>
+              {
+                patchCartItems || itemCartItems ?
+                  <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => setCheckingOut(true)}>Checkout</button>
+                  :
+                  null
+              }
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    }
-  </>
+      }
+    </>
   )
 }
 

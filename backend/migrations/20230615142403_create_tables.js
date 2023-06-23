@@ -17,6 +17,8 @@ exports.up = function(knex) {
     table.increments('id');
     table.string('name');
     table.string('email');
+    table.string('sponsor_name');
+    table.string('sponosr_DOD_ID');
     table.string('base');
     table.string('hashed_password');
     table.boolean('attic_admin');

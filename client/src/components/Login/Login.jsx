@@ -29,16 +29,16 @@ const Login = () => {
       .then(data => {
         if (!data.error)
         {
-          console.log(data)
+          console.log('data', data)
           setLoggedIn(data)
           setButtonClicked(true);
+          console.log('Context: ', loggedIn)
         } else {
           setErrorMessage(data.error);
           setButtonClicked(true);
         }
       })
       .catch(err => console.log(err))
-      console.log(loggedIn)
       setUser({
         email: '',
         password: ''
@@ -46,10 +46,20 @@ const Login = () => {
   };
 
   useEffect(() => {
+    if (loggedIn.id) {
+      fetch(`http://localhost:8080/users/${loggedIn.id}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          setLoggedIn({
+            ...loggedIn,
+            admin: data[0].attic_admin
+          })
+          localStorage.setItem('user', JSON.stringify(loggedIn));
+          if (loggedIn.isLoggedIn) nav('/');
+        })
+    }
 
-    localStorage.setItem('user', JSON.stringify(loggedIn));
-
-    if (loggedIn.isLoggedIn) nav('/');
   }, [loggedIn])
 
   return (

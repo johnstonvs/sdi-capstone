@@ -56,6 +56,7 @@ const Navbar = () => {
 
 
   const onLogout = () => {
+    localStorage.removeItem('user');
     setLoggedIn({
       id: 0,
       name: '',
@@ -63,20 +64,20 @@ const Navbar = () => {
       isLoggedIn: false,
       BOP: ''
     })
-    console.log('h1')
+    //console.log('h1')
     nav('/')
     setIsDropdownOpen(false);
   }
 
   return (
-    <div className="NavbarContainer flex justify-between items-center bg-neutral-700/25 p-4">
-      <div className="NavbarImageContainer flex items-center">
+    <div className="NavbarContainer fixed inset-x-0 top-0 flex justify-end items-center bg-neutral-700/25 p-4 py-3 z-10">
+      {/* <div className="NavbarImageContainer flex items-center">
         <img
           className="NavbarImage h-12"
           src={logo}
           alt="Airman's Attic Logo"
         />
-      </div>
+      </div> */}
       <div className="NavbarLinksContainer flex gap-3">
         <Link
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
@@ -156,7 +157,7 @@ const Navbar = () => {
             >
               <div className="flex items-center justify-center">
                 <AiOutlineShoppingCart className="mr-1" />Cart <span className="badge badge-info">{itemsInCart ? (<p>({itemsInCart.length})</p>) : null}</span>
-                <span class="sr-only">amount of cart items</span>
+                <span className="sr-only">amount of cart items</span>
               </div>
             </Link>
           </>

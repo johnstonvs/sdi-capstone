@@ -12,7 +12,7 @@ function App() {
     id: 0,
     name:'',
     admin: false,
-    isLoggedIn:false,
+    isLoggedIn: false,
     BOP:''
   };
 
@@ -23,27 +23,27 @@ function App() {
   })
 
   return (
-    <Router className='App flex h-full w-full'>
-      <TagsContext.Provider value={{tags}}>
-      <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }} >
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/shop' element={<Shop />} />
-          <Route path='/shop/item/:id' element={<Item />} />
-          <Route path='/shop/patch/:id' element={<Patch />} />
-          <Route path='/location' element={<Locations />} />
-          <Route path='/patches' element={<Patches />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/cart' element={<Cart />} />
-          <Route path='/cart/checkout' element={<Checkout />} />
-          <Route path='/profile/:id' element={<Profile />} />
-        </Routes>
-        <BottomNavbar className='BottomNavbar mt-auto'/>
-      </LoggedInContext.Provider >
-      </ TagsContext.Provider >
-    </Router>
+      <Router>
+        <TagsContext.Provider value={{tags}}>
+        <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }} >
+          <Navbar />
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/shop' element={<Shop />} />
+              <Route path='/shop/item/:id' element={<Item />} />
+              <Route path='/shop/patch/:id' element={<Patch />} />
+              <Route path='/location' element={<Locations />} />
+              <Route path='/patches' element={<Patches />} />
+              <Route path='/about' element={<About />} />
+              <Route path='/login' element={<LoginPage />} />
+              <Route path='/cart' element={<Cart />} />
+              <Route path='/cart/checkout' element={<Checkout />} />
+              <Route path='/profile/:id' element={<Profile />} />
+            </Routes>
+          <BottomNavbar className='BottomNavbar'/>
+        </LoggedInContext.Provider >
+        </ TagsContext.Provider >
+      </Router>
   );
 }
 

@@ -44,7 +44,7 @@ const Patches = () => {
   }
 
   return (
-    <div className='PatchesPageContainer'>
+    <div className='PatchesPageContainer mt-28'>
       <div className='PatchesSearchBarContainer'>
         <input className='LocationsSearchBar w-full mt-5 p-2 bg-white shadow mt-1'
           placeholder='Enter a patch name...'

@@ -90,7 +90,7 @@ const Locations = () => {
   }, [searchTerm, attics])
 
   return (
-    <div className='LocationsContainer gap-8 p-4 mt-4 rounded shadow-inner flex flex-col justify-center items-center'>
+    <div className='LocationsContainer gap-8 p-4 mt-28 mb-20 rounded shadow-inner flex flex-col justify-center items-center'>
       {selectedAttic ? (
         <>
         <div className='LocationAbout flex flex-col p-4 mb-10 w-1/3 bg-gray-300 rounded-md shadow'>

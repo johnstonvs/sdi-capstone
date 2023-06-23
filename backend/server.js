@@ -8,10 +8,15 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+const randomstring = require("randomstring");
+
+const multer = require('multer');
+const upload = multer();
+
 const awsKeyId= process.env.AWS_KEY_ID
 const awsAccessKey= process.env.AWS_ACCESS_KEY
 const awsRegion= process.env.AWS_REGION
-const awsBuket= process.env.AWS_BUCKET
+const awsBucket= process.env.AWS_BUCKET
 
 const AWS = require('aws-sdk');
 
@@ -336,40 +341,83 @@ server.post('/patches_wishlist', (req, res) => {
     }))
 })
 
-server.post('/patches', (req, res) => {
-
+server.post('/patches', upload.single('image'), async (req, res) => {
   console.log(req.body)
 
   var s3 = new AWS.S3();
-
   var awsImgUrl = ''
 
+  let imageKey = randomstring.generate();
+
   var params = {
-    Bucket: awsBuket,
-    Key: req.body.imageUrl,
-    Body: fileContent
+    Bucket: awsBucket,
+    Key: imageKey,
+    Body: req.file.buffer,
   };
 
-  s3.upload(params, function(err, data) {
-    if (err) {
-        throw err;
-    }
-    awsImgUrl = data.Location
-    console.log(`File uploaded successfully. ${data.Location}`);
- });
+  try {
+    var uploadResponse = await s3.upload(params).promise();
+    awsImgUrl = uploadResponse.Location;
+    console.log(`File uploaded successfully. ${uploadResponse.Location}`);
 
- req.body.imageUrl = awsImgUrl
- console.log(awsImgUrl)
- console.log(req.body.imageUrl)
+    req.body.picture_url = awsImgUrl
 
-  knex('patches')
+    console.log(req.body)
+
+    let data = await knex('patches')
+      .insert(req.body, ['*'])
+
+    res.status(201).json(data)
+  } catch (err) {
+    res.status(500).json({
+      message: `Could not post the patch: ${err}`
+    })
+  }
+});
+
+server.post('/posts' ,(req, res) => {
+  knex('posts')
     .insert(req.body, ['*'])
     .then(data => res.status(201).json(data))
     .catch(err => res.status(500).json({
-      message: `Could not post the patch: ${err}`
+      message: `Could not post to posts: ${err}`
     }))
 })
 
+server.post('/items', upload.single('image'), async (req, res) => {
+  console.log(req.body)
+
+  var s3 = new AWS.S3();
+  var awsImgUrl = ''
+
+  let imageKey = randomstring.generate();
+
+  var params = {
+    Bucket: awsBucket,
+    Key: imageKey,
+    Body: req.file.buffer,
+  };
+
+  try {
+    var uploadResponse = await s3.upload(params).promise();
+    awsImgUrl = uploadResponse.Location;
+    console.log(`File uploaded successfully. ${uploadResponse.Location}`);
+
+
+    req.body.picture_url = awsImgUrl
+
+    console.log(req.body)
+
+    let data = await knex('items')
+      .insert(req.body, ['*'])
+
+    res.status(201).json(data)
+  } catch (err) {
+    res.status(500).json({
+      message: `Could not post the item: ${err}`
+    })
+  }
+});
 
 // PATCH
 
