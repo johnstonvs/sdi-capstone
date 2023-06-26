@@ -18,21 +18,18 @@ const Register = ({ sendToLogin }) => {
     const [passwordsMatch, setPasswordsMatch] = useState(false);
     const [dependant, setDependant] = useState(false);
     const [veteran, setVeteran] = useState(false);
+    const [register, setRegister] = useState(true);
 
     const handleChange = (e) => {
       setUser({ ...user, [e.target.name]: e.target.value });
-      console.log(user)
 
       if (e.target.name === 'password') {
         setPasswordsMatch(user.password === rentery);
-        console.log(passwordsMatch)
       }
     };
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(user);
-
         fetch('http://localhost:8080/users', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -70,7 +67,6 @@ const Register = ({ sendToLogin }) => {
                 :
                 veteran ?
                 <Veteran baseList={baseList} handleChange={handleChange} sendToLogin={sendToLogin} user={user} setUser={setUser} />
-                //display veteran card
             : <form className='RegisterContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner w-96' onSubmit={submit}>
                 <h1 className='RegisterTitle text-[#45A29E] text-3xl font-semibold mb-10 text-center'>Create Account</h1>
                 <label className='BodyLabel text-[#222222]'>Email:</label>
@@ -101,8 +97,9 @@ const Register = ({ sendToLogin }) => {
                     setShowModal(false)
                     sendToLogin()
                 }}/>
-            <button className={dependant ? 'hidden' : 'mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => setDependant(true)}>Dependant?</ button>
-            <button className={veteran ? 'hidden' : 'mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => setVeteran(true)}>Veteran?</ button>
+            <button className={dependant ? 'hidden' : 'mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => {setDependant(true); setVeteran(false); setRegister(false)}}>Dependant?</ button>
+            <button className={veteran ? 'hidden' : 'mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => {setVeteran(true); setDependant(false); setRegister(false)}}>Veteran?</ button>
+            <button className={register ? 'hidden' : 'mt-5 text-white p-2 rounded hover:text-[#5DD3CB] hover:scale-105'} onClick={() => {setRegister(true); setDependant(false); setVeteran(false)}}>Register?</ button>
         </div>
     )
 }

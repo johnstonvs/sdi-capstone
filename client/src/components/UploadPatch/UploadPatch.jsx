@@ -27,7 +27,6 @@ const UploadPatch = ({ isOpen, closeModal }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         closeModal();
       })
       .catch((err) => console.error(err));

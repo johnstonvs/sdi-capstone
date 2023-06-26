@@ -12,6 +12,7 @@ const Shop = () => {
   const [bases, setBases] = useState([]);
   const [ship, setShip] = useState('');
   const [tag, setTag] = useState([]);
+  const [price, setPrice] = useState('');
   const [search, setSearch] = useState('');
   const[searchResults, setSearchResults] = useState([]);
 
@@ -61,23 +62,32 @@ const Shop = () => {
     if (!filteredArr.length) {
       filteredArr = searchResults;
     }
-    let moreFilter = filteredArr.filter(item => {
+
+    let priceFilter = [];
+    if (price === 'Low to High') {
+      priceFilter = filteredArr.sort((a, b) => a.price - b.price)
+    } else if (price === 'High to Low') {
+      priceFilter = filteredArr.sort((a, b) => b.price - a.price)
+    }
+
+    let shipFilter = priceFilter.filter(item => {
       if (ship === 'Can Ship' && item.can_ship) {
         return true
       }
       return false
     })
-    if (!moreFilter.length) {
-      moreFilter = filteredArr;
+    if (!shipFilter.length) {
+      shipFilter = priceFilter;
     }
-    let evenMoreFiltering = moreFilter.filter(item => {
+
+    let evenMoreFiltering = shipFilter.filter(item => {
       if(tag.some(tag => item.tags.includes(tag))) {
         return true
       }
       return false
     })
     if(!evenMoreFiltering.length) {
-      evenMoreFiltering = moreFilter;
+      evenMoreFiltering = shipFilter;
     }
     setFiltered(evenMoreFiltering);
   }, [showModal, searchResults])
@@ -113,7 +123,7 @@ const Shop = () => {
       <div className='FilterContainer mb-10'>
         <input type='text' className='SearchBar w-full mt-5 mb-5 p-2 bg-white shadow mt-1' placeholder='Search . . .' onChange={(e) => setSearch(e.target.value)}/>
         <button className='FilterButt bg-[#2ACA90] ml-4 text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => {setShowModal(true)}}>Filter</ button>
-        <FilterModal baseList={baseList} show={showModal} handleClose={() => setShowModal(false)} setTag={setTag} tag={tag} bases={bases} setBases={setBases} ship={ship} setShip={setShip}/>
+        <FilterModal baseList={baseList} show={showModal} handleClose={() => setShowModal(false)} setTag={setTag} tag={tag} bases={bases} setBases={setBases} ship={ship} setShip={setShip} setPrice={setPrice}/>
       </ div>
       <div className='ItemsContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4'>
         {filtered.length ? filtered.map((item, index) =>  (

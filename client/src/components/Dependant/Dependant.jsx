@@ -9,11 +9,9 @@ const Dependant = ({ submit, baseList, sendToLogin, user, setUser }) => {
 
     const handleChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
-        console.log(user)
 
         if (e.target.name === 'password') {
           setPasswordsMatch(user.password === rentery);
-          console.log(passwordsMatch)
         }
       };
 

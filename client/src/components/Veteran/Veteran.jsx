@@ -43,7 +43,6 @@ const Veteran = ({ baseList, sendToLogin, user, setUser }) => {
       .then(res => res.json())
       .then(data => {
         setFormInfo({ ...formInfo, body: `The url for the DD-214 of ${user.name} is ${data}` })
-        console.log(data);
         setRender(!render);
         return formInfo
     })

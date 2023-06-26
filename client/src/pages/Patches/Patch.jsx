@@ -36,14 +36,9 @@ const Patch = () => {
     const addCartItem = () => {
         if(localStorage.getItem('patchCart')) {
             cart = JSON.parse(localStorage.getItem('patchCart'));
-            console.log(cart);
         }
         cart.push(patch.id);
         localStorage.setItem('patchCart', JSON.stringify(cart));
-
-        //Test the items being added to localStorage with these
-        //var retrievedObject = localStorage.getItem('patchCart');
-        //console.log('retrievedObject: ', retrievedObject);
     }
 
     const addToWishlist = () => {
@@ -58,7 +53,6 @@ const Patch = () => {
         }
       })
       .then(res => res.json())
-      .then(data => console.log(data))
       .catch(err => console.log(err))
     }
 

@@ -41,14 +41,9 @@ const Item = (props) => {
   const addCartItem = () => {
     if (localStorage.getItem('itemCart')) {
       cart = JSON.parse(localStorage.getItem('itemCart'));
-      console.log(cart);
     }
     cart.push(item.id);
     localStorage.setItem('itemCart', JSON.stringify(cart));
-
-    //Test the items being added to localStorage with these
-    //var retrievedObject = localStorage.getItem('patchCart');
-    //console.log('retrievedObject: ', retrievedObject);
   }
 
   const addToWishlist = () => {
@@ -96,3 +91,57 @@ const Item = (props) => {
 }
 
 export default Item;
+
+// import React, { useState, useContext, useEffect } from "react";
+// import { selectedWalletContext, cartContext } from "../App";
+// import { Navbar } from "../Navbar/Navbar";
+// import './AccessoriesDetails.css'
+
+// export const AccessoriesDetails = () => {
+//     const {selectedWallet, setSelectedWallet} = useContext(selectedWalletContext);
+//     const [focusedImage, setFocusedImage] = useState();
+//     const {cart, setCart} = useContext(cartContext)
+
+//     const handleImageFocus = (imageToFocus) => {
+//         setFocusedImage(imageToFocus)
+//     }
+
+//     const handleAddToCartClick = (wantedWallet) => {
+//         setCart([...cart, wantedWallet])
+//     }
+
+//     useEffect(() => {
+//         setFocusedImage(selectedWallet.back)
+//     }, [])
+
+//     return (
+//         <>
+//         <Navbar />
+//         <div className="details-container">
+//             <div className="details-info">
+//                 <h1 className="details-title">{selectedWallet.name}</h1>
+//                 <p className="details-price"> ${selectedWallet.price}</p>
+//                 <ul className="details-list">
+//                     <li className="details-item">{selectedWallet.color}</li>
+//                     {selectedWallet.info.map((info) => {
+//                         return (
+//                             <li className="details-item">{info}</li>
+//                         )
+//                     })}
+//                 </ul>
+//         </div>
+//         <div className="focused-image-container">
+//             <img className= "focused-image" src = {focusedImage} />
+//         </div>
+//         <div className="wallet-images-container">
+//             <img className="wallet-images" onClick = {() => { handleImageFocus(selectedWallet.image) }} src={selectedWallet.image} />
+//             <img className="wallet-images" onClick = {() => { handleImageFocus(selectedWallet.back) }} src={selectedWallet.back} />
+//         </div>
+//         </div>
+//         <div className="add-to-cart">
+//             <button id="add-to-cart-button" onClick={() =>  {handleAddToCartClick(selectedWallet);  alert(`${selectedWallet.name} add to the cart for you. You're welcome!`);} }>Add to cart!</button>
+//         </div>
+//         </>
+//     )
+// }
+

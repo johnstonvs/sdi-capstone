@@ -1,7 +1,14 @@
+
+//  _____ _____ _____ _____ __    _____ _____ _____
+// |     |     |   | |     |  |  |     |_   _|  |  |
+// | | | |  |  | | | |  |  |  |__|-   -| | | |     |
+// |_|_|_|_____|_|___|_____|_____|_____| |_| |__|__|
+
+
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LoggedInContext, TagsContext } from '../../App';
-import { WishlistPatch, WishlistItem } from '../../components/index.js';
+import { WishlistPatch, WishlistItem, ConfirmationModal } from '../../components/index.js';
 
 const Profile = () => {
 
@@ -21,6 +28,9 @@ const Profile = () => {
   const [showAttic, setShowAttic] = useState(false);
   const [editAttic, setEditAttic] = useState(false);
   const [submittingAttic, setSubmittingAttic] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
+  const [postModal, setPostModal] = useState(false);
+  const [stockModal, setStockModal] = useState(false);
   const [newUser, setNewUser] = useState({
     name: '',
     base: ''
@@ -144,7 +154,6 @@ const Profile = () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (newUser.base) {
           setLoggedIn({
             ...loggedIn,
@@ -178,12 +187,12 @@ const Profile = () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
           setPosting(false)
           setNewPost({
             header: '',
             body: ''
           });
+        setPostModal(true);
         })
         .catch(err => console.log(err))
     }
@@ -202,16 +211,12 @@ const Profile = () => {
       formData.append('image', imageUrl);
     }
 
-    console.log(newItem)
-    console.log(formData)
-
     fetch('http://localhost:8080/items', {
       method: 'POST',
       body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setStocking(false);
         setNewItem({
           name: '',
@@ -220,6 +225,7 @@ const Profile = () => {
           tags: []
         })
         setImageUrl('');
+        setStockModal(true);
       })
       .catch((err) => console.error(err));
 
@@ -234,7 +240,6 @@ const Profile = () => {
       formData.append('email', newAttic.email ? newAttic.email : adminAttic.email)
       formData.append('image', imageUrl);
 
-      console.log(formData);
 
       fetch(`http://localhost:8080/attics/withimage/${adminAttic.id}`, {
         method: 'PATCH',
@@ -242,7 +247,6 @@ const Profile = () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
           setEditAttic(false);
           setSubmittingAttic(false);
           setNewAttic({
@@ -269,7 +273,6 @@ const Profile = () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
           setEditAttic(false);
           setSubmittingAttic(false);
           setNewAttic({
@@ -361,7 +364,6 @@ const Profile = () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data)
       })
       .catch(err => console.log(err))
   }
@@ -381,7 +383,6 @@ const Profile = () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data)
       })
       .catch(err => console.log(err))
   }
@@ -389,6 +390,8 @@ const Profile = () => {
   //Need to add another Ternary to check if logged in user is accessing profile for their userid
   return (
     <div className='ProfilePageContainer mt-28 flex flex-row justify-center space-x-4 mb-20'>
+      <ConfirmationModal message='You have successfully posted to your attic feed!' show={postModal} handleClose={() => setPostModal(false)} />
+      <ConfirmationModal message='You have successfully added an item to your attic store!' show={stockModal} handleClose={() => setStockModal(false)} />
       {loggedIn.admin ?
         <div className='AdminProfile w-2/5 max-w-lg mt-7 space-y-4'>
           <div className='AdminInformation bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner'>
@@ -428,7 +431,10 @@ const Profile = () => {
                   <p><span className='font-semibold'>Name: </span>{userData.name}</p>
                   <p><span className='font-semibold'>Base: </span>{userData.base ? userData.base : 'No base selected'}</p>
                   <p><span className='font-semibold'>Email: </span>{userData.email}</p>
-                  <button className='Edit hover:text-[#45A29E] text-center mt-4' onClick={() => setEditing(true)}>Edit Profile</button>
+                  <div className='EditButtons flex flex-row justify-between'>
+                    <button className='Edit hover:text-[#45A29E] text-center mt-4' onClick={() => setEditing(true)}>Edit Profile</button>
+                    <button className='WishlistButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setShowWishlist(true)}>Wishlist</button>
+                  </div>
                 </div>
             }
           </div>
@@ -446,7 +452,8 @@ const Profile = () => {
                     <button className='PostSubmit bg-[#003b4d] text-white p-2 rounded mt-4 w-16 hover:bg-[#006280]' onClick={handlePost}>Post</button>
                     <button className='PostDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff5c33]' onClick={handlePostDiscard}>Discard</button>
                   </div>
-                </div> :
+                </div>
+                :
                 stocking ?
                   <form className='StockTool' onSubmit={handleStock}> {/* stocking tool */}
                     <h1 className='Name text-2xl text-[#45A29E] font-semibold mb-3 text-center'>Add an Item</h1>
@@ -513,10 +520,10 @@ const Profile = () => {
                           </> :
                           <>
                             <h1 className='text-2xl text-[#ff3300] font-semibold mb-3 text-center'>Make the following changes?</h1>
-                            {newAttic.phone === adminAttic.phone ? <p>Phone: <span className='text-[#003b4d] font-semibold'>{newAttic.phone}</span> </p> : null}
-                            {newAttic.email === adminAttic.email ? <p>Email: <span className='text-[#003b4d] font-semibold'>{newAttic.email}</span> </p> : null}
-                            {newAttic.hours === adminAttic.hours ? <p>Hours: <span className='text-[#003b4d] font-semibold'>{newAttic.hours}</span> </p> : null}
-                            {newAttic.about ===adminAttic.about ? <p>About: <span className='text-[#003b4d] font-semibold'>{newAttic.about}</span> </p> : null}
+                            {newAttic.phone !== adminAttic.phone ? <p>Phone: <span className='text-[#003b4d] font-semibold'>{newAttic.phone}</span> </p> : null}
+                            {newAttic.email !== adminAttic.email ? <p>Email: <span className='text-[#003b4d] font-semibold'>{newAttic.email}</span> </p> : null}
+                            {newAttic.hours !== adminAttic.hours ? <p>Hours: <span className='text-[#003b4d] font-semibold'>{newAttic.hours}</span> </p> : null}
+                            {newAttic.about !== adminAttic.about ? <p>About: <span className='text-[#003b4d] font-semibold'>{newAttic.about}</span> </p> : null}
                             {imageUrl ? <p><span className='text-[#003b4d] font-semibold'>New Attic Image</span> </p> : null}
                             <div className='AtticEditButtons flex flex-row content-center space-x-4'>
                               <button className='EditAttic bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={handleAtticSubmit}>Submit</button>
@@ -590,7 +597,10 @@ const Profile = () => {
                   <p><span className='font-semibold'>Name: </span>{userData.name}</p>
                   <p><span className='font-semibold'>Base: </span>{userData.base ? userData.base : 'No base selected'}</p>
                   <p><span className='font-semibold'>Email: </span>{userData.email}</p>
-                  <button className='Edit hover:text-[#45A29E] text-center mt-4' onClick={() => setEditing(true)}>Edit Profile</button>
+                  <div className='EditButtons flex flex-row justify-between'>
+                    <button className='Edit hover:text-[#45A29E] text-center mt-4' onClick={() => setEditing(true)}>Edit Profile</button>
+                    <button className='WishlistButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setShowWishlist(true)}>Wishlist</button>
+                  </div>
                 </div>
             }
           </div>

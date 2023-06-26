@@ -14,7 +14,6 @@ const BottomNavbar = () => {
       isLoggedIn: false,
       BOP: ''
     })
-    console.log('h1')
     nav('/')
   }
 

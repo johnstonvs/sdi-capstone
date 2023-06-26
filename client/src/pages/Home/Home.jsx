@@ -36,8 +36,6 @@ const Home = () => {
       .then(res => res.json())
       .then(data => setBaseList(data))
 
-    //console.log(baseList)
-
     fetch('http://localhost:8080/patches')
       .then(res => res.json())
       .then(data => setPatches(data.slice(0, 5)))

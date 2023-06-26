@@ -14,7 +14,6 @@ const LocationFeed = ({ selectedAttic }) => {
         post_id: postId})
     })
     .then(res => res.json())
-    .then(data => console.log(data))
     .then(() => fetchPostsWithComments())
     .catch(err => console.log(err))
   }
@@ -43,7 +42,7 @@ const LocationFeed = ({ selectedAttic }) => {
         }));
         setPosts(postsWithComments);
       })
-      .catch(err => console.log(err))
+      .catch(err => console.error(err))
     }
   }
 
@@ -55,12 +54,12 @@ const LocationFeed = ({ selectedAttic }) => {
     <>
     {posts.length > 0 ? (
       <div className='FeedContainer gap-8 p-6 mt-4 justify-center items-center w-2/3'>
-      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-xl shadow-lg text-center p-4 w-1/5 ml-4'>Feed:</h1>
+      <h1 className='FeedHeader text-white text-3xl font-semibold bg-[#0077b6] rounded-xl shadow-lg text-center p-4 w-1/5 ml-4'>Feed:</h1>
         {posts.map(post => (
-            <div key={post.id} className='PostContainer flex flex-col m-4 p-4 bg-gray-300 rounded-xl shadow-lg'>
-                <h1 className='PostHeader text-[#45A29E] text-3xl font-semibold mb-10'>{post.header}</h1>
+            <div key={post.id} className='PostContainer flex flex-col m-4 p-4 bg-[#90E0EF] rounded-xl shadow-lg'>
+                <h1 className='PostHeader text-[#0077b6] text-3xl font-semibold mb-10'>{post.header}</h1>
                 <p className='PostBody text-[#222222] mb-10'>{post.body}</p>
-                <h2 className='CommentsHeader text-[#45A29E] text-xl font-semibold mb-2'>Comments</h2>
+                <h2 className='CommentsHeader text-[#0077b6] text-xl font-semibold mb-2'>Comments</h2>
                 {post.comments && post.comments.map(comment => (
                   <div className='CommentCard bg-white shadow-lg rounded-xl mb-4 p-3'>
                     <p className='PostDate text-[#222222]'>{comment.name} on {parseDate(comment.created_at)}</p>
@@ -71,7 +70,7 @@ const LocationFeed = ({ selectedAttic }) => {
                   <div className='flex flex-row items-center gap-5'>
                     <input
                       type='text'
-                      className='CommentInput w-1/5 p-2 mb-4 bg-white rounded-md shadow mt-4 transition-all focus:w-full focus:outline-none'
+                      className='CommentInput w-1/5 p-2 mb-4 bg-white rounded-md shadow mt-4 transition-all focus:w-full focus:outline-none focus:ring-2 focus:ring-[#0077b6]'
                       placeholder='Add a comment...'
                       onKeyDown={event => {
                         if (event.key === 'Enter') {
@@ -87,7 +86,7 @@ const LocationFeed = ({ selectedAttic }) => {
     </div>
     ) : null}
     </>
-  );
+);
 
 }
 

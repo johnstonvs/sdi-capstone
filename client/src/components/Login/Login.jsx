@@ -29,10 +29,8 @@ const Login = () => {
       .then(data => {
         if (!data.error)
         {
-          console.log('data', data)
           setLoggedIn(data)
           setButtonClicked(true);
-          console.log('Context: ', loggedIn)
         } else {
           setErrorMessage(data.error);
           setButtonClicked(true);
@@ -50,7 +48,6 @@ const Login = () => {
       fetch(`http://localhost:8080/users/${loggedIn.id}`)
         .then(res => res.json())
         .then(data => {
-          console.log(data);
           setLoggedIn({
             ...loggedIn,
             admin: data[0].attic_admin

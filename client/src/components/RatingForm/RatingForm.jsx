@@ -36,7 +36,6 @@ const RatingForm = ({ selectedAttic, setReviewAdded }) => {
         attic_id: selectedAttic.id})
     })
     .then(res => res.json())
-    .then(data => console.log(data))
     .then(data => {
       console.log(data);
       setReviewAdded(prev => !prev);

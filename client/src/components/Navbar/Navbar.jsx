@@ -64,7 +64,6 @@ const Navbar = () => {
       isLoggedIn: false,
       BOP: ''
     })
-    //console.log('h1')
     nav('/')
     setIsDropdownOpen(false);
   }
@@ -74,7 +73,6 @@ const Navbar = () => {
       <nav id='navbar' className="NavbarLinksContainer flex gap-3">
         <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-          activeClassName="activeLink"
           to="/"
         >
           <div className="flex items-center justify-center">
@@ -83,7 +81,6 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-          activeClassName="activeLink"
           to="/location"
         >
           <div className="flex items-center justify-center">
@@ -92,7 +89,6 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className="NavbarLinks justify-center rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-          activeClassName="activeLink"
           to="/shop"
         >
           <div className="flex items-center justify-center">
@@ -101,7 +97,6 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-          activeClassName="activeLink"
           to="/patches"
         >
           <div className="flex items-center justify-center">
@@ -115,7 +110,6 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-          activeClassName="activeLink"
           to="/about"
         >
           <div className="flex items-center justify-center">
@@ -126,7 +120,6 @@ const Navbar = () => {
           <>
             <button
               className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-              activeClassName="activeLink"
               onClick={toggleDropdown}
             >
               <div className="flex items-center justify-center">
@@ -152,7 +145,6 @@ const Navbar = () => {
 
             <NavLink
               className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-              activeClassName="activeLink"
               to="/cart"
             >
               <div className="flex items-center justify-center">
@@ -165,7 +157,6 @@ const Navbar = () => {
           <>
             <NavLink
               className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
-              activeClassName="activeLink"
               to="/login"
             >
               <div className="flex items-center justify-center">
