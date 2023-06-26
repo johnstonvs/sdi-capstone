@@ -18,6 +18,9 @@ body {
   background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(31,31,31,1) 30%, rgba(31,31,31,1) 70%, rgba(0,0,0,1) 100%);
 }
 
+#navbar a.active {
+  background: #68D391 ;
+}
 .toggle-checkbox:checked {
   right: 0;
   border-color: #68D391;

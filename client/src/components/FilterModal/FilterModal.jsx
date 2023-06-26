@@ -6,7 +6,7 @@ const FilterModal = ({ baseList, show, handleClose, tag, setTag, bases, setBases
 
     return (
         show ?
-            <div className='FilterContainer top-1/4 fixed z-10 inset-0 overflow-y-auto bg-white rounded shadow p-4 m-4 sm:m-auto sm:w-1/3'>
+            <div className='FilterContainer top-1/4 fixed z-10 inset-x-0 overflow-y-auto bg-white rounded-xl shadow-lg p-4 m-4 sm:m-auto sm:w-1/3'>
                 <h1 className='FilterTitle text-[#45A29E] text-3xl font-semibold mb-4 text-center'>Filter By:</ h1>
                 <div className='BaseContainer mb-5'>
                     <h3 className='BaseOptionsTitle text-[#45A29E] text-2xl font-semibold mb-4 text-left'>Bases:</ h3>

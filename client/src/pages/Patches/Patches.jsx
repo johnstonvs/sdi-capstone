@@ -60,7 +60,7 @@ const Patches = () => {
       </div>
       <div className='PatchesContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4 mt-10'>
         {filteredPatches ? filteredPatches.map((patch, index) => (
-          <Link to={{pathname: `/shop/patch/${patch.id}`}} key={index} className='Patch' >
+          <Link to={{pathname: `/patches/patch/${patch.id}`}} key={index} className='Patch' >
             <PatchCard patch={patch} />
           </Link>
         )) : null}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LoggedInContext } from "../../App.js";
 import { MdReport } from "react-icons/md";
 import { ReportForm } from '../../components/index'
@@ -9,6 +9,8 @@ const Patch = () => {
     const [userName, setUserName] = useState('');
     const { loggedIn } = useContext(LoggedInContext);
     const location = useLocation();
+    const nav = useNavigate()
+
 
     const [showReportForm, setShowReportForm] = useState(false);
 
@@ -66,7 +68,7 @@ const Patch = () => {
         <div className='PatchContainer flex flex-col p-8 gap-4 bg-gray-300 rounded-md shadow-inner m-8 mt-28'>
           <div className='justify-between flex flex-row'>
           <h1 className='PatchTitle text-[#45A29E] text-4xl mb-4'>{patch.name}</h1>
-          <button className='AddToCartButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => setShowReportForm(true)} ><div className='flex items-center justify-center'><MdReport /> Report</div></button>
+          <button className='ReportButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => setShowReportForm(true)} ><div className='flex items-center justify-center'><MdReport /> Report</div></button>
           </div>
             <img className='PatchImage w-96 object-contain' src={patch.picture_url} alt={patch.name} />
             <h3 className='PatchPoster text-[#[#222222]] text-2xl mb-2'>Posted By: {userName}</h3>
@@ -74,6 +76,7 @@ const Patch = () => {
             <div className='PatchButtons flex justify-between w-full'>
                 <button className='AddToCartButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => {addCartItem()}} >Add to Cart</button>
                 <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
+                <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/patches')}>Back</button>
             </div>
         </ div>
         :

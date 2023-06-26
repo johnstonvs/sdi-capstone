@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { LoggedInContext } from '../../App'
 import { FaStar, FaStarHalf } from 'react-icons/fa';
 
-const LocationReviews = ({ selectedAttic }) => {
+const LocationReviews = ({ selectedAttic, reviewAdded }) => {
   const [reviews, setReviews] = useState([])
   const { loggedIn } = useContext(LoggedInContext)
 
@@ -50,15 +50,15 @@ const LocationReviews = ({ selectedAttic }) => {
 
   useEffect(() => {
     fetchReviewsWithComments()
-  }, []);
+  }, [reviewAdded]);
 
   return (
     <>
     {reviews.length > 0 ? (
-      <div className='FeedContainer w-2/3 gap-10 p-4 mt-4 justify-center items-center'>
-      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md shadow p-4 w-1/5 text-center ml-4'>Reviews:</h1>
+      <div className='FeedContainer gap-8 p-6 mt-4 justify-center items-center w-2/3'>
+      <h1 className='FeedHeader text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-xl shadow-lg text-center p-4 w-1/5 ml-4'>Reviews:</h1>
         {reviews.map(review => (
-            <div key={review.id} className='PostContainer flex flex-col m-4 p-4 bg-gray-300 rounded-md shadow'>
+            <div key={review.id} className='PostContainer flex flex-col m-4 p-4 bg-gray-300 rounded-xl shadow-lg'>
                 <p className='PostBody text-[#222222] mb-10 font-semibold'>{review.name}</p>
                 <div className='flex flex-row space-x-10'>
                 <div className="flex justify-center p-1 rounded">
@@ -67,7 +67,7 @@ const LocationReviews = ({ selectedAttic }) => {
                               key={i}
                               className={ "cursor-pointer " + ((review.stars) > i ? 'text-yellow-300' : 'text-white') }
                           >
-                              <FaStar  className='transform -scale-x-100 mr-1 hover:scale-105' size={25} />
+                              <FaStar size={25} />
                           </div>
                       ))}
                   </div>
@@ -75,7 +75,7 @@ const LocationReviews = ({ selectedAttic }) => {
                 </div>
                 <h2 className='CommentsHeader text-[#45A29E] text-xl font-semibold mb-2'>Comments</h2>
                 {review.comments && review.comments.map(comment => (
-                  <div className='CommentCard shadow-md rounded-md mb-4 p-2'>
+                  <div className='CommentCard bg-white shadow-xl rounded-xl mb-4 p-3'>
                     <p className='PostDate text-[#222222]'>{comment.name} on {parseDate(comment.created_at)}</p>
                     <p key={comment.id} className='Comments text-[#222222] mb-2'>{comment.comment}</p>
                   </div>
@@ -84,7 +84,7 @@ const LocationReviews = ({ selectedAttic }) => {
                   <div className='flex flex-row items-center gap-5'>
                     <input
                       type='text'
-                      className='CommentInput w-1/5 p-2 mb-4 bg-white rounded-md shadow mt-4 transition-all focus:w-full'
+                      className='CommentInput w-1/5 p-2 mb-4 bg-white rounded-md shadow mt-4 transition-all focus:w-full focus:outline-none'
                       placeholder='Add a comment...'
                       onKeyDown={event => {
                         if (event.key === 'Enter') {

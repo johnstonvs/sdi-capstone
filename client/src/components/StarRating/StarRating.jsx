@@ -22,7 +22,7 @@ const onClick = (ratingValue) => {
 };
 
 return (
-    <div className="flex justify-center bg-neutral-400 p-1 rounded">
+    <div className="flex justify-center bg-neutral-400 p-1 rounded-xl shadow-lg">
         {[...Array(5)].map((_, i=1) => (
             <div
                 key={i}
@@ -31,7 +31,7 @@ return (
                 onMouseLeave={onMouseLeave}
                 onClick={() => onClick(i + 1)}
             >
-                <FaStar  className='transform -scale-x-100 mr-1 hover:scale-105' size={35} />
+                <FaStar  className='transform -scale-x-100 mr-1 hover:scale-105 transition duration-200 ease-in-out' size={35} />
             </div>
         ))}
     </div>

@@ -4,7 +4,7 @@ import { LoggedInContext } from '../../App'
 
 export const RatingContext = createContext()
 
-const RatingForm = ({ selectedAttic }) => {
+const RatingForm = ({ selectedAttic, setReviewAdded }) => {
   const [rating, setRating] = useState()
   const { loggedIn } = useContext(LoggedInContext)
   const [reviewContent, setReviewContent] = useState()
@@ -37,6 +37,10 @@ const RatingForm = ({ selectedAttic }) => {
     })
     .then(res => res.json())
     .then(data => console.log(data))
+    .then(data => {
+      console.log(data);
+      setReviewAdded(prev => !prev);
+    })
     .catch(err => console.log(err))
     setReviewContent('')
     setRating(0)
@@ -45,14 +49,14 @@ const RatingForm = ({ selectedAttic }) => {
 
   return (
     <div>
-      <form className='RatingForm w-96 bg-gray-300 flex flex-col items-center justify-center p-4 rounded shadow-inner' onSubmit={postRating}>
+            <form className='RatingForm w-96 bg-gray-300 flex flex-col items-center justify-center p-6 rounded-xl shadow-xl' onSubmit={postRating}>
         <h1 className='RatingFormHeader text-[#45A29E] text-3xl font-semibold mb-10'>Write a Review</h1>
         <RatingContext.Provider value={ { rating, setRating } } >
         <StarRating onRate={onRate}/>
         </ RatingContext.Provider>
-        <textarea className='RatingInput w-full p-2 mt-12 mb-10 h-32 bg-white rounded-md shadow' placeholder='Tell us about your experience with this store...' onChange={handleInputChange} value={reviewContent}/>
+        <textarea className='RatingInput w-full p-3 mt-12 mb-10 h-36 bg-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-[#45A29E]' placeholder='Tell us about your experience with this store...' onChange={handleInputChange} value={reviewContent}/>
         <button
-                className="LoginButton bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] hover:scale-105"
+                className="LoginButton bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#45A29E]"
                 type='submit'
               >
                 Submit

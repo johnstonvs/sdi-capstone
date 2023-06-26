@@ -15,6 +15,7 @@ const Locations = () => {
   const [starAverage, setStarAverage] = useState()
   const { loggedIn } = useContext(LoggedInContext)
   const [view, setView] = useState('feed');
+  const [reviewAdded, setReviewAdded] = useState(false);
 
   let location = useLocation()
 
@@ -89,25 +90,29 @@ const Locations = () => {
     )
   }, [searchTerm, attics])
 
+  useEffect(() => {
+    fetchAtticReviews()
+  }, [reviewAdded])
+
   return (
-    <div className='LocationsContainer gap-8 p-4 mt-28 mb-20 rounded shadow-inner flex flex-col justify-center items-center'>
+    <div className='LocationsContainer gap-8 p-6 mt-28 mb-20 flex flex-col justify-center items-center'>
       {selectedAttic ? (
         <>
-        <div className='LocationAbout flex flex-col p-4 mb-10 w-1/3 bg-gray-300 rounded-md shadow'>
+        <div className='LocationAbout flex flex-col p-6 mb-10 w-1/3 bg-gray-300 rounded-xl shadow-lg'>
           <h1 className='LocationHeader text-[#45A29E] text-3xl font-semibold mb-10 text-center'>{selectedAttic.location}</h1>
           <div className='LocationContactContainer text-[#222222] text-left mb-5'>
-            <div className="flex justify-center p-1 rounded mb-10">
+            <div className="flex justify-center p-2 rounded mb-10">
                         {[...Array(5)].map((_, i=1) => (
                             <div
                                 key={i}
                                 className={ "cursor-pointer " + ((starAverage) > i ? 'text-yellow-300' : 'text-white') }
                             >
-                                <FaStar  className='transform -scale-x-100 mr-1 hover:scale-105' size={25} />
+                                <FaStar size={25} />
                             </div>
                         ))}
                         <p className='ml-2'>{filteredReviews ? `(${filteredReviews.length})` : null}</p>
             </div>
-            <img className='w-96 h-96 mb-10 m-auto' src={selectedAttic.picture_url} alt='AtticImage'/>
+            <img className='w-96 h-96 mb-10 m-auto rounded-lg object-cover' src={selectedAttic.picture_url} alt='AtticImage'/>
             <h2 className='LocationHeader text-[#222222] mb-2'><span className='font-semibold'>Hours of operation: </span>{selectedAttic.hours}</h2>
             <p className='LocationPhone mb-2'><span className='font-semibold'>Phone #: </span>{selectedAttic.phone}</p>
             <p className='LocationEmail mb-2'><span className='font-semibold'>Email: </span>{selectedAttic.email}</p>
@@ -115,7 +120,7 @@ const Locations = () => {
           </div>
           <p className='LocationContent font-semibold'>About:</p>
           <p className='LocationContent mb-10'>{selectedAttic.about}</p>
-          <button className='BackButton bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] w-1/4 text-center hover:scale-105' onClick={()=> {
+          <button className='BackButton bg-[#2ACA90] text-white p-2 rounded-lg hover:bg-[#5DD3CB] w-1/4 text-center hover:scale-105 transition duration-200 ease-in-out' onClick={()=> {
             setSelectedAttic('');
             setSearchTerm('');
             setSearchTyped(false);
@@ -130,25 +135,31 @@ const Locations = () => {
           {view === 'reviews' ? 'Reviews' : 'Feed'}
         </div>
 
-          {view === 'reviews' && <LocationReviews selectedAttic={selectedAttic} />}
+          {view === 'reviews' && <LocationReviews reviewAdded={reviewAdded} selectedAttic={selectedAttic} />}
           {view === 'feed' && <LocationFeed selectedAttic={selectedAttic} />}
-          {loggedIn.isLoggedIn ? <RatingForm selectedAttic={selectedAttic} /> : null}
-
+          {loggedIn.isLoggedIn ? <RatingForm setReviewAdded={setReviewAdded} selectedAttic={selectedAttic} /> : null}
         </>
       ) : (
-      <div className='LocationsSearchContainer bg-gray-300 flex flex-col items-center justify-center m-4 p-4 rounded-md'>
+      <div className='LocationsSearchContainer bg-gray-300 flex flex-col items-center justify-center m-6 p-6 rounded-xl shadow-lg'>
         <h1 className='text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4 mb-10'>Search for a location!</h1>
         <h1 className='text-[#45A29E] text-2xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4'>Just looking around?</h1>
         <div className='LocationsDropDownContainer mb-4'>
           {attics ? (
-             <select className='LocationsDropDown w-full p-2 mb-4 bg-white rounded-md shadow mt-1' onChange={selectChange}>
-                <option className='AtticOption'></option>
-                {attics.map((attic) => {
-                  return (
-                  <option className='AtticOption' value={attic.location}>{attic.location}</option>
-                  )
-                })}
-             </select>
+            <select className='LocationsDropDown w-full p-2 mb-4 bg-white rounded-md shadow mt-1 text-[#222222]' onChange={selectChange}>
+              <option className='AtticOption'></option>
+              {attics.map((attic, index) => {
+                return (
+                  <option
+                    key={index}
+                    className='AtticOption text-[#222222] hover:text-[#5DD3CB] transition-colors duration-200'
+                    value={attic.location}
+                  >
+                    {attic.location}
+                  </option>
+                )
+              })}
+            </select>
+
              ) : (
              <p className='text-[#222222]'>There are no avalible attics to view... Try again later...</p>
              )}
@@ -156,13 +167,13 @@ const Locations = () => {
         <div className='border-b-2 border-gray-400 w-full m-5'></div>
         <h1 className='text-[#45A29E] text-2xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4'>Know what you're looking for?</h1>
         <div className='LocationsSearchBarContainer'>
-        <input className='LocationsSearchBar w-full p-2 mb-4 bg-white rounded-md shadow mt-1'
+        <input className='LocationsSearchBar w-full p-2 bg-white rounded-md shadow mt-1'
                  placeholder='Enter a base...'
                  value={searchTerm}
                  onChange={searchBarChange} />
           {searchTyped ? (
             filteredAttics.map((attic) => {
-            return <p className='SearchResult bg-white cursor-pointer p-2 shadow' onClick={() => {setSelectedAttic(attic); fetchAtticReviews()}}>{attic.location}</p>
+            return <p className='SearchResult bg-white cursor-pointer p-2 shadow hover:bg-gray-200 transition duration-200 ease-in-out rounded-md' onClick={() => {setSelectedAttic(attic); fetchAtticReviews()}}>{attic.location}</p>
           })
           ) : null}
         </div>

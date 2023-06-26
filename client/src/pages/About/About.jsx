@@ -5,7 +5,7 @@ const About = () => {
 
   return (
     <div className="AboutContainer flex flex-col w-2/3 gap-10 mb-20 m-auto mt-28">
-      <div className="AboutUs bg-gray-300 flex flex-col items-center p-4 rounded gap-10">
+      <div className="AboutUs bg-gray-300 flex flex-col items-center p-4 rounded-xl shadow-lg gap-10">
         <h1 className="AboutHeader font-semibold text-3xl text-[#45A29E]">About Us</h1>
         <p className="AboutContent text-[#222222]">
           We are a team of dedicated Air Force enlisted members who have come together to create a

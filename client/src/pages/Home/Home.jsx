@@ -77,8 +77,8 @@ const Home = () => {
       {loggedIn.isLoggedIn ? (
         loggedIn.BOP ? (
           <div className="LoggedInBOPContainer mt-6 flex flex-col space-y-6 justify-center">
-            <div className="LoggedInBOPItems flex flex-row space-x-4 justify-center">
-              <h1 className="LoggedInBOPItemsHeader font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">{loggedIn.BOP} Products</h1>
+            <div className="LoggedInBOPItems flex flex-row gap-4 justify-center">
+              <h1 className="LoggedInBOPItemsHeader w-52 h-52 font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">{loggedIn.BOP} Products</h1>
               {items ? items.map((item, index) => {
                 return (
                   <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
@@ -87,26 +87,26 @@ const Home = () => {
                 )
               }) : <p>No Items From Base {loggedIn.BOP}</p>}
               <Link
-                className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1 h-9 self-center"
+                className="NavbarLinks rounded border-solid w-52 h-52 flex justify-center"
                 to="/shop">
-                <div className="flex items-center justify-center flex-column">
+                <div className="flex items-center justify-center flex-column bg-gray-300 px-2 py-1 rounded shadow-lg w-20 text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] self-center">
                   More <AiOutlineArrowRight />
                 </div>
               </Link>
             </div>
             <div className="LoggedInBOPPatches flex flex-row space-x-4 justify-center">
-              <h1 className="LoggedInBOPPatchesHeader font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Patches</h1>
+              <h1 className="LoggedInBOPPatchesHeader w-52 h-52 font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Recommended Patches</h1>
               {patches.map((patch, index) => {
                 return (
-                  <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
+                  <Link to={{ pathname: `/patches/patch/${patch.id}` }} key={index} className='Patch' >
                     <PatchCard patch={patch} />
                   </Link>
                 )
               })}
               <Link
-                className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1 h-9 self-center"
+                className="NavbarLinks rounded border-solid w-52 h-52 flex justify-center"
                 to="/patches">
-                <div className="flex items-center justify-center flex-column">
+                <div className="flex items-center justify-center flex-column bg-gray-300 px-2 py-1 rounded shadow-lg w-20 text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] self-center">
                   More <AiOutlineArrowRight />
                 </div>
               </Link>
@@ -152,7 +152,7 @@ const Home = () => {
         )
       ) : (
         <div className="NotLoggedInContainer flex flex-col w-2/3 gap-10 m-auto mt-10">
-          <div className="CallToLoginContainer bg-gray-300 flex flex-col items-center p-4 rounded gap-4">
+          <div className="CallToLoginContainer bg-gray-300 flex flex-col items-center p-6 rounded-xl shadow-lg gap-4">
             <h1 className="CallToLoginHeader text-3xl text-[#45A29E]">
               New here? Click the button below to create an account and login!
             </h1>
@@ -174,7 +174,7 @@ const Home = () => {
               below at our mission!
             </p>
           </div>
-          <div className="AboutContainer bg-gray-300 flex flex-col items-center p-4 rounded gap-4">
+          <div className="AboutContainer bg-gray-300 flex flex-col items-center p-6 rounded-xl shadow-lg gap-4">
             <h1 className="AboutHeader text-3xl text-[#45A29E]">Why Airmen's Warehouse?</h1>
             <p className="AboutContent text-[#222222]">
               Our mission is to improve the efficiency and effectiveness of the Airman's Attic by

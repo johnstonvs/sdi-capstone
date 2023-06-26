@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import {
   AiOutlineShoppingCart,
@@ -71,40 +71,37 @@ const Navbar = () => {
 
   return (
     <div className="NavbarContainer fixed inset-x-0 top-0 flex justify-end items-center bg-neutral-700/25 p-4 py-3 z-10">
-      {/* <div className="NavbarImageContainer flex items-center">
-        <img
-          className="NavbarImage h-12"
-          src={logo}
-          alt="Airman's Attic Logo"
-        />
-      </div> */}
-      <div className="NavbarLinksContainer flex gap-3">
-        <Link
+      <nav id='navbar' className="NavbarLinksContainer flex gap-3">
+        <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          activeClassName="activeLink"
           to="/"
         >
           <div className="flex items-center justify-center">
             <AiOutlineHome className="mr-1" /> Home
           </div>
-        </Link>
-        <Link
+        </NavLink>
+        <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          activeClassName="activeLink"
           to="/location"
         >
           <div className="flex items-center justify-center">
             <TbLocation className="mr-1" /> Location
           </div>
-        </Link>
-        <Link
+        </NavLink>
+        <NavLink
           className="NavbarLinks justify-center rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          activeClassName="activeLink"
           to="/shop"
         >
           <div className="flex items-center justify-center">
             <AiOutlineShop className="mr-1" /> Shop
           </div>
-        </Link>
-        <Link
+        </NavLink>
+        <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          activeClassName="activeLink"
           to="/patches"
         >
           <div className="flex items-center justify-center">
@@ -115,19 +112,21 @@ const Navbar = () => {
             />
             Patches
           </div>
-        </Link>
-        <Link
+        </NavLink>
+        <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+          activeClassName="activeLink"
           to="/about"
         >
           <div className="flex items-center justify-center">
             <AiOutlineQuestionCircle className="mr-1" /> About
           </div>
-        </Link>
+        </NavLink>
         {loggedIn.isLoggedIn ? (
           <>
             <button
               className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+              activeClassName="activeLink"
               onClick={toggleDropdown}
             >
               <div className="flex items-center justify-center">
@@ -151,29 +150,31 @@ const Navbar = () => {
               </div>
             )}
 
-            <Link
+            <NavLink
               className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+              activeClassName="activeLink"
               to="/cart"
             >
               <div className="flex items-center justify-center">
                 <AiOutlineShoppingCart className="mr-1" />Cart <span className="badge badge-info">{itemsInCart ? (<p>({itemsInCart.length})</p>) : null}</span>
                 <span className="sr-only">amount of cart items</span>
               </div>
-            </Link>
+            </NavLink>
           </>
         ) : (
           <>
-            <Link
+            <NavLink
               className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
+              activeClassName="activeLink"
               to="/login"
             >
               <div className="flex items-center justify-center">
                 <AiOutlineLogin className="mr-1" /> Login
               </div>
-            </Link>
+            </NavLink>
           </>
         )}
-      </div>
+      </nav>
     </div>
   );
 };

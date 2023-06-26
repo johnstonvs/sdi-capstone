@@ -74,12 +74,11 @@ const Cart = () => {
     matchingItems.map(item => {
       return itemTotal += +item.price;
     })
-    let total = (Math.round(patchTotal * 100) / 100) + (Math.round(itemTotal * 100) / 100);
     return (
       <>
         <p className='mb-2'>Patch Total: {Math.round(patchTotal * 100) / 100}</p>
         <p className='mb-2'>Item Total: {Math.round(itemTotal * 100) / 100}</p>
-        <p className='mb-2'>Overall Total: {total}</p>
+        <p className='mb-2'>Overall Total: {(Math.round(patchTotal * 100) / 100) + (Math.round(itemTotal * 100) / 100)}</p>
       </>
     );
   };
@@ -112,24 +111,29 @@ const Cart = () => {
     <>
       {checkingOut ?
         <>
-          <Checkout matchingPatches={matchingPatches} matchingItems={matchingItems} displayTotals={displayTotals} />
+          <Checkout matchingPatches={matchingPatches} matchingItems={matchingItems} displayTotals={displayTotals} setCheckingOut={setCheckingOut} />
         </>
         :
-        <div className='CartContainer  mt-28 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-5'>
-          <div className='PatchCartContainer w-full md:w-1/3 bg-gray-300 rounded-md shadow p-4'>
+        <div className='CartContainer mt-28 mb-20 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-5'>
+          <div className='PatchCartContainer w-full md:w-1/3 bg-neutral-700/25 rounded-md shadow p-4'>
             {
-              patchCartItems ?
+              patchCartItems && patchCartItems.length > 0 ?
                 matchingPatches.map((patch, index) => {
                   return (
                     <>
-                      <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
-                        <div className='PatchCardContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner gap-3'>
-                          <img className='PatchImage h-52 object-cover object-center w-40 h-40' src={patch.picture_url} alt={patch.name} />
-                          <h2 className='PatchName text-center font-semibold text-[#45A29E]'>{patch.name}</h2>
-                          <h1 className='PatchPrice text-center font-semibold text-[#222222]'>${patch.price}</h1>
+
+                      <div className='PatchCardContainer m-auto bg-gray-300 relative flex flex-row p-4 justify-center rounded-xl shadow-lg mb-4'>
+                        <Link to={{ pathname: `/patches/patch/${patch.id}` }} key={index} className='Patch' >
+                          <img className='PatchImage object-cover object-center w-40 h-40 m-auto' src={patch.picture_url} alt={patch.name} />
+                          <div className='m-auto'>
+                            <h2 className='PatchName text-center font-semibold text-[#45A29E]'>{patch.name}</h2>
+                            <h1 className='PatchPrice text-center font-semibold text-[#222222]'>${patch.price}</h1>
+                          </div>
+                        </Link>
+                        <div className='flex justify-center items-start absolute top-2 right-2'>
+                          <button className='bg-red-500 text-white p-1 w-8 rounded-full hover:bg-red-700 text-center hover:scale-105' onClick={() => removePatch(patch)}>X</button>
                         </div>
-                      </Link>
-                      <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => removePatch(patch)}>Remove From Cart</button>
+                      </div>
                     </>
                   );
                 })
@@ -139,22 +143,24 @@ const Cart = () => {
                 </div>
             }
           </div>
-          <div className='ItemCartContainer w-full md:w-1/3 bg-gray-300 rounded-md shadow p-4'>
+          <div className='ItemCartContainer w-full md:w-1/3 bg-neutral-700/25 rounded-md shadow p-4'>
             {
-              itemCartItems ?
+              itemCartItems && itemCartItems.length > 0 ?
                 matchingItems.map((item, index) => {
                   return (
                     <>
-                      <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
-                        <div className='ItemCardContainer bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner gap-3 z-5'>
-                          <img className='ItemImage h-52 object-cover object-center w-40 h-40' src={item.picture_url} alt={item.name} />
-                          <h2 className='ItemName text-center font-semibold text-[#45A29E]'>{item.name}</h2>
-                          <h1 className='ItemPrice text-center font-semibold text-[#222222]'>${item.price}</h1>
-                          <p className='ItemShip text-center text-[#222222]'>{item.can_ship ? 'Item can be shipped' : 'Item cannot be shipped'}</p>
-                          <p className='ItemLocation text-center text-[#222222]'>Location: {item.location}</p>
+                      <div className='ItemCardContainer m-auto bg-gray-300 relative flex flex-row p-4 justify-center rounded-xl shadow-lg mb-4'>
+                        <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
+                          <img className='ItemImage object-cover object-center w-40 h-40 m-auto' src={item.picture_url} alt={item.name} />
+                          <div className='m-auto'>
+                            <h2 className='ItemName text-center font-semibold text-[#45A29E]'>{item.name}</h2>
+                            <h1 className='ItemPrice text-center font-semibold text-[#222222]'>${item.price}</h1>
+                          </div>
+                        </Link>
+                        <div className='flex justify-center items-start absolute top-2 right-2'>
+                          <button className='bg-red-500 text-white p-1 w-8 rounded-full hover:bg-red-700 text-center hover:scale-105' onClick={() => removeItem(item)}>X</button>
                         </div>
-                      </Link>
-                      <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => removeItem(item)}>Remove From Cart</button>
+                      </div>
                     </>
                   );
                 })
@@ -164,7 +170,7 @@ const Cart = () => {
                 </div>
             }
           </div>
-          <div className='ItemizedList w-full md:w-1/3 bg-gray-300 shadow-lg rounded-lg p-4'>
+          <div className='ItemizedList w-full md:w-1/3 bg-neutral-700/25 text-white shadow-lg rounded-lg p-4'>
             <div className='Patches mb-4'>
               {
                 matchingPatches.map((patch, index) => {
@@ -194,7 +200,7 @@ const Cart = () => {
                 {displayTotals()}
               </div>
               {
-                patchCartItems || itemCartItems ?
+                patchCartItems.length > 0 || itemCartItems.length > 0 ?
                   <button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => setCheckingOut(true)}>Checkout</button>
                   :
                   null
