@@ -69,7 +69,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="NavbarContainer fixed inset-x-0 top-0 flex justify-end items-center bg-neutral-700/25 p-4 py-3 z-10">
+    <div className="NavbarContainer fixed inset-x-0 top-0 flex justify-end items-center bg-gray-700/25 p-4 py-3 z-10">
       <nav id='navbar' className="NavbarLinksContainer flex gap-3">
         <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"
@@ -134,6 +134,12 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
+                <Link
+                  className='block px-4 py-2 text-sm text-gray-800 hover:bg-[#5DD3CB] hover:text-white'
+                  to={`/profile/${loggedIn.id}/orders`}
+                  >
+                    Orders
+                  </ Link>
                 <button
                   className="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-[#5DD3CB] hover:text-white"
                   onClick={onLogout}

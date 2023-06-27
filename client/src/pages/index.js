@@ -10,3 +10,5 @@ export { default as Cart } from "./Cart/Cart";
 export { default as Item} from "./Shop/Item";
 export { default as Patch } from "./Patches/Patch";
 export { default as Checkout } from "./Cart/Checkout";
+export { default as AdminItems } from "./Profile/AdminItems";
+export { default as Orders } from "./Profile/Orders.jsx";

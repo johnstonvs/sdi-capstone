@@ -23,7 +23,7 @@ const Patches = () => {
       .then(res => res.json())
       .then(data => setPatches(data))
       .catch(err => console.error(err))
-  }, []);
+  }, [isModalOpen]);
 
   useEffect(() => {
     setFilteredPatches(
@@ -44,7 +44,7 @@ const Patches = () => {
   }
 
   return (
-    <div className='PatchesPageContainer mt-28'>
+    <div className='PatchesPageContainer mt-28 mb-20'>
       <div className='PatchesSearchBarContainer'>
         <input className='LocationsSearchBar w-full mt-5 p-2 bg-white shadow mt-1'
           placeholder='Enter a patch name...'

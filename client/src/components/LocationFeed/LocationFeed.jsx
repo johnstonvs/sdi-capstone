@@ -3,6 +3,7 @@ import { LoggedInContext } from '../../App'
 
 const LocationFeed = ({ selectedAttic }) => {
   const [posts, setPosts] = useState([])
+  const [sortOrder, setSortOrder] = useState("newest")
   const { loggedIn } = useContext(LoggedInContext)
 
   const postCommment = (postId, content) => {
@@ -40,7 +41,12 @@ const LocationFeed = ({ selectedAttic }) => {
           const comments = await res.json();
           return {...post, comments};
         }));
-        setPosts(postsWithComments);
+        if(sortOrder === "newest") {
+          postsWithComments.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+        } else if (sortOrder === "oldest") {
+          postsWithComments.sort((a,b) => new Date(a.created_at) - new Date(b.created_at))
+        }
+            setPosts(postsWithComments);
       })
       .catch(err => console.error(err))
     }
@@ -50,11 +56,28 @@ const LocationFeed = ({ selectedAttic }) => {
     fetchPostsWithComments()
   }, []);
 
+  useEffect(() => {
+    const sortedPosts = [...posts]
+    if(sortOrder === "newest") {
+      sortedPosts.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+    } else if (sortOrder === "oldest") {
+      sortedPosts.sort((a,b) => new Date(a.created_at) - new Date(b.created_at))
+    }
+    setPosts(sortedPosts)
+  }, [sortOrder])
+
   return (
     <>
     {posts.length > 0 ? (
       <div className='FeedContainer gap-8 p-6 mt-4 justify-center items-center w-2/3'>
-      <h1 className='FeedHeader text-white text-3xl font-semibold bg-[#0077b6] rounded-xl shadow-lg text-center p-4 w-1/5 ml-4'>Feed:</h1>
+      <h1 className='FeedHeader text-[#2D2D2D] text-3xl font-semibold bg-[#0077B6] rounded-t-xl shadow-lg text-center p-4 w-1/5 ml-4'>Feed:</h1>
+      <div className='text-[#2D2D2D] font-semibold bg-[#0077B6] rounded-b-xl shadow-lg text-center p-2 w-1/5 ml-4'>
+        <label>Sort By: </label>
+        <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+        <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </div>
         {posts.map(post => (
             <div key={post.id} className='PostContainer flex flex-col m-4 p-4 bg-[#90E0EF] rounded-xl shadow-lg'>
                 <h1 className='PostHeader text-[#0077b6] text-3xl font-semibold mb-10'>{post.header}</h1>

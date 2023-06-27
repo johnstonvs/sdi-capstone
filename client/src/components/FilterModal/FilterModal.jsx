@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { TagsContext } from '../../App.js';
 
-const FilterModal = ({ baseList, show, handleClose, tag, setTag, bases, setBases, ship, setShip, setPrice }) => {
+const FilterModal = ({ baseList, show, handleClose, tag, setTag, bases, setBases, ship, setShip, price, setPrice }) => {
     const { tags } = useContext(TagsContext);
 
     return (
@@ -28,14 +28,28 @@ const FilterModal = ({ baseList, show, handleClose, tag, setTag, bases, setBases
                 <div className='PriceContainer mb-5' >
                     <h3 className='PriceTitle text-[#45A29E] text-2xl font-semibold mb-4 text-left'>Price:</ h3>
                     <div className='PriceOptions flex flex-row flex-wrap gap-3'>
+                        {price === "Low to High" ?
+                            <label className='PriceLabel'>
+                                <input type='checkbox' defaultChecked className='LowToHigh bg-[#45A29E] mr-2' onClick={() => setPrice('Low to High')} />
+                                <span>Low to High</ span>
+                            </ label>
+                            :
+                            <label className='PriceLabel'>
+                                <input type='checkbox' className='LowToHigh bg-[#45A29E] mr-2' onClick={() => setPrice('Low to High')} />
+                                <span>Low to High</ span>
+                            </ label>
+                        }
+                        {price === 'High to Low' ?
                         <label className='PriceLabel'>
-                            <input type='checkbox' className='LowToHigh bg-[#45A29E] mr-2' onClick={() => setPrice('Low to High')} />
-                            <span>Low to High</ span>
-                        </ label>
-                        <label className='PriceLabel'>
-                            <input type='checkbox' className='HighToLow bg-[#45A29E] mr-2' onClick={() => setPrice('High to Low')} />
+                            <input type='checkbox' defaultChecked className='HighToLow bg-[#45A29E] mr-2' onClick={() => setPrice('High to Low')} />
                             <span>High to Low</ span>
                         </ label>
+                        :
+                        <label className='PriceLabel'>
+                            <input type='checkbox'  className='HighToLow bg-[#45A29E] mr-2' onClick={() => setPrice('High to Low')} />
+                            <span>High to Low</ span>
+                        </ label>
+                        }
                     </ div>
                 </ div>
                 <div className='CanShipOption mb-5'>

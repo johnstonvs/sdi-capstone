@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css'
+import { ThemeProvider } from "@material-tailwind/react";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App className='App w-full h-full'/>
+    <ThemeProvider>
+      <App className='App w-full h-full'/>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

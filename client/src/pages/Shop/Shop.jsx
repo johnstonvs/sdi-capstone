@@ -1,22 +1,22 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { LoggedInContext } from "../../App.js";
 import { ItemCard, FilterModal } from '../../components/index.js';
 
 const Shop = () => {
+  const location = useLocation()
+
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const { loggedIn } = useContext(LoggedInContext);
   const [baseList, setBaseList] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [tag, setTag] = useState([]);
   const [bases, setBases] = useState([]);
   const [ship, setShip] = useState('');
-  const [tag, setTag] = useState([]);
   const [price, setPrice] = useState('');
   const [search, setSearch] = useState('');
-  const[searchResults, setSearchResults] = useState([]);
-
-
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:8080/attics')
@@ -38,14 +38,18 @@ const Shop = () => {
 
         setItems(newData);
         setSearchResults(newData);
-        if (loggedIn.isLoggedIn) {
+        if (loggedIn.isLoggedIn && tag.length === 0) {
           let bopID = undefined;
           baseList.forEach(attic => {
             if (attic.location === bop) {
               bopID = attic.id;
-              setBases([bopID]);
             }
           })
+          if(bases.length === 0) {
+            setBases([bopID]);
+          } else {
+            console.log(bases)
+          }
           filteredArr = newData.filter(item => item.attic_id === bopID)
         }
         setFiltered(filteredArr);
@@ -68,6 +72,9 @@ const Shop = () => {
       priceFilter = filteredArr.sort((a, b) => a.price - b.price)
     } else if (price === 'High to Low') {
       priceFilter = filteredArr.sort((a, b) => b.price - a.price)
+    }
+    if(!priceFilter.length) {
+      priceFilter = filteredArr;
     }
 
     let shipFilter = priceFilter.filter(item => {
@@ -96,6 +103,19 @@ const Shop = () => {
     setSearchResults(items.filter(item => item.name.toLowerCase().includes(search.toLowerCase())))
   }, [search])
 
+  useEffect(() => {
+    const initalItems = async () => {
+      const searchParams = new URLSearchParams(location.search);
+      let initialTag = searchParams.get('tag');
+      let initialLocation = searchParams.get('location')
+
+      if (initialTag && tag.length === 0) {
+        setTag([initialTag]);
+      }
+    }
+    initalItems()
+  }, [location])
+
   const addLocation = (data) => {
     let item = data;
     for (let i = 0; i < baseList.length; i++) {
@@ -111,7 +131,7 @@ const Shop = () => {
   const fixTags = (data) => {
     let item = data;
     for (let i = 0; i < item.length; i++) {
-      let tags = item[i].tags.replace(/[{}]/g,'').split(',').map(tag => tag.trim().replace(/['"]/g, ''))
+      let tags = item[i].tags.replace(/[{}]/g,'').replace(/\[|\]/g, '').split(',').map(tag => tag.trim().replace(/['"]/g, ''))
       item[i].tags = tags
     }
     return item;
@@ -119,14 +139,14 @@ const Shop = () => {
 
   return (
     <>
-    <div className='Shop mt-28'>
+    <div className='Shop mt-28 mb-20'>
       <div className='FilterContainer mb-10'>
         <input type='text' className='SearchBar w-full mt-5 mb-5 p-2 bg-white shadow mt-1' placeholder='Search . . .' onChange={(e) => setSearch(e.target.value)}/>
         <button className='FilterButt bg-[#2ACA90] ml-4 text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => {setShowModal(true)}}>Filter</ button>
         <FilterModal baseList={baseList} show={showModal} handleClose={() => setShowModal(false)} setTag={setTag} tag={tag} bases={bases} setBases={setBases} ship={ship} setShip={setShip} setPrice={setPrice}/>
       </ div>
       <div className='ItemsContainer grid grid-cols-5 grid-rows-5 gap-x-10 gap-y-20 m-4'>
-        {filtered.length ? filtered.map((item, index) =>  (
+        {filtered.length > 0 ? filtered.map((item, index) =>  (
           <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
             <ItemCard item={item} />
           </Link>

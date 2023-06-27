@@ -3,6 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LoggedInContext } from "../../App.js";
 import { MdReport } from "react-icons/md";
 import { ReportForm } from '../../components/index'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './patch.css';
+
 
 const Patch = () => {
     const [patch, setPatch] = useState([]);
@@ -39,6 +43,7 @@ const Patch = () => {
         }
         cart.push(patch.id);
         localStorage.setItem('patchCart', JSON.stringify(cart));
+        toast.success("Added to cart!");
     }
 
     const addToWishlist = () => {
@@ -53,35 +58,41 @@ const Patch = () => {
         }
       })
       .then(res => res.json())
+      .then(() => toast.success("Added to wishlist!"))
       .catch(err => console.log(err))
     }
 
-  return (
-    <>
+    return (
+      <>
         {loggedIn.isLoggedIn ?
-        <div className='PatchContainer flex flex-col p-8 gap-4 bg-gray-300 rounded-md shadow-inner m-8 mt-28'>
-          <div className='justify-between flex flex-row'>
-          <h1 className='PatchTitle text-[#45A29E] text-4xl mb-4'>{patch.name}</h1>
-          <button className='ReportButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => setShowReportForm(true)} ><div className='flex items-center justify-center'><MdReport /> Report</div></button>
-          </div>
-            <img className='PatchImage w-96 object-contain' src={patch.picture_url} alt={patch.name} />
-            <h3 className='PatchPoster text-[#[#222222]] text-2xl mb-2'>Posted By: {userName}</h3>
-            <h3 className='PatchPrice text-[#[#222222]] text-2xl mb-4'>${patch.price}</h3>
-            <div className='PatchButtons flex justify-between w-full'>
-                <button className='AddToCartButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => {addCartItem()}} >Add to Cart</button>
-                <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
-                <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/patches')}>Back</button>
+          <div className='bg-gray-700/25 mt-28 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
+            <div className='PatchContainer flex flex-row items-start'>
+              <div className="flex justify-start items-start mr-10">
+                <img className="PatchImage w-96 object-cover object-center drop-shadow-xl rounded-lg filter brightness-110 hover:brightness-125 transition-all ease-in-out" src={patch.picture_url} alt={patch.name} />
+              </div>
+              <div>
+                <h1 className='PatchTitle text-[#45A29E] text-3xl text-left w-2/3'>{patch.name}</h1>
+                <h3 className='PatchPoster text-white mt-10'>Posted By: {userName}</h3>
+                <p className='PatchPrice text-2xl text-white mt-16'>${patch.price}</p>
+                <p className='PatchPrice text-white mt-20'>{patch.description}</p>
+              </div>
             </div>
-        </ div>
-        :
-        <div className='LogInToPurchase flex flex-col items-center p-8 bg-gray-300 rounded-md shadow-inner m-8'>
+            <div className='PatchButtons flex justify-between w-full mt-10'>
+              <button className='AddToCartButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => { addCartItem() }}>Add to Cart</button>
+              <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
+              <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/patches')}>Back</button>
+            </div>
+          </ div>
+          :
+          <div className='LogInToPurchase flex flex-col items-center p-8 bg-gray-300 rounded-md shadow-inner m-8'>
             <h1 className='LoginNotification text-[#45A29E] text-2xl mb-4'>You must be logged in to Purchase Patches!</h1>
             <Link to='/login' className='LoginLink bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] hover:scale-105 text-[#45A29E] text-1xl'>Login Here!</Link>
-        </div>
+          </div>
         }
         {showReportForm && <ReportForm patch={patch} closeForm={() => setShowReportForm(false)} />}
-    </>
-  )
+        <ToastContainer />
+      </>
+    )
 }
 
 export default Patch;

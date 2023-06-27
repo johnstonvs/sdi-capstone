@@ -1,6 +1,6 @@
 import React, { useContext, useState, createContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, Shop, Locations, Patches, About, LoginPage, Cart, Checkout, Profile, Item, Patch } from './pages/index.js';
+import { Home, Shop, Locations, Patches, About, LoginPage, Cart, Checkout, Profile, Item, Patch, AdminItems, Orders} from './pages/index.js';
 import { Navbar, BottomNavbar } from './components/index.js';
 
 export const TagsContext = createContext();
@@ -39,6 +39,8 @@ function App() {
               <Route path='/cart' element={<Cart />} />
               <Route path='/cart/checkout' element={<Checkout />} />
               <Route path='/profile/:id' element={<Profile />} />
+              <Route path='/profile/:id/adminitems' element={<AdminItems />} />
+              <Route path='/profile/:id/orders' element={<Orders />} />
             </Routes>
           <BottomNavbar className='BottomNavbar'/>
         </LoggedInContext.Provider >

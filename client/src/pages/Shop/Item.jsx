@@ -1,8 +1,11 @@
 import { useEffect, useState, useContext } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { LoggedInContext } from "../../App.js";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './item.css';
 
-const Item = (props) => {
+const Item = () => {
   const [item, setItem] = useState([]);
   const [attics, setAttics] = useState([]);
   const { loggedIn } = useContext(LoggedInContext);
@@ -12,22 +15,24 @@ const Item = (props) => {
   var cart = [];
   const nav = useNavigate()
 
-  useEffect((props) => {
+  useEffect(() => {
     fetch(`http://localhost:8080/items/${id}`)
       .then(res => res.json())
       .then(data => {
         let newData = addLocation(data);
-        setItem(newData[0]);
+        newData = fixTags(newData[0])
+        setItem(newData);
+        console.log(newData)
       })
       .catch(err => console.error(err))
-  }, [])
+  }, [attics])
 
   useEffect(() => {
     fetch('http://localhost:8080/attics')
       .then(res => res.json())
       .then(data => setAttics(data))
       .catch(err => console.error(err))
-  }, [item])
+  }, [])
 
   const addLocation = (data) => {
     for (let i = 0; i < attics.length; i++) {
@@ -44,6 +49,7 @@ const Item = (props) => {
     }
     cart.push(item.id);
     localStorage.setItem('itemCart', JSON.stringify(cart));
+    toast.success("Added to cart!");
   }
 
   const addToWishlist = () => {
@@ -58,35 +64,61 @@ const Item = (props) => {
       }
     })
       .then(res => res.json())
-      .then(data => console.log(data))
+      .then(data => {
+        toast.success("Added to wishlist!")
+        console.log(data)})
       .catch(err => console.log(err))
   }
 
+  const fixTags = (data) => {
+    let item = data;
+    let tags = item.tags.replace(/\[|\]/g, '').replace(/\{\}/g,'').split(',').map(tag => tag.trim().replace(/['"]/g, ''));
+    item.tags = tags;
+
+    return item;
+  };
+
+
   return (
-    <>
-      <div className='ItemContainer place-content-center bg-gray-300 mt-28 p-4 rounded shadow-inner m-8'>
-        <h1 className='ItemTitle text-[#45A29E] text-5xl'>{item.name}</ h1>
-        <img className='ItemImage' src={item.picture_url} alt={item.name} />
-        <h3 className='ItemPrice text-2xl text-[#45A29E]'>${item.price}</ h3>
-        <h3 className='ItemLocation text-2xl text-[#45A29E]'>Location: {item.location}</ h3>
-        {item.can_ship ?
-          <>
-            <h3 className='ItemShip text-2xl text-[#45A29E]'>'Item can be shipped to your local Attic.'</h3>
-            <div className='ItemButtons flex justify-between w-full'>
-              <button className='AddToCart bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => { addCartItem() }} >Add to cart</ button>
+    <div className='bg-gray-700/25 mt-28 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
+      <div className='ItemContainer flex flex-row items-start'>
+        <div className="flex justify-start items-start mr-10">
+          <img className="ItemImage w-96 object-cover object-center drop-shadow-xl rounded-lg filter brightness-110 hover:brightness-125 transition-all ease-in-out" src={item.picture_url} alt={item.name} />
+        </div>
+        <div>
+        <h1 className='ItemTitle text-[#45A29E] text-3xl text-left w-2/3'>{item.name}</ h1>
+        {item?.tags?.length > 0 ? (
+          <div className='flex flex-row gap-2 mt-3 text-white'>
+            <p className='mr-1'>Tags:</p>
+            {item.tags.map((tag) => (
+              <Link className='hover:text-[#5DD3CB] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5DD3CB]' to={`/shop?tag=${tag.replace(/[{}]/g, "")}`}><p>{tag.replace(/[\[\]]/g, "")}</p></Link>
+            ))}
+          </div>
+          ) : null}
+          <p className='ItemPrice text-2xl text-white mt-10'>${item.price}</p>
+          {item.description ? <p className='ItemPrice text-white mt-20'>{item.description}</p> : null}
+          <p className='ItemLocation text-white mt-20'>Location: {item.location}</p>
+        </div>
+      </div>
+                {item.can_ship ?
+            <>
+              <div className='ItemButtons flex justify-between w-full mt-10'>
+                <button className='AddToCart bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => { addCartItem() }} >Add to cart</button>
+                <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
+                <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/shop')}>Back</button>
+              </div>
+            </>
+            :
+            <>
+            <h3 className='ItemShip text-2xl text-[#45A29E] mt-10 mb-5'>'Item cannot be shipped to your local Attic.'</h3>
+            <div className='NoShip flex justify-between w-full'>
               <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
               <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/shop')}>Back</button>
             </div>
-          </>
-          :
-          <div className='NoShip flex justify-between w-full'>
-            <h3 className='ItemShip text-2xl text-[#45A29E]'>'Item cannot be shipped to your local Attic.'</ h3>
-            <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
-            <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/shop')}>Back</button>
-          </div>
-        }
-      </ div>
-    </>
+            </>
+          }
+      <ToastContainer />
+    </div>
   )
 }
 

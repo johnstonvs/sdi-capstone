@@ -22,7 +22,7 @@ const onClick = (ratingValue) => {
 };
 
 return (
-    <div className="flex justify-center bg-neutral-400 p-1 rounded-xl shadow-lg">
+    <div className="flex justify-center bg-gray-400 p-1 rounded-xl shadow-lg">
         {[...Array(5)].map((_, i=1) => (
             <div
                 key={i}

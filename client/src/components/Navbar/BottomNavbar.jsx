@@ -18,7 +18,7 @@ const BottomNavbar = () => {
   }
 
   return (
-    <div className='BottomNavbarContainer fixed inset-x-0 bottom-0 flex justify-around items-center py-2 bg-neutral-700/25 text-white space-x-4'>
+    <div className='BottomNavbarContainer fixed inset-x-0 bottom-0 flex justify-around items-center py-2 bg-gray-700/25 text-white space-x-4'>
       <p>Airman's Warehouse !© 2023</p>
       <Link to="/about#ContactUsForm" className="hover:text-[#5DD3CB] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5DD3CB]">Contact Us</Link>
       <Link to="/about" className="hover:text-[#5DD3CB] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5DD3CB]">About</Link>

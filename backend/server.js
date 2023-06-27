@@ -108,36 +108,12 @@ server.get('/users/:id', (req, res) => {
     }))
 })
 
-server.post('/users/veterans', upload.single('file'), async (req, res) => {
-  console.log(req.body)
-
-  var s3 = new AWS.S3();
-  var awsPdfUrl = ''
-
-  let pdfKey = randomstring.generate();
-
-  var params = {
-    Bucket: awsBucket,
-    Key: pdfKey,
-    Body: req.file.buffer,
-  };
-
-  try {
-    var uploadResponse = await s3.upload(params).promise();
-    awspdfUrl = uploadResponse.Location;
-    console.log(`File uploaded successfully. ${uploadResponse.Location}`);
-
-    req.body.image = awsPdfUrl
-
-    console.log(req.body)
-
-    res.status(201).json(uploadResponse.Location)
-  } catch (err) {
-    res.status(500).json({
-      message: `Could not post the pdf: ${err}`
-    })
-  }
-});
+server.get('/users/:id/orders', (req, res) => {
+  knex('orders')
+    .where('user_id', req.params.id)
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({message: `Could not get order with id ${req.params.id}: ${err}`}))
+})
 
 server.get('/items?', (req, res) => {
   knex('items')
@@ -450,6 +426,37 @@ server.post('/items', upload.single('image'), async (req, res) => {
   }
 });
 
+server.post('/users/veterans', upload.single('file'), async (req, res) => {
+  console.log(req.body)
+
+  var s3 = new AWS.S3();
+  var awsPdfUrl = ''
+
+  let pdfKey = randomstring.generate();
+
+  var params = {
+    Bucket: awsBucket,
+    Key: pdfKey,
+    Body: req.file.buffer,
+  };
+
+  try {
+    var uploadResponse = await s3.upload(params).promise();
+    awspdfUrl = uploadResponse.Location;
+    console.log(`File uploaded successfully. ${uploadResponse.Location}`);
+
+    req.body.image = awsPdfUrl
+
+    console.log(req.body)
+
+    res.status(201).json(uploadResponse.Location)
+  } catch (err) {
+    res.status(500).json({
+      message: `Could not post the pdf: ${err}`
+    })
+  }
+});
+
 // PATCH
 
 server.patch('/users/:id', (req, res) => {
@@ -497,6 +504,74 @@ server.patch('/attics/withimage/:id', upload.single('image'), async (req, res) =
       console.log(req.body)
 
       let data = await knex('attics')
+        .where('id', req.params.id)
+        .update(req.body, ['*'])
+
+      res.status(201).json(data)
+    } catch (err) {
+      res.status(500).json({
+        message: `Could not patch the attic: ${err}`
+      })
+    }
+
+})
+
+server.patch('/items/:id', (req, res) => {
+  console.log('Backend data:', req.body);
+  knex('items')
+    .where('id', req.params.id)
+    .update(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not update attic with id ${req.params.id}: ${err}`
+    }))
+})
+
+server.patch('/users/:id', (req, res) => {
+  knex('users')
+    .where('id', req.params.id)
+    .update(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not update user with id ${req.params.id}: ${err}`
+    }))
+})
+
+server.patch('/attics/:id', (req, res) => {
+  console.log('Backend data:', req.body);
+  knex('attics')
+    .where('id', req.params.id)
+    .update(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not update attic with id ${req.params.id}: ${err}`
+    }))
+})
+
+server.patch('/items/withimage/:id', upload.single('image'), async (req, res) => {
+
+    var s3 = new AWS.S3();
+    var awsImgUrl = ''
+
+    let imageKey = randomstring.generate();
+
+    var params = {
+      Bucket: awsBucket,
+      Key: imageKey,
+      Body: req.file.buffer,
+    };
+
+    try {
+      var uploadResponse = await s3.upload(params).promise();
+      awsImgUrl = uploadResponse.Location;
+      console.log(`File uploaded successfully. ${uploadResponse.Location}`);
+
+
+      req.body.picture_url = awsImgUrl
+
+      console.log(req.body)
+
+      let data = await knex('items')
         .where('id', req.params.id)
         .update(req.body, ['*'])
 

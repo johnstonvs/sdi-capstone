@@ -22,7 +22,7 @@ const Home = () => {
     slidesToScroll: 1,
     initialSlide: 0,
     autoplay: true,
-    autoplaySpeed: 8000,
+    autoplaySpeed: 4000,
     centerMode: true,
     centerPadding: "0px",
     cssEase: "linear",

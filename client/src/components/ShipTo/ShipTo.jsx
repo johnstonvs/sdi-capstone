@@ -11,8 +11,6 @@ const ShipTo = ({ setLocation }) => {
     .then(res => res.json())
     .then(data => setAttics(data))
     .catch(err => console.log(err))
-
-    console.log(selectedAttic)
   }, [])
 
   const handleAtticSelection = (event) => {

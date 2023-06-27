@@ -90,7 +90,7 @@ const LocationReviews = ({ selectedAttic, reviewAdded }) => {
             <div key={review.id} className='PostContainer flex flex-col m-4 p-4 bg-[#F5DEB3] rounded-xl shadow-lg'>
                 <p className='PostBody text-[#222222] mb-10 font-semibold'>{review.name}</p>
                 <div className='flex flex-row space-x-10'>
-                <div className="flex justify-center bg-neutral-400 p-1 h-9 rounded-xl shadow-lg">
+                <div className="flex justify-center bg-gray-400 p-1 h-9 rounded-xl shadow-lg">
                       {[...Array(5)].map((_, i=1) => (
                           <div
                               key={i}

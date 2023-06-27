@@ -38,6 +38,7 @@ exports.up = function(knex) {
   .createTable('items', (table) => {
     table.increments('id');
     table.string('name');
+    table.string('description');
     table.decimal('price');
     table.string('picture_url');
     table.boolean('can_ship');
@@ -61,6 +62,7 @@ exports.up = function(knex) {
   .createTable('patches', (table) => {
     table.increments('id');
     table.string('name');
+    table.string('description');
     table.decimal('price');
     table.string('picture_url');
     table.integer('user_id');
@@ -94,6 +96,15 @@ exports.up = function(knex) {
     table.foreign('post_id').references('posts.id').onUpdate('CASCADE').onDelete('SET NULL');
     table.foreign('review_id').references('attic_reviews.id').onUpdate('CASCADE').onDelete('SET NULL');
   })
+  .createTable('orders', (table) => {
+    table.increments('id');
+    table.integer('user_id');
+    table.string('item_id', 'integer ARRAY');
+    table.string('patch_id', 'integer ARRAY');
+    table.string('location');
+    table.string('total');
+    table.timestamps(true);
+  })
 };
 
 /**
@@ -103,6 +114,7 @@ exports.up = function(knex) {
 exports.down = function(knex) {
   return knex.schema.dropTableIfExists('comments')
   .dropTableIfExists('posts')
+  .dropTableIfExists('orders')
   .dropTableIfExists('patches_wishlist')
   .dropTableIfExists('patches')
   .dropTableIfExists('items_wishlist')
