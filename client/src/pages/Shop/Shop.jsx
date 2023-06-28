@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LoggedInContext } from "../../App.js";
-import { ItemCard, FilterModal } from '../../components/index.js';
+import { LoggedInContext, LoadingContext } from "../../App.js";
+import { ItemCard, FilterModal, Loader } from '../../components/index.js';
 
 const Shop = () => {
   const location = useLocation()
@@ -17,8 +17,10 @@ const Shop = () => {
   const [price, setPrice] = useState('');
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const { loading, setLoading } = useContext(LoadingContext);
 
   useEffect(() => {
+    setLoading(true)
     fetch('http://localhost:8080/attics')
       .then(res => res.json())
       .then(data => {
@@ -53,6 +55,7 @@ const Shop = () => {
           filteredArr = newData.filter(item => item.attic_id === bopID)
         }
         setFiltered(filteredArr);
+        setLoading(false)
       })
   }, [baseList])
 
@@ -138,7 +141,12 @@ const Shop = () => {
   }
 
   return (
-    <>
+    loading ? (
+      <div className="flex justify-center items-center h-screen">
+      <Loader />
+      </div>
+    ) : (
+<>
     <div className='Shop mt-28 mb-20'>
       <div className='FilterContainer mb-10'>
         <input type='text' className='SearchBar w-full mt-5 mb-5 p-2 bg-white shadow mt-1' placeholder='Search . . .' onChange={(e) => setSearch(e.target.value)}/>
@@ -158,6 +166,7 @@ const Shop = () => {
       </div>
       </div>
     </>
+    )
   )
 }
 

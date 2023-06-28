@@ -1,15 +1,24 @@
-import { useState, useEffect } from 'react';
+
+//  _____ _____ _____ _____ __    _____ _____ _____
+// |     |     |   | |     |  |  |     |_   _|  |  |
+// | | | |  |  | | | |  |  |  |__|-   -| | | |     |
+// |_|_|_|_____|_|___|_____|_____|_____| |_| |__|__|
+
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom'
 import amex from "../../assets/amex.png";
 import discover from "../../assets/discover.png";
 import visa from "../../assets/visa.png";
 import "./Checkout.css"
-import { ShipTo } from '../../components/index'
-import { ConfirmationModal } from '../../components/index'
+import { ShipTo, ConfirmationModal } from '../../components/index'
 import { HomeIcon, CurrencyDollarIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { Stepper, Step, Button } from "@material-tailwind/react";
+import { LoggedInContext } from "../../App.js";
+import emailjs from '@emailjs/browser';
 
 const Checkout = () => {
+
+    const { loggedIn } = useContext(LoggedInContext);
 
     //Card information states
     const [cardNumber, setCardNumber] = useState("");
@@ -22,11 +31,13 @@ const Checkout = () => {
     const [state, setState] = useState("");
     const [country, setCountry] = useState("");
     const [zip, setZip] = useState("");
-    const [shippingLocation, setShippingLocation] = useState()
+    const [shippingLocation, setShippingLocation] = useState();
 
     //Conditional states
     const [hiddenState, setHiddenState] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [formNotCompleted, setFormNotCompleted] = useState(true);
+    const [receipt, setReceipt] = useState(true);
     const nav = useNavigate();
 
     //Stepper States
@@ -38,9 +49,89 @@ const Checkout = () => {
     const handleNext = () => !isLastStep && setActiveStep((cur) => cur + 1);
     const handlePrev = () => !isFirstStep && setActiveStep((cur) => cur - 1);
 
+    //Patch state variables
+    const [patchCartItems, setPatchCartItems] = useState(JSON.parse(localStorage.getItem('patchCart')) || []);
+    const [allPatches, setAllPatches] = useState([]);
+    const [matchingPatches, setMatchingPatches] = useState([]);
+
+    //Item state variables
+    const [itemCartItems, setItemCartItems] = useState(JSON.parse(localStorage.getItem('itemCart')) || []);
+    const [allItems, setAllItems] = useState([]);
+    const [matchingItems, setMatchingItems] = useState([]);
+
+    const serviceId = process.env.REACT_APP_SERVICE_ID;
+    const templateId = process.env.REACT_APP_TEMPLATE_ID;
+    const emailKey = process.env.REACT_APP_EMAIL_JS_KEY;
+
+    useEffect(() => {
+        fetch(`http://localhost:8080/patches`)
+            .then(res => res.json())
+            .then(data => setAllPatches(data))
+            .catch(err => console.log(err))
+        const savedCart = JSON.parse(localStorage.getItem('patchCart'));
+        setPatchCartItems(savedCart);
+    }, []);
+
+    useEffect(() => {
+        fetch(`http://localhost:8080/items`)
+            .then(res => res.json())
+            .then(data => setAllItems(data))
+            .catch(err => console.log(err))
+        const savedCart = JSON.parse(localStorage.getItem('itemCart'));
+        setItemCartItems(savedCart);
+    }, []);
+
+    useEffect(() => {
+        var matchPatch = [];
+        if (patchCartItems) {
+            for (let i = 0; i < allPatches.length; i++) {
+                patchCartItems.forEach((savedPatchID) => {
+                    if (savedPatchID === allPatches[i].id) {
+                        matchPatch.push(allPatches[i])
+                    }
+                })
+            }
+            setMatchingPatches(matchPatch)
+        }
+    }, [allPatches, patchCartItems]);
+
+    useEffect(() => {
+        var matchItem = [];
+        if (itemCartItems) {
+            for (let i = 0; i < allItems.length; i++) {
+                itemCartItems.forEach((savedItemID) => {
+                    if (savedItemID === allItems[i].id) {
+                        matchItem.push(allItems[i])
+                    }
+                })
+            }
+            setMatchingItems(matchItem)
+        }
+    }, [allItems, itemCartItems]);
+
+    const displayTotals = () => {
+        let patchTotal = 0;
+        matchingPatches.map(patch => {
+            return patchTotal += +patch.price;
+        });
+        let itemTotal = 0;
+        matchingItems.map(item => {
+            return itemTotal += +item.price;
+        });
+
+        let allTotal = (Math.round((Math.round((itemTotal) * 100) / 100) + (Math.round(patchTotal * 100) / 100) * 100) / 100)
+        return (
+            <div className='TotalDisplay flex pt-3 justify-evenly grid grid-rows-3'>
+                <p className='mb-2'>Patch Total: {Math.round(patchTotal * 100) / 100}</p>
+                <p className='mb-2'>Item Total: {Math.round(itemTotal * 100) / 100}</p>
+                <p className='mb-2'>Overall Total: {allTotal}</p>
+            </div>
+        );
+    };
+
     const setLocation = location => {
         setShippingLocation(location)
-    }
+    };
 
     const cardTypeProcessing = () => {
         //American Express
@@ -128,7 +219,7 @@ const Checkout = () => {
                 </div>
             )
         }
-    }
+    };
 
     const handleExpiration = (e) => {
         let { value } = e.target;
@@ -142,7 +233,7 @@ const Checkout = () => {
         if (isValidInput) {
             setExpiration(value)
         }
-    }
+    };
 
     const handleCountry = (e) => {
         setCountry(e.target.value)
@@ -152,7 +243,7 @@ const Checkout = () => {
         } else {
             setHiddenState(true);
         }
-    }
+    };
 
     const clearTheCart = () => {
         localStorage.removeItem("patchCart");
@@ -162,11 +253,96 @@ const Checkout = () => {
         nav('/')
     };
 
+    const generateOrder = () => {
+
+        let patchTotal = 0;
+        matchingPatches.map(patch => {
+            return patchTotal += +patch.price;
+        });
+        let itemTotal = 0;
+        matchingItems.map(item => {
+            return itemTotal += +item.price;
+        });
+
+        let total = (Math.round((Math.round((itemTotal) * 100) / 100) + (Math.round(patchTotal * 100) / 100) * 100) / 100)
+
+        if (receipt) {
+            let itemsOrdered = itemCartItems.map((item) => `${item.name} (${item.price})`).join('\n')
+            let patchesOrdered = patchCartItems.map((patch) => `${patch.name} (${patch.price})`).join('\n')
+
+            let receiptMessage = `Order Details:
+            Name: ${loggedIn.name}
+            Ship location: ${shippingLocation}
+            Order placed on: ${new Date().toDateString()}
+            Items ordered:
+            ${itemsOrdered}
+            Patches ordered:
+            ${patchesOrdered}
+            Order total: ${total}`;
+
+            const formInfo = {
+                type: 'Receipt',
+                name: loggedIn.name,
+                email: loggedIn.email,
+                body: receiptMessage,
+            }
+
+            emailjs.send(serviceId, templateId, formInfo, emailKey)
+                .then((res) => {
+                    console.log('res:', res);
+                }, (error) => {
+                    console.log('error:', error);
+                });
+        };
+
+        fetch('http://localhost:8080/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: loggedIn.id,
+                item_id: localStorage.getItem('itemCart'),
+                patch_id: localStorage.getItem('patchCart'),
+                location: shippingLocation,
+                total: total
+            })
+        })
+            .then(setShowModal(true))
+    }
+
+    const summary = () => {
+
+        return (
+            <div className='SummaryContainer w-full bg-gray-300 rounded-md shadow p-7'>
+                <div className='PatchSummary pb-3 grid grid-cols-2 gap-3'>
+                    {matchingPatches.map(patch => {
+                        return (
+                            <>
+                                <p>Patch: {patch.name}</p>
+                                <p>Price: {patch.price}</p>
+                            </>
+                        );
+                    })}
+                </div>
+                <div className='ItemSummary pb-3 grid grid-cols-2 gap-3'>
+                    {matchingItems.map(item => {
+                        return (
+                            <>
+                                <p>Item: {item.name}</p>
+                                <p>Price: {item.price}</p>
+                            </>
+                        );
+                    })}
+                </div>
+                {displayTotals()}
+            </div>
+        );
+    };
+
     const displayCheckout = () => {
         switch (activeStep) {
             case 0:
                 return (
-                    <div className="BillingAddress w-full bg-gray-300 rounded-md shadow p-7">
+                    <form className="BillingAddress w-full bg-gray-300 rounded-md shadow p-7" onSubmit={(e) => { e.preventDefault(); setFormNotCompleted(false) }}>
                         <h1 className='CardInformationHeader text-[#45A29E] text-3xl font-semibold mb-10 text-center'>Billing/Shipping Information</h1>
                         <label className='StreetAddress text-[#222222]'>Street Address*</label>
                         <input name='StreetAddress' className='StreetAddress w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={street} required onChange={(e) => setStreet(e.target.value)} />
@@ -429,17 +605,17 @@ const Checkout = () => {
                         </select>
                         {
                             hiddenState ?
-                            <>
-                                <label className='ZipCode text-[#222222]'>Zip or Postcode*</label>
-                                <input name='ZipCode' className='ZipCode w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={zip} required onChange={(e) => setZip(e.target.value)} />
-                            </>
-                            :
-                            <>
-                                <label className='State text-[#222222]'>State or Province*</label>
-                                <input name='State' className='State w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={state} required onChange={(e) => setState(e.target.value)} />
-                                <label className='ZipCode text-[#222222]'>Zip or Postcode*</label>
-                                <input name='ZipCode' className='ZipCode w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={zip} required onChange={(e) => setZip(e.target.value)} />
-                            </>
+                                <>
+                                    <label className='ZipCode text-[#222222]'>Zip or Postcode*</label>
+                                    <input name='ZipCode' className='ZipCode w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={zip} required onChange={(e) => setZip(e.target.value)} />
+                                </>
+                                :
+                                <>
+                                    <label className='State text-[#222222]'>State or Province*</label>
+                                    <input name='State' className='State w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={state} required onChange={(e) => setState(e.target.value)} />
+                                    <label className='ZipCode text-[#222222]'>Zip or Postcode*</label>
+                                    <input name='ZipCode' className='ZipCode w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={zip} required onChange={(e) => setZip(e.target.value)} />
+                                </>
                         }
                         <ShipTo setLocation={setLocation} />
                         <div className="mt-16 flex justify-between">
@@ -449,15 +625,16 @@ const Checkout = () => {
                             <Link to='../cart'>
                                 <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105'>Return to Cart</Button>
                             </Link>
-                            <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={handleNext} disabled={isLastStep}>
+                            <Button type='submit' className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105'>Confirm</Button>
+                            <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => { setFormNotCompleted(true); handleNext() }} disabled={formNotCompleted || isLastStep}>
                                 Next
                             </Button>
                         </div>
-                    </div>
+                    </form>
                 );
             case 1:
                 return (
-                    <div className="CardInformation w-full bg-gray-300 rounded-md shadow p-7">
+                    <form className="CardInformation w-full bg-gray-300 rounded-md shadow p-7 m-auto" onSubmit={(e) => { e.preventDefault(); setFormNotCompleted(false) }}>
                         <h1 className='CardInformationHeader text-[#45A29E] text-3xl font-semibold mb-10 text-center'>Card Information</h1>
                         <h1 className='AcceptedCards text-[#45A29E] text-1x1 font-semibold mb-10 text-left'>Accepted Card Types</h1>
                         {cardTypeProcessing()}
@@ -480,16 +657,21 @@ const Checkout = () => {
                             <Link to='../cart'>
                                 <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105'>Return to Cart</Button>
                             </Link>
-                            <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={handleNext} disabled={isLastStep}>
+                            <Button type='submit' className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105'>Confirm</Button>
+                            <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={() => { handleNext(); setFormNotCompleted(true) }} disabled={isLastStep || formNotCompleted}>
                                 Next
                             </Button>
                         </div>
-                    </div>
+                    </form>
                 );
             case 2:
                 return (
-                    <div className='FinalizePayment w-full bg-gray-300 rounded-md shadow p-7'>
-
+                    <div className='FinalizePayment w-full bg-gray-300 rounded-md shadow p-7 m-auto'>
+                        <div className='SummaryContainer'>
+                            <p>{loggedIn.name}</p>
+                            <p>Order Location: {shippingLocation}</p>
+                            {summary()}
+                        </div>
                         <div className="mt-16 flex justify-between">
                             <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={handlePrev} disabled={isFirstStep}>
                                 Prev
@@ -497,7 +679,11 @@ const Checkout = () => {
                             <Link to='../cart'>
                                 <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' >Return to Cart</Button>
                             </Link>
-                            <Button type="submit" className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105'>Place Order</Button>
+                            <form onSubmit={(e)=>{e.preventDefault(); generateOrder()}}>
+                                <Button type='submit' className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105'>Place Order</Button>
+                                <label className='mx-1'>Receipt?</label>
+                                <input type='checkbox' className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' defaultChecked onClick={() => {setReceipt(!receipt)}} />
+                            </form>
                             <Button className='bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] text-center hover:scale-105' onClick={handleNext} disabled={isLastStep}>
                                 Next
                             </Button>
@@ -519,22 +705,22 @@ const Checkout = () => {
                     lineClassName="bg-gray-500"
                     activeLineClassName="bg-[#68D391]"
                 >
-                    <Step className='bg-gray-500' activeClassName="bg-[#68D391]" completedClassName="bg-[#68D391]" onClick={() => setActiveStep(0)}>
+                    <Step className='bg-gray-500' activeClassName="bg-[#68D391]" completedClassName="bg-[#68D391]">
                         <HomeIcon className="h-5 w-5" />
                     </Step>
-                    <Step className='bg-gray-500' activeClassName="bg-[#68D391]" completedClassName="bg-[#68D391]" onClick={() => setActiveStep(1)}>
+                    <Step className='bg-gray-500' activeClassName="bg-[#68D391]" completedClassName="bg-[#68D391]">
                         <CurrencyDollarIcon className="h-5 w-5" />
                     </Step>
-                    <Step className='bg-gray-500' activeClassName="bg-[#68D391]" completedClassName="bg-[#68D391]" onClick={() => setActiveStep(2)}>
+                    <Step className='bg-gray-500' activeClassName="bg-[#68D391]" completedClassName="bg-[#68D391]">
                         <CheckIcon className="h-5 w-5" />
                     </Step>
                 </Stepper>
             </div>
             <div className='CheckoutContainer mt-14 mb-20 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-3'>
-                <form className='CheckoutInformation flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 gap-5' onSubmit={(e) => { e.preventDefault(); setShowModal(true) }}>
+                <div className='CheckoutInformation flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 gap-5'>
                     {displayCheckout()}
                     <ConfirmationModal message={`Your items will be shipped out to ${shippingLocation}`} show={showModal} handleClose={clearTheCart} />
-                </form >
+                </div >
             </div>
         </>
     );

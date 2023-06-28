@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { PatchCard, UploadPatch } from '../../components/index';
+import { PatchCard, UploadPatch, Loader } from '../../components/index';
+import { LoggedInContext, LoadingContext } from '../../App';
 import Patch from './Patch';
 
 const Patches = () => {
@@ -9,6 +10,7 @@ const Patches = () => {
   const [searchTyped, setSearchTyped] = useState(false);
   const [filteredPatches, setFilteredPatches] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loading, setLoading } = useContext(LoadingContext);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -19,9 +21,13 @@ const Patches = () => {
   }
 
   useEffect(() => {
+    setLoading(true)
     fetch('http://localhost:8080/patches')
       .then(res => res.json())
-      .then(data => setPatches(data))
+      .then(data => {
+        setPatches(data)
+        setLoading(false)}
+        )
       .catch(err => console.error(err))
   }, [isModalOpen]);
 
@@ -44,7 +50,13 @@ const Patches = () => {
   }
 
   return (
-    <div className='PatchesPageContainer mt-28 mb-20'>
+    loading ? (
+      <div className="flex justify-center items-center h-screen">
+      <Loader />
+      </div>
+    ) : (
+
+<div className='PatchesPageContainer mt-28 mb-20'>
       <div className='PatchesSearchBarContainer'>
         <input className='LocationsSearchBar w-full mt-5 p-2 bg-white shadow mt-1'
           placeholder='Enter a patch name...'
@@ -67,6 +79,8 @@ const Patches = () => {
       </div>
       <UploadPatch isOpen={isModalOpen} closeModal={closeModal} />
     </div>
+    )
+
   )
 }
 

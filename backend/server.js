@@ -109,10 +109,72 @@ server.get('/users/:id', (req, res) => {
 })
 
 server.get('/users/:id/orders', (req, res) => {
+
+  let result = {};
+  let fixedData = [];
+
   knex('orders')
     .where('user_id', req.params.id)
+    .then(fixData => {
+      const fixItem = (data) => {
+        let item = data;
+        for (let i = 0; i < item.length; i++) {
+          let fixed = item[i].item_id.replace(/[{}]/g, '').replace(/\[|\]/g, '').split(',').map(id => id.trim().replace(/['"]/g, ''))
+          item[i].item_id = fixed
+        }
+        return item;
+      }
+      const fixPatch = (data) => {
+        let item = data;
+        for (let i = 0; i < item.length; i++) {
+          let fixed = item[i].patch_id.replace(/[{}]/g, '').replace(/\[|\]/g, '').split(',').map(id => id.trim().replace(/['"]/g, ''))
+          item[i].patch_id = fixed
+        }
+        return item;
+      }
+      let newData = fixItem(fixData);
+      newData = fixPatch(newData);
+      result.orders = newData;
+      fixedData = newData;
+      return newData
+    })
+    .then(data => {
+
+      let itemPromises = data.map(order => {
+        return order.item_id.map(id => {
+          return knex('items')
+            .where('id', id)
+        });
+      }).reduce((acc, val) => acc.concat(val), [])
+      return Promise.all(itemPromises)
+    })
+
+    .then(itemData => {
+      let patchPromises = fixedData.map(order => {
+        return order.patch_id.map(id => {
+          return knex('patches')
+          .where('id', id)
+        })
+      }).reduce((acc, val) => acc.concat(val), [])
+      result.items = itemData;
+      return Promise.all(patchPromises)
+    })
+
+    .then(patchData => {
+      result.patches = patchData;
+      return result;
+    })
+
+    .then(finalData => res.status(200).json(result))
+    .catch(err => res.status(404).json({ message: `Could not get order with id ${req.params.id}: ${err}` }))
+})
+
+server.get('/orders', (req, res) => {
+  knex('orders')
     .then(data => res.status(200).json(data))
-    .catch(err => res.status(404).json({message: `Could not get order with id ${req.params.id}: ${err}`}))
+    .catch(err => res.status(404).json({
+      message: `Could not get attics: ${err}`
+    }))
 })
 
 server.get('/items?', (req, res) => {
@@ -348,6 +410,15 @@ server.post('/patches_wishlist', (req, res) => {
     }))
 })
 
+server.post('/orders', (req, res) => {
+  knex('orders')
+  .insert(req.body, ['*'])
+  .then(data => res.status(201).json(data))
+  .catch(err => res.status(500).json({
+    message: `Could not post to orders: ${err}`
+  }))
+})
+
 server.post('/patches', upload.single('image'), async (req, res) => {
   console.log(req.body)
 
@@ -469,6 +540,42 @@ server.patch('/users/:id', (req, res) => {
     }))
 })
 
+server.patch('/users/withimage/:id', upload.single('image'), async (req, res) => {
+
+  var s3 = new AWS.S3();
+  var awsImgUrl = ''
+
+  let imageKey = randomstring.generate();
+
+  var params = {
+    Bucket: awsBucket,
+    Key: imageKey,
+    Body: req.file.buffer,
+  };
+
+  try {
+    var uploadResponse = await s3.upload(params).promise();
+    awsImgUrl = uploadResponse.Location;
+    console.log(`File uploaded successfully. ${uploadResponse.Location}`);
+
+
+    req.body.picture_url = awsImgUrl
+
+    console.log(req.body)
+
+    let data = await knex('users')
+      .where('id', req.params.id)
+      .update(req.body, ['*'])
+
+    res.status(201).json(data)
+  } catch (err) {
+    res.status(500).json({
+      message: `Could not patch the attic: ${err}`
+    })
+  }
+
+})
+
 server.patch('/attics/:id', (req, res) => {
   console.log('Backend data:', req.body);
   knex('attics')
@@ -482,37 +589,37 @@ server.patch('/attics/:id', (req, res) => {
 
 server.patch('/attics/withimage/:id', upload.single('image'), async (req, res) => {
 
-    var s3 = new AWS.S3();
-    var awsImgUrl = ''
+  var s3 = new AWS.S3();
+  var awsImgUrl = ''
 
-    let imageKey = randomstring.generate();
+  let imageKey = randomstring.generate();
 
-    var params = {
-      Bucket: awsBucket,
-      Key: imageKey,
-      Body: req.file.buffer,
-    };
+  var params = {
+    Bucket: awsBucket,
+    Key: imageKey,
+    Body: req.file.buffer,
+  };
 
-    try {
-      var uploadResponse = await s3.upload(params).promise();
-      awsImgUrl = uploadResponse.Location;
-      console.log(`File uploaded successfully. ${uploadResponse.Location}`);
+  try {
+    var uploadResponse = await s3.upload(params).promise();
+    awsImgUrl = uploadResponse.Location;
+    console.log(`File uploaded successfully. ${uploadResponse.Location}`);
 
 
-      req.body.picture_url = awsImgUrl
+    req.body.picture_url = awsImgUrl
 
-      console.log(req.body)
+    console.log(req.body)
 
-      let data = await knex('attics')
-        .where('id', req.params.id)
-        .update(req.body, ['*'])
+    let data = await knex('attics')
+      .where('id', req.params.id)
+      .update(req.body, ['*'])
 
-      res.status(201).json(data)
-    } catch (err) {
-      res.status(500).json({
-        message: `Could not patch the attic: ${err}`
-      })
-    }
+    res.status(201).json(data)
+  } catch (err) {
+    res.status(500).json({
+      message: `Could not patch the attic: ${err}`
+    })
+  }
 
 })
 
@@ -550,37 +657,37 @@ server.patch('/attics/:id', (req, res) => {
 
 server.patch('/items/withimage/:id', upload.single('image'), async (req, res) => {
 
-    var s3 = new AWS.S3();
-    var awsImgUrl = ''
+  var s3 = new AWS.S3();
+  var awsImgUrl = ''
 
-    let imageKey = randomstring.generate();
+  let imageKey = randomstring.generate();
 
-    var params = {
-      Bucket: awsBucket,
-      Key: imageKey,
-      Body: req.file.buffer,
-    };
+  var params = {
+    Bucket: awsBucket,
+    Key: imageKey,
+    Body: req.file.buffer,
+  };
 
-    try {
-      var uploadResponse = await s3.upload(params).promise();
-      awsImgUrl = uploadResponse.Location;
-      console.log(`File uploaded successfully. ${uploadResponse.Location}`);
+  try {
+    var uploadResponse = await s3.upload(params).promise();
+    awsImgUrl = uploadResponse.Location;
+    console.log(`File uploaded successfully. ${uploadResponse.Location}`);
 
 
-      req.body.picture_url = awsImgUrl
+    req.body.picture_url = awsImgUrl
 
-      console.log(req.body)
+    console.log(req.body)
 
-      let data = await knex('items')
-        .where('id', req.params.id)
-        .update(req.body, ['*'])
+    let data = await knex('items')
+      .where('id', req.params.id)
+      .update(req.body, ['*'])
 
-      res.status(201).json(data)
-    } catch (err) {
-      res.status(500).json({
-        message: `Could not patch the attic: ${err}`
-      })
-    }
+    res.status(201).json(data)
+  } catch (err) {
+    res.status(500).json({
+      message: `Could not patch the attic: ${err}`
+    })
+  }
 
 })
 

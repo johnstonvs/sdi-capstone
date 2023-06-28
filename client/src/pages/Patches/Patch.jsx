@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LoggedInContext } from "../../App.js";
+import { LoggedInContext, LoadingContext } from "../../App.js";
 import { MdReport } from "react-icons/md";
-import { ReportForm } from '../../components/index'
+import { ReportForm, Loader } from '../../components/index'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './patch.css';
@@ -12,6 +12,7 @@ const Patch = () => {
     const [patch, setPatch] = useState([]);
     const [userName, setUserName] = useState('');
     const { loggedIn } = useContext(LoggedInContext);
+    const { loading, setLoading } = useContext(LoadingContext);
     const location = useLocation();
     const nav = useNavigate()
 
@@ -24,6 +25,7 @@ const Patch = () => {
 
 
     useEffect(() => {
+      setLoading(true)
         fetch(`http://localhost:8080/patches/${id}`)
         .then(res => res.json())
         .then(data => setPatch(data[0]))
@@ -33,7 +35,9 @@ const Patch = () => {
     useEffect(() => {
         fetch(`http://localhost:8080/users/${patch.user_id}`)
             .then(res => res.json())
-            .then(data => setUserName(data[0].name))
+            .then(data => {
+              setUserName(data[0].name)
+              setLoading(false)})
             .catch(err => console.error(err))
     },[patch])
 
@@ -63,7 +67,12 @@ const Patch = () => {
     }
 
     return (
-      <>
+      loading ? (
+        <div className="flex justify-center items-center h-screen">
+        <Loader />
+        </div>
+      ) : (
+<>
         {loggedIn.isLoggedIn ?
           <div className='bg-gray-700/25 mt-28 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
             <div className='PatchContainer flex flex-row items-start'>
@@ -90,8 +99,10 @@ const Patch = () => {
           </div>
         }
         {showReportForm && <ReportForm patch={patch} closeForm={() => setShowReportForm(false)} />}
-        <ToastContainer />
+        <ToastContainer position="bottom-right" />
       </>
+      )
+
     )
 }
 

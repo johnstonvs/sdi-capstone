@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import PatchCard from '../../components/PatchCard/PatchCard';
-import ItemCard from '../../components/ItemCard/ItemCard';
 import Checkout from './Checkout';
+import { LoggedInContext, LoadingContext } from '../../App';
+import { PatchCard, ItemCard, Loader } from '../../components/index.js';
 
 const Cart = () => {
 
@@ -16,7 +16,10 @@ const Cart = () => {
   const [allItems, setAllItems] = useState([]);
   const [matchingItems, setMatchingItems] = useState([])
 
+  const { loading, setLoading } = useContext(LoadingContext);
+
   useEffect(() => {
+    setLoading(true)
     fetch(`http://localhost:8080/patches`)
       .then(res => res.json())
       .then(data => setAllPatches(data))
@@ -28,7 +31,9 @@ const Cart = () => {
   useEffect(() => {
     fetch(`http://localhost:8080/items`)
       .then(res => res.json())
-      .then(data => setAllItems(data))
+      .then(data => {
+        setAllItems(data)
+        setLoading(false)})
       .catch(err => console.log(err))
     const savedCart = JSON.parse(localStorage.getItem('itemCart'));
     setItemCartItems(savedCart);
@@ -71,11 +76,12 @@ const Cart = () => {
     matchingItems.map(item => {
       return itemTotal += +item.price;
     })
+    let total = (Math.round((itemTotal) * 100) / 100) + (Math.round(patchTotal * 100) / 100);
     return (
       <>
         <p className='mb-2'>Patch Total: {Math.round(patchTotal * 100) / 100}</p>
         <p className='mb-2'>Item Total: {Math.round(itemTotal * 100) / 100}</p>
-        <p className='mb-2'>Overall Total: {(Math.round(patchTotal * 100) / 100) + (Math.round(itemTotal * 100) / 100)}</p>
+        <p className='mb-2'>Overall Total: {(Math.round((total) * 100) / 100)}</p>
       </>
     );
   };
@@ -105,7 +111,12 @@ const Cart = () => {
   };
 
   return (
-    <div className='CartContainer mt-28 mb-20 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-5'>
+    loading ? (
+      <div className="flex justify-center items-center h-screen">
+      <Loader />
+      </div>
+    ) : (
+      <div className='CartContainer mt-28 mb-20 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-5'>
       <div className='PatchCartContainer w-full md:w-1/3 bg-gray-700/25 rounded-md shadow p-4'>
         {
           patchCartItems && patchCartItems.length > 0 ?
@@ -201,6 +212,8 @@ const Cart = () => {
         </div>
       </div>
     </div>
+    )
+
   )
 }
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LoggedInContext } from '../../App';
-import { PatchCard, ItemCard, StarRating } from '../../components/index.js';
+import { LoggedInContext, LoadingContext } from '../../App';
+import { PatchCard, ItemCard, StarRating, Loader } from '../../components/index.js';
 import { AiOutlineArrowRight, AiOutlineCaretRight } from 'react-icons/ai';
+import { motion } from "framer-motion";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,6 +12,7 @@ const Home = () => {
   const [items, setItems] = useState([]);
   const [patches, setPatches] = useState([]);
   const [baseList, setBaseList] = useState()
+  const { loading, setLoading } = useContext(LoadingContext);
   const { loggedIn } = useContext(LoggedInContext);
   const nav = useNavigate();
 
@@ -31,28 +33,41 @@ const Home = () => {
   };
 
   useEffect(() => {
+    setLoading(true)
+    const fetchData = async () => {
+      const responseAttics = await fetch('http://localhost:8080/attics');
+      const dataAttics = await responseAttics.json();
+      setBaseList(dataAttics);
 
-    fetch('http://localhost:8080/attics')
-      .then(res => res.json())
-      .then(data => setBaseList(data))
+      const responsePatches = await fetch('http://localhost:8080/patches');
+      const dataPatches = await responsePatches.json();
+      setPatches(dataPatches.slice(0, 5));
 
-    fetch('http://localhost:8080/patches')
-      .then(res => res.json())
-      .then(data => setPatches(data.slice(0, 5)))
+      let responseItems;
+      if (loggedIn.isLoggedIn && loggedIn.BOP) {
+        responseItems = await fetch(`http://localhost:8080/items?base=${loggedIn.BOP}`);
+      } else {
+        responseItems = await fetch('http://localhost:8080/items');
+      }
+      const dataItems = await responseItems.json();
+      setItems(dataItems.slice(0, 5));
 
-    if (loggedIn.isLoggedIn && loggedIn.BOP) {
-      fetch(`http://localhost:8080/items?base=${loggedIn.BOP}`)
-        .then(res => res.json())
-        .then(data => setItems(data.slice(0, 5)))
-    } else {
-      fetch('http://localhost:8080/items')
-        .then(res => res.json())
-        .then(data => setItems(data.slice(0, 5)))
-    }
-  }, [])
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+
 
   return (
-    <div className="HomeContainer mt-20 mb-20 flex flex-col h-fit">
+    loading ? (
+      <div className="flex justify-center items-center h-screen">
+      <Loader />
+      </div>
+    ) : (
+      <>
+      <div className="HomeContainer mt-20 mb-20 flex flex-col h-fit">
       <Slider {...settings}>
 
       <div className='StoreInfo flex flex-col justify-center p-4 rounded shadow-inner w-96 mt-6'>
@@ -79,9 +94,15 @@ const Home = () => {
               <h1 className="LoggedInBOPItemsHeader w-52 h-52 font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">{loggedIn.BOP} Products</h1>
               {items ? items.map((item, index) => {
                 return (
+                  <motion.div className="LoggedInItems flex flex-row space-x-4 justify-center"
+                  initial={{ x: -200, opacity: 0 }}
+                  animate={!loading ? { x: 0, opacity: 1 } : {}}
+                  transition={{ delay: index * 0.2, duration: .25 }}
+                  >
                   <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
                     <ItemCard item={item} />
                   </Link>
+                  </motion.div>
                 )
               }) : <p>No Items From Base {loggedIn.BOP}</p>}
               <Link
@@ -96,9 +117,15 @@ const Home = () => {
               <h1 className="LoggedInBOPPatchesHeader w-52 h-52 font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Recommended Patches</h1>
               {patches.map((patch, index) => {
                 return (
-                  <Link to={{ pathname: `/patches/patch/${patch.id}` }} key={index} className='Patch' >
+                  <motion.div className="LoggedInItems flex flex-row space-x-4 justify-center"
+                  initial={{ x: -200, opacity: 0 }}
+                  animate={!loading ? { x: 0, opacity: 1 } : {}}
+                  transition={{ delay: index * 0.2, duration: .25 }}
+                  >
+                  <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
                     <PatchCard patch={patch} />
                   </Link>
+                  </motion.div>
                 )
               })}
               <Link
@@ -116,9 +143,15 @@ const Home = () => {
               <h1 className="LoggedInItemsHeader font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Products</h1>
               {items.map((item, index) => {
                 return (
+                  <motion.div className="LoggedInItems flex flex-row space-x-4 justify-center"
+                  initial={{ x: -200, opacity: 0 }}
+                  animate={!loading ? { x: 0, opacity: 1 } : {}}
+                  transition={{ delay: index * 0.2, duration: .25 }}
+                  >
                   <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
                     <ItemCard item={item} />
                   </Link>
+                  </motion.div>
                 )
               })}
               <Link
@@ -133,9 +166,15 @@ const Home = () => {
               <h1 className="LoggedInPatchesHeader font-semibold text-xl self-center pr-3 pl-3 -rotate-45 text-[#45A29E]">Patches</h1>
               {patches.map((patch, index) => {
                 return (
+                  <motion.div className="LoggedInItems flex flex-row space-x-4 justify-center"
+                  initial={{ x: -200, opacity: 0 }}
+                  animate={!loading ? { x: 0, opacity: 1 } : {}}
+                  transition={{ delay: index * 0.2, duration: .25 }}
+                  >
                   <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
                     <PatchCard patch={patch} />
                   </Link>
+                  </motion.div>
                 )
               })}
               <Link
@@ -215,6 +254,8 @@ const Home = () => {
       )}
 
     </div>
+    </>
+    )
   );
 };
 

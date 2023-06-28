@@ -7,8 +7,8 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LoggedInContext, TagsContext } from '../../App';
-import { WishlistPatch, WishlistItem, ConfirmationModal } from '../../components/index.js';
+import { LoggedInContext, TagsContext, LoadingContext } from '../../App';
+import { WishlistPatch, WishlistItem, ConfirmationModal, Loader } from '../../components/index.js';
 
 const Profile = () => {
 
@@ -55,10 +55,13 @@ const Profile = () => {
   })
   const [imageUrl, setImageUrl] = useState('')
 
+  const { loading, setLoading } = useContext(LoadingContext);
+
   const navigate = useNavigate()
 
 
   useEffect(() => {
+    setLoading(true)
     // set loggedIn admin status
     fetch(`http://localhost:8080/users/${loggedIn.id}`)
       .then(res => res.json())
@@ -90,7 +93,9 @@ const Profile = () => {
     // fetch item wishlist with user_id
     fetch(`http://localhost:8080/items_wishlist?user_id=${loggedIn.id}`)
       .then(res => res.json())
-      .then(data => setItemWishList(data.map(item => item.item_id)))
+      .then(data => {
+        setItemWishList(data.map(item => item.item_id))
+        setLoading(false)})
 
     // if user is admin, fetch data for that attic
     // TODO (maybe fixes refresh issue)
@@ -146,33 +151,71 @@ const Profile = () => {
 
   const handleSubmit = () => {
 
-    fetch(`http://localhost:8080/users/${userData.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        name: newUser.name ? newUser.name : userData.name,
-        base: newUser.base ? newUser.base : userData.base
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (newUser.base) {
-          setLoggedIn({
-            ...loggedIn,
-            BOP: newUser.base
-          })
-        }
-        setSubmitting(false);
-      })
-      .catch(err => console.log(err))
+    if (imageUrl) {
 
-    setEditing(false);
-    setNewUser({
-      name: '',
-      base: ''
-    });
+      const formData = new FormData();
+      formData.append('name', newUser.name ? newUser.name : userData.name);
+      formData.append('base', newUser.base ? newUser.base : userData.base);
+      formData.append('image', imageUrl);
+
+      fetch(`http://localhost:8080/users/withimage/${userData.id}`, {
+        method: 'PATCH',
+        body: formData,
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (newUser.base) {
+            setLoggedIn({
+              ...loggedIn,
+              BOP: newUser.base
+            })
+          }
+          if (newUser.name) {
+            setLoggedIn({
+              ...loggedIn,
+              name: newUser.name
+            })
+          }
+          setSubmitting(false);
+          setEditing(false);
+          setNewUser({
+            name: '',
+            base: ''
+          });
+          setImageUrl('');
+        })
+        .catch((err) => console.error(err));
+
+    } else {
+
+      fetch(`http://localhost:8080/users/${userData.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          name: newUser.name ? newUser.name : userData.name,
+          base: newUser.base ? newUser.base : userData.base
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (newUser.base) {
+            setLoggedIn({
+              ...loggedIn,
+              BOP: newUser.base
+            })
+          }
+          setSubmitting(false);
+          setEditing(false);
+          setNewUser({
+            name: '',
+            base: ''
+          });
+        })
+        .catch(err => console.log(err))
+    }
+
   }
 
   const handlePost = () => {
@@ -299,6 +342,7 @@ const Profile = () => {
       name: '',
       base: ''
     });
+    setImageUrl('');
   }
 
   const handlePostDiscard = () => {
@@ -400,14 +444,19 @@ const Profile = () => {
 
   //Need to add another Ternary to check if logged in user is accessing profile for their userid
   return (
-    <div className='ProfilePageContainer mt-28 flex flex-row justify-center space-x-4 mb-20 w-full'>
+    loading ? (
+      <div className="flex justify-center items-center h-screen">
+      <Loader />
+      </div>
+    ) : (
+<div className='ProfilePageContainer mt-28 flex flex-row justify-center space-x-4 mb-20 w-full'>
       {!showWishlist ?
         <div className='w-screen'>
           <ConfirmationModal message='You have successfully posted to your attic feed!' show={postModal} handleClose={postModalClose} />
           <ConfirmationModal message='You have successfully added an item to your attic store!' show={stockModal} handleClose={() => setStockModal(false)} />
           {loggedIn.admin ?
             <div className='AdminProfile mr-20 ml-20 space-y-4 flex flex-col justify-center items-center'>
-              <div className='AdminInformation bg-gray-300 flex flex-col justify-center p-4 rounded shadow-inner w-1/2 pb-10'>
+              <div className='AdminInformation bg-gray-300 flex flex-col justify-center pb-8 pt-4 pr-12 pl-12 rounded shadow-inner w-fit pb-10'>
                 {/*Checks to see if user is editing or submitting profile to display correct container*/
                   editing ? !submitting ?
                     <div className='EditProfile flex flex-col'>
@@ -424,6 +473,14 @@ const Profile = () => {
                             })
                           ) : null}
                         </select>
+                        <div className='Image mt-3'>
+                          <label>Profile Picture</label>
+                          <input
+                            className="w-full rounded mb-4"
+                            type="file"
+                            onChange={(e) => setImageUrl(e.target.files[0])}
+                          />
+                        </div>
                         <div className='EditButtons flex flex-row content-center space-x-4'>
                           <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB] ' onClick={() => setSubmitting(true)}>Submit</button>
                           <button className='EditDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff5c33]' onClick={handleDiscard}>Discard</button>
@@ -434,7 +491,8 @@ const Profile = () => {
                       <h1 className='text-2xl text-[#ff3300] font-semibold mb-3 text-center'>Make the following changes?</h1>
                       {newUser.name ? <p>Name: <span className='text-[#45A29E] font-semibold'>{newUser.name}</span> </p> : null}
                       {newUser.base ? <p>Base: <span className='text-[#45A29E] font-semibold'>{newUser.base}</span> </p> : null}
-                      {!newUser.name && !newUser.base ? <p className='text-[#45A29E] font-semibold'>No changes will be made.</p> : null}
+                      {imageUrl ? <p className='text-[#45A29E] font-semibold'>New Profile Image</p> : null}
+                      {!newUser.name && !newUser.base && !imageUrl ? <p className='text-[#45A29E] font-semibold'>No changes will be made.</p> : null}
                       <div className='EditButtons flex flex-row content-center space-x-4'>
                         <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB]' onClick={handleSubmit}>Submit</button>
                         <button className='EditDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff5c33]' onClick={handleDiscard}>Discard</button>
@@ -444,7 +502,7 @@ const Profile = () => {
                     <>
                       <h1 className='Name text-3xl text-[#45A29E] font-semibold mb-5 text-center'>Admin Profile</h1>
                       <div className='AdminInfo flex flex-row space-x-12 justify-center'>
-                        <div className='bg-gray-600 w-64 h-64 rounded'></div>
+                        {userData.picture_url ? <div className='bg-gradient-to-r from-gray-500 to-gray-700 rounded flex flex-col place-content-center p-1 w-fit h-fit'><img src={userData.picture_url} alt={userData.name} className='w-52 h-52 rounded-lg object-cover'/></div> : <div className='bg-gradient-to-r from-gray-500 to-gray-700 w-64 h-64 rounded flex flex-col place-content-center'><p className='place-self-center text-white'>Edit profile to add a picture</p></div>}
                         <div className='flex flex-col'>
                           <div className='self-center space-y-3'>
                             <p><span className='font-semibold'>Name: </span>{userData.name}</p>
@@ -461,10 +519,10 @@ const Profile = () => {
                 }
               </div>
               {/*Admin tools to add items to their store, post to their feed, */}
-              <div className='AdminTools flex flex-col bg-gray-300 align-center p-4 rounded shadow-inner w-1/3'>
+              <div className='AdminTools flex flex-col bg-gray-300 align-center p-4 rounded shadow-inner w-1/4'>
                 { // if admin is posting, show posting tool
                   posting ?
-                    <div className='PostTool flex flex-col w-1/2 place-self-center max-w-lg'> {/* posting tool */}
+                    <div className='PostTool flex flex-col place-self-center w-full'> {/* posting tool */}
                       <h1 className='Name text-2xl text-[#45A29E] font-semibold mb-3 text-center'>Make a Post</h1>
                       <label className='NameLabel text-[#222222]'>Header</label>
                       <input name='header' className='EditHeader w-full p-2 mb-4 bg-white rounded-md shadow mt-1' placeholder='Something eye catching...' type='text' required onChange={(e) => handlePostChange(e)} />
@@ -576,13 +634,13 @@ const Profile = () => {
                           }
                         </div>
                         :
-                        <div>
+                        <div >
                           <h1 className='Name text-2xl text-[#45A29E] font-semibold mb-3 text-center'>Admin Tools</h1>
                           <div className='AdminButtons flex flex-row justify-center space-x-4'>
                             <button className='AtticInfoButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setShowAttic(true)}>Attic Info</button>
                             <button className='PostButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setPosting(true)}>Post to Feed</button>
                             <button className='AddItemsButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => setStocking(true)}>Add Items</button>
-                            <button className='AddItemsButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => navigate(`/profile/${loggedIn.id}/adminitems`)}>Edit Items</button>
+                            <button className='AddItemsButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280]' onClick={() => navigate(`/profile/${loggedIn.id}/adminitems`)}>Stocked Items</button>
                           </div>
                         </div>
                 }
@@ -590,7 +648,7 @@ const Profile = () => {
             </div>
             :
             <div className='UserProfile flex flex-col w-screen mt-7 place-self-center'>
-              <div className='ProfileInformation bg-gray-300 flex flex-col p-4 rounded shadow-inner place-self-center'>
+              <div className='ProfileInformation w-1/3 bg-gray-300 flex flex-col p-6 rounded shadow-inner place-self-center'>
                 {/*Checks to see if user is editing or submitting profile to display correct container*/
                   editing ? !submitting ?
                     <div className='EditProfile flex flex-col'>
@@ -607,6 +665,14 @@ const Profile = () => {
                             })
                           ) : null}
                         </select>
+                        <div className='Image mt-3'>
+                          <label>Profile Picture</label>
+                          <input
+                            className="w-full rounded mb-4"
+                            type="file"
+                            onChange={(e) => setImageUrl(e.target.files[0])}
+                          />
+                        </div>
                         <div className='EditButtons flex flex-row content-center space-x-4'>
                           <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB] ' onClick={() => setSubmitting(true)}>Submit</button>
                           <button className='EditDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff5c33]' onClick={handleDiscard}>Discard</button>
@@ -617,7 +683,8 @@ const Profile = () => {
                       <h1 className='text-2xl text-[#ff3300] font-semibold mb-3 text-center'>Make the following changes?</h1>
                       {newUser.name ? <p>Name: <span className='text-[#45A29E] font-semibold'>{newUser.name}</span> </p> : null}
                       {newUser.base ? <p>Base: <span className='text-[#45A29E] font-semibold'>{newUser.base}</span> </p> : null}
-                      {!newUser.name && !newUser.base ? <p className='text-[#45A29E] font-semibold'>No changes will be made.</p> : null}
+                      {imageUrl ? <p className='text-[#45A29E] font-semibold'>New Profile Image</p> : null}
+                      {!newUser.name && !newUser.base && !imageUrl ? <p className='text-[#45A29E] font-semibold'>No changes will be made.</p> : null}
                       <div className='EditButtons flex flex-row content-center space-x-4'>
                         <button className='EditSubmit bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB]' onClick={handleSubmit}>Submit</button>
                         <button className='EditDiscard bg-[#ff3300] text-white p-2 rounded mt-4 hover:bg-[#ff5c33]' onClick={handleDiscard}>Discard</button>
@@ -627,7 +694,7 @@ const Profile = () => {
                     <div className='align-center place-self-center'>
                       <h1 className='Name text-3xl text-[#45A29E] font-semibold mb-5 text-center place-self-center w-1/2'>Profile</h1>
                       <div className='AdminInfo flex flex-row space-x-12 justify-center'>
-                        <div className='bg-gray-600 w-64 h-64 rounded'></div>
+                      {userData.picture_url ? <div className='bg-gradient-to-r from-gray-500 to-gray-700 rounded flex flex-col place-content-center p-1 w-fit h-fit'><img src={userData.picture_url} alt={userData.name} className='w-52 h-52 rounded-lg object-cover'/></div> : <div className='bg-gradient-to-r from-gray-500 to-gray-700 w-64 h-64 rounded flex flex-col place-content-center'><p className='place-self-center text-white'>Edit profile to add a picture</p></div>}
                         <div className='flex flex-col'>
                           <div className='self-center space-y-3'>
                             <p><span className='font-semibold'>Name: </span>{userData.name}</p>
@@ -686,6 +753,8 @@ const Profile = () => {
           <button className='WishlistButton bg-[#003b4d] text-white p-2 rounded mt-4 hover:bg-[#006280] h-10 w-64 place-self-center' onClick={() => setShowWishlist(false)}>Back to Profile</button>
         </div>}
     </div>
+    )
+
   )
 }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom'
-import { RatingForm, LocationFeed, LocationReviews } from '../../components/index'
-import { LoggedInContext } from '../../App'
+import { RatingForm, LocationFeed, LocationReviews, Loader } from '../../components/index'
+import { LoggedInContext, LoadingContext } from '../../App'
 import { FaStar, FaStarHalf } from 'react-icons/fa';
 
 const Locations = () => {
@@ -16,6 +16,7 @@ const Locations = () => {
   const { loggedIn } = useContext(LoggedInContext)
   const [view, setView] = useState('feed');
   const [reviewAdded, setReviewAdded] = useState(false);
+  const { loading, setLoading } = useContext(LoadingContext);
 
   let location = useLocation()
 
@@ -53,11 +54,14 @@ const Locations = () => {
   const fetchAtticReviews = () => {
     fetch(`http://localhost:8080/attic_reviews`)
       .then(res => res.json())
-      .then(data => setReviews(data))
+      .then(data => {
+        setLoading(false)
+        setReviews(data)})
       .catch(err => console.log(err))
   }
 
   useEffect(() => {
+    setLoading(true)
     fetchAttics()
     fetchAtticReviews()
   }, [])
@@ -95,7 +99,12 @@ const Locations = () => {
   }, [reviewAdded])
 
   return (
-    <div className='LocationsContainer gap-8 p-6 mt-28 mb-20 flex flex-col justify-center items-center'>
+    loading ? (
+      <div className="flex justify-center items-center h-screen">
+      <Loader />
+      </div>
+    ) : (
+      <div className='LocationsContainer gap-8 p-6 mt-28 mb-20 flex flex-col justify-center items-center'>
       {selectedAttic ? (
         <>
           <div className='LocationAbout flex flex-col p-6 mb-10 w-1/3 bg-gray-300 rounded-xl shadow-lg'>
@@ -142,7 +151,7 @@ const Locations = () => {
       ) : (
         <div className='LocationsSearchContainer bg-gray-300 flex flex-col items-center justify-center m-6 p-6 rounded-xl shadow-lg'>
           <h1 className='text-[#45A29E] text-3xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4 mb-10'>Search for a location!</h1>
-          <h1 className='text-[#45A29E] text-2xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4'>Just looking around?</h1>
+          <h1 className='text-[#222222] text-xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4'>Just looking around?</h1>
           <div className='LocationsDropDownContainer mb-4'>
             {attics ? (
               <select className='LocationsDropDown w-full p-2 mb-4 bg-white rounded-md shadow mt-1 text-[#222222]' onChange={selectChange}>
@@ -165,7 +174,7 @@ const Locations = () => {
             )}
           </div>
           <div className='border-b-2 border-gray-400 w-full m-5'></div>
-          <h1 className='text-[#45A29E] text-2xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4'>Know what you're looking for?</h1>
+          <h1 className='text-[#222222] text-xl font-semibold bg-gray-300 rounded-md text-center p-4 ml-4'>Know what you're looking for?</h1>
           <div className='LocationsSearchBarContainer'>
             <input className='LocationsSearchBar w-full p-2 bg-white rounded-md shadow mt-1'
               placeholder='Enter a base...'
@@ -179,6 +188,8 @@ const Locations = () => {
           </div>
         </div>)}
     </div>
+    )
+
   )
 
 }

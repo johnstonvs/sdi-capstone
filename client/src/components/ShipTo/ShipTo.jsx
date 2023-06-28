@@ -24,10 +24,10 @@ const ShipTo = ({ setLocation }) => {
   }
 
   return (
-    <div className='bg-white rounded shadow p-4 m-4'>
+    <div className='bg-white rounded shadow p-4 m-4 w-3/4 m-auto mt-10'>
       <h2 className='text-[#45A29E] text-3xl font-semibold mb-4 text-center' >Select an attic for shipping:</h2>
       {attics.map((attic) => (
-        <div className='flex items-center bg-gray-100 gap-2 shadow-md p-4 m-4 hover:scale-105' key={attic.location} onClick={() => handleDivClick(attic.location)}>
+        <div className='flex items-center bg-gray-300 gap-2 rounded shadow-md p-4 m-4 hover:scale-105' key={attic.location} onClick={() => handleDivClick(attic.location)}>
           <input
             type="radio"
             id={attic.location}

@@ -5,6 +5,7 @@ import { Navbar, BottomNavbar } from './components/index.js';
 
 export const TagsContext = createContext();
 export const LoggedInContext = createContext();
+export const LoadingContext = createContext();
 
 function App() {
 
@@ -21,10 +22,12 @@ function App() {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : defaultLogin;
   })
+  const [loading, setLoading] = useState(true);
 
   return (
       <Router>
         <TagsContext.Provider value={{tags}}>
+        <LoadingContext.Provider value={{loading, setLoading}}>
         <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }} >
           <Navbar />
             <Routes>
@@ -44,6 +47,7 @@ function App() {
             </Routes>
           <BottomNavbar className='BottomNavbar'/>
         </LoggedInContext.Provider >
+        </LoadingContext.Provider>
         </ TagsContext.Provider >
       </Router>
   );

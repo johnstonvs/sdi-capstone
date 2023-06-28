@@ -19,3 +19,4 @@ export { default as Veteran } from "./Veteran/Veteran";
 export { default as ShipTo } from "./ShipTo/ShipTo";
 export { default as ReportForm } from "./ReportForm/ReportForm";
 export { default as EditItem } from "./EditItem/EditItem";
+export { default as Loader } from "./Loader/Loader";

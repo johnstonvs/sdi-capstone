@@ -17,6 +17,7 @@ exports.up = function(knex) {
     table.increments('id');
     table.string('name');
     table.string('email');
+    table.string('picture_url');
     table.string('sponsor_name');
     table.string('sponosr_DOD_ID');
     table.string('base');
@@ -103,7 +104,7 @@ exports.up = function(knex) {
     table.string('patch_id', 'integer ARRAY');
     table.string('location');
     table.string('total');
-    table.timestamps(true);
+    table.timestamps(true, true);
   })
 };
 

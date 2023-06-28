@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { LoggedInContext } from "../../App.js";
+import { LoggedInContext, LoadingContext } from "../../App.js";
+import {Loader} from '../../components/index'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './item.css';
@@ -9,6 +10,7 @@ const Item = () => {
   const [item, setItem] = useState([]);
   const [attics, setAttics] = useState([]);
   const { loggedIn } = useContext(LoggedInContext);
+  const { loading, setLoading } = useContext(LoadingContext);
   const location = useLocation();
   let split = location.pathname.split('/');
   const id = split[3];
@@ -23,11 +25,13 @@ const Item = () => {
         newData = fixTags(newData[0])
         setItem(newData);
         console.log(newData)
+        setLoading(false)
       })
       .catch(err => console.error(err))
   }, [attics])
 
   useEffect(() => {
+    setLoading(true)
     fetch('http://localhost:8080/attics')
       .then(res => res.json())
       .then(data => setAttics(data))
@@ -80,7 +84,12 @@ const Item = () => {
 
 
   return (
-    <div className='bg-gray-700/25 mt-28 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
+    loading ? (
+      <div className="flex justify-center items-center h-screen">
+      <Loader />
+      </div>
+    ) : (
+      <div className='bg-gray-700/25 mt-28 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
       <div className='ItemContainer flex flex-row items-start'>
         <div className="flex justify-start items-start mr-10">
           <img className="ItemImage w-96 object-cover object-center drop-shadow-xl rounded-lg filter brightness-110 hover:brightness-125 transition-all ease-in-out" src={item.picture_url} alt={item.name} />
@@ -117,8 +126,10 @@ const Item = () => {
             </div>
             </>
           }
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </div>
+    )
+
   )
 }
 
