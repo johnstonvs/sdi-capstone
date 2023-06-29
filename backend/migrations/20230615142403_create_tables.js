@@ -24,7 +24,7 @@ exports.up = function(knex) {
     table.string('hashed_password');
     table.boolean('attic_admin');
     table.integer('attic_id');
-    table.foreign('attic_id').references('users.id').onUpdate('CASCADE').onDelete('SET NULL');
+    table.foreign('attic_id').references('attics.id').onUpdate('CASCADE').onDelete('SET NULL');
   })
   .createTable('attic_reviews', (table) => {
     table.increments('id');

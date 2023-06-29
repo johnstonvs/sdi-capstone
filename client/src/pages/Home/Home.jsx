@@ -4,7 +4,7 @@ import { LoggedInContext, LoadingContext } from '../../App';
 import { PatchCard, ItemCard, StarRating, Loader } from '../../components/index.js';
 import { AiOutlineArrowRight, AiOutlineCaretRight } from 'react-icons/ai';
 import { motion } from "framer-motion";
-import HomeLogo from '../../assets/logo.jpg'
+import HomeLogo from '../../assets/logo.png'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -69,18 +69,14 @@ const Home = () => {
       </div>
     ) : (
       <div className='relative'>
-        <div className='background-image absolute'
+        <div className='background-image'
             style={{
-            backgroundImage: `url(${HomeLogo})`, //style="background-image: rgba(135, 80, 156, 0.9)), url(img/hero-bg.jpg)">
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
-            backgroundSize: 'fit',
-            backgroundRepeat: 'no-repeat',
+            backgroundImage: `url(${HomeLogo})`,
           }}
         >
 
         </div>
-        <div className="HomeContainer pt-20 pb-20 flex flex-col h-fit">
+        <div className="HomeContainer pt-20 pb-32 flex flex-col h-fit">
           <Slider {...settings}>
 
             <div className='StoreInfo flex flex-col justify-center p-4 rounded shadow-inner w-96 mt-6'>

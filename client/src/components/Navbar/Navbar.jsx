@@ -11,7 +11,7 @@ import { TbLocation } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
 import { LoggedInContext } from '../../App'
 import useOnclickOutside from "react-cool-onclickoutside";
-import logo from "../../assets/logo.jpg";
+import logo from "../../assets/headerlogo.png";
 
 
 const Navbar = () => {
