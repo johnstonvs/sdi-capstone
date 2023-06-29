@@ -748,8 +748,8 @@ const Profile = () => {
                   {itemList.length === 0 ? <p className='w-36 text-center text-[#9bb4bf] animate-pulse'>You wish for no items</p> : null}
                   {itemList.map((item, index) => {
                     return (
-                      <div className='WishlistItem w-48 mb-4 flex flex-col'>
-                        <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
+                      <div className='WishlistItem w-48 mb-4 flex flex-col' key={index}>
+                        <Link to={{ pathname: `/shop/item/${item.id}` }}  className='Item' >
                           <WishlistItem item={item} />
                         </Link>
                         <button className='text-[#ff4d4d] hover:text-[#ff9980] justify-self-center' onClick={() => removeItem(item.id, userData.id)}>Remove</button>

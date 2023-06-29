@@ -121,10 +121,8 @@ const Cart = () => {
           patchCartItems && patchCartItems.length > 0 ?
             matchingPatches.map((patch, index) => {
               return (
-                <>
-
-                  <div className='PatchCardContainer m-auto bg-gray-300 relative flex flex-row p-4 justify-center rounded-xl shadow-lg mb-4'>
-                    <Link to={{ pathname: `/patches/patch/${patch.id}` }} key={index} className='Patch' >
+                  <div className='PatchCardContainer m-auto bg-gray-300 relative flex flex-row p-4 justify-center rounded-xl shadow-lg mb-4' key={index}>
+                    <Link to={{ pathname: `/patches/patch/${patch.id}` }} className='Patch' >
                       <img className='PatchImage object-cover object-center w-40 h-40 m-auto' src={patch.picture_url} alt={patch.name} />
                       <div className='m-auto'>
                         <h2 className='PatchName text-center font-semibold text-[#45A29E]'>{patch.name}</h2>
@@ -135,7 +133,6 @@ const Cart = () => {
                       <button className='bg-red-500 text-white p-1 w-8 rounded-full hover:bg-red-700 text-center hover:scale-105' onClick={() => removePatch(patch)}>X</button>
                     </div>
                   </div>
-                </>
               );
             })
             :
@@ -149,9 +146,8 @@ const Cart = () => {
           itemCartItems && itemCartItems.length > 0 ?
             matchingItems.map((item, index) => {
               return (
-                <>
-                  <div className='ItemCardContainer m-auto bg-gray-300 relative flex flex-row p-4 justify-center rounded-xl shadow-lg mb-4'>
-                    <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
+                  <div className='ItemCardContainer m-auto bg-gray-300 relative flex flex-row p-4 justify-center rounded-xl shadow-lg mb-4' key={index}>
+                    <Link to={{ pathname: `/shop/item/${item.id}` }}  className='Item' >
                       <img className='ItemImage object-cover object-center w-40 h-40 m-auto' src={item.picture_url} alt={item.name} />
                       <div className='m-auto'>
                         <h2 className='ItemName text-center font-semibold text-[#45A29E]'>{item.name}</h2>
@@ -162,7 +158,6 @@ const Cart = () => {
                       <button className='bg-red-500 text-white p-1 w-8 rounded-full hover:bg-red-700 text-center hover:scale-105' onClick={() => removeItem(item)}>X</button>
                     </div>
                   </div>
-                </>
               );
             })
             :
@@ -176,7 +171,7 @@ const Cart = () => {
           {
             matchingPatches.map((patch, index) => {
               return (
-                <div className='flex justify-between border-b py-2'>
+                <div className='flex justify-between border-b py-2' key={index}>
                   <span className=''>{patch.name}</span>
                   <span className=''>{patch.price}</span>
                 </div>
@@ -188,7 +183,7 @@ const Cart = () => {
           {
             matchingItems.map((item, index) => {
               return (
-                <div className='flex justify-between border-b py-2'>
+                <div className='flex justify-between border-b py-2' key={index}>
                   <span className=''>{item.name}</span>
                   <span className=''>{item.price}</span>
                 </div>

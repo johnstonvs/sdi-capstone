@@ -184,7 +184,7 @@ server.get('/users/:id/orders', (req, res) => {
       return result;
     })
 
-    .then(finalData => { console.log(result); res.status(200).json(result) })
+    .then(finalData => res.status(200).json(result))
     .catch(err => res.status(404).json({ message: `Could not get order with id ${req.params.id}: ${err}` }))
 })
 

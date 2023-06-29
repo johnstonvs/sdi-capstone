@@ -4,9 +4,11 @@ import { LoggedInContext, LoadingContext } from '../../App';
 import { PatchCard, ItemCard, StarRating, Loader } from '../../components/index.js';
 import { AiOutlineArrowRight, AiOutlineCaretRight } from 'react-icons/ai';
 import { motion } from "framer-motion";
+import HomeLogo from '../../assets/logo.jpg'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import './Home.css'
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -66,22 +68,33 @@ const Home = () => {
         <Loader />
       </div>
     ) : (
-      <>
-        <div className="HomeContainer mt-20 mb-20 flex flex-col h-fit">
+      <div className='relative'>
+        <div className='background-image absolute'
+            style={{
+            backgroundImage: `url(${HomeLogo})`, //style="background-image: rgba(135, 80, 156, 0.9)), url(img/hero-bg.jpg)">
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
+            backgroundSize: 'fit',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >
+
+        </div>
+        <div className="HomeContainer pt-20 pb-20 flex flex-col h-fit">
           <Slider {...settings}>
 
             <div className='StoreInfo flex flex-col justify-center p-4 rounded shadow-inner w-96 mt-6'>
-              <h1 className='StoreInfoHeading mb-2 text-center font-semibold text-xl text-[#45A29E]'>Browse the Shop</h1>
+              <h1 className='StoreInfoHeading mb-2 text-center font-semibold text-xl text-white'>Browse the Shop</h1>
               <p className='StoreInfoBody bg-gray-300 w-screen p-3 text-center'>Visit the shop page to browse affordable items at your base's Airman's Attic or shippable items at other bases.</p>
             </div>
 
             <div className='LocationsInfo flex flex-col justify-center p-4 shadow-inner w-64 mt-6'>
-              <h1 className='LocationsInfoHeading mb-2 text-center font-semibold text-xl text-[#45A29E]'>Find Attic's</h1>
+              <h1 className='LocationsInfoHeading mb-2 text-center font-semibold text-xl text-white'>Find Attic's</h1>
               <p className='LocationsInfoBody bg-gray-300 w-screen p-3 text-center'>Use the location page to find Attics at other bases and browse their selections.</p>
             </div>
 
             <div className='PatchesInfo flex flex-col justify-center p-4 shadow-inner w-64 mt-6'>
-              <h1 className='PatchesInfoHeading mb-2 text-center font-semibold text-xl text-[#45A29E]'>Trade Patches</h1>
+              <h1 className='PatchesInfoHeading mb-2 text-center font-semibold text-xl text-white'>Trade Patches</h1>
               <p className='PatchesInfoBody bg-gray-300 w-screen p-3 text-center'>Visit the patches page to find patches you may like, or post your patches online to sell or trade with other patch connoisseurs.</p>
             </div>
 
@@ -95,12 +108,12 @@ const Home = () => {
                   <div className='flex flex-row space-x-3 rounded-lg p-3 h-fit w-fit h-96 place-self-center justify-center '>
                     {items ? items.map((item, index) => {
                       return (
-                        <motion.div className="LoggedInItems flex flex-row space-x-4 justify-center"
+                        <motion.div key={index}  className="LoggedInItems flex flex-row space-x-4 justify-center"
                           initial={{ x: -200, opacity: 0 }}
                           animate={!loading ? { x: 0, opacity: 1 } : {}}
                           transition={{ delay: index * 0.2, duration: .25 }}
                         >
-                          <Link to={{ pathname: `/shop/item/${item.id}` }} key={index} className='Item' >
+                          <Link to={{ pathname: `/shop/item/${item.id}` }} className='Item' >
                             <ItemCard item={item} />
                           </Link>
                         </motion.div>
@@ -124,8 +137,9 @@ const Home = () => {
                           initial={{ x: -200, opacity: 0 }}
                           animate={!loading ? { x: 0, opacity: 1 } : {}}
                           transition={{ delay: index * 0.2, duration: .25 }}
+                          key={index}
                         >
-                          <Link to={{ pathname: `/shop/patch/${patch.id}` }} key={index} className='Patch' >
+                          <Link to={{ pathname: `/shop/patch/${patch.id}` }}  className='Patch' >
                             <PatchCard patch={patch} />
                           </Link>
                         </motion.div>
@@ -262,7 +276,7 @@ const Home = () => {
           )}
 
         </div>
-      </>
+      </div>
     )
   );
 };

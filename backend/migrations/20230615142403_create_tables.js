@@ -10,7 +10,7 @@ exports.up = function(knex) {
     table.string('email');
     table.string('address');
     table.string('hours');
-    table.string('picture_url');
+    table.string('picture_url', 100000);
     table.string('about');
   })
   .createTable('users', (table) => {
@@ -28,7 +28,7 @@ exports.up = function(knex) {
   })
   .createTable('attic_reviews', (table) => {
     table.increments('id');
-    table.string('body');
+    table.string('body', 500);
     table.integer('stars');
     table.timestamps(true, true);
     table.integer('user_id');
@@ -39,7 +39,7 @@ exports.up = function(knex) {
   .createTable('items', (table) => {
     table.increments('id');
     table.string('name');
-    table.string('description');
+    table.string('description', 500);
     table.decimal('price');
     table.string('picture_url');
     table.boolean('can_ship');
@@ -63,7 +63,7 @@ exports.up = function(knex) {
   .createTable('patches', (table) => {
     table.increments('id');
     table.string('name');
-    table.string('description');
+    table.string('description', 500);
     table.decimal('price');
     table.string('picture_url');
     table.integer('user_id');
@@ -91,7 +91,7 @@ exports.up = function(knex) {
     table.integer('review_id');
     table.integer('post_id');
     table.integer('user_id');
-    table.string('comment');
+    table.string('comment', 500);
     table.timestamps(true, true);
     table.foreign('user_id').references('users.id').onUpdate('CASCADE').onDelete('SET NULL');
     table.foreign('post_id').references('posts.id').onUpdate('CASCADE').onDelete('SET NULL');

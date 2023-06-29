@@ -24,7 +24,6 @@ const Item = () => {
         let newData = addLocation(data);
         newData = fixTags(newData[0])
         setItem(newData);
-        console.log(newData)
         setLoading(false)
       })
       .catch(err => console.error(err))
@@ -69,8 +68,7 @@ const Item = () => {
     })
       .then(res => res.json())
       .then(data => {
-        toast.success("Added to wishlist!")
-        console.log(data)})
+        toast.success("Added to wishlist!")})
       .catch(err => console.log(err))
   }
 
@@ -99,8 +97,8 @@ const Item = () => {
         {item?.tags?.length > 0 ? (
           <div className='flex flex-row gap-2 mt-3 text-white'>
             <p className='mr-1'>Tags:</p>
-            {item.tags.map((tag) => (
-              <Link className='hover:text-[#5DD3CB] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5DD3CB]' to={`/shop?tag=${tag.replace(/[{}]/g, "")}`}><p>{tag.replace(/[\[\]]/g, "")}</p></Link>
+            {item.tags.map((tag, index) => (
+              <Link key={index} className='hover:text-[#5DD3CB] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5DD3CB]' to={`/shop?tag=${tag.replace(/[{}]/g, "")}`}><p>{tag.replace(/[\[\]]/g, "")}</p></Link>
             ))}
           </div>
           ) : null}

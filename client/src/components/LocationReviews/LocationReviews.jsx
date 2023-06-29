@@ -91,22 +91,21 @@ const LocationReviews = ({ selectedAttic, reviewAdded }) => {
   return (
     <>
       {reviews.length > 0 ? (
-        <div className='FeedContainer gap-8 p-6 mt-4 justify-center items-center w-2/3'>
-          <h1 className='FeedHeader text-[#2D2D2D] text-3xl font-semibold bg-[#FFD700] rounded-t-xl shadow-lg text-center p-4 w-1/5 ml-4'>Reviews:</h1>
-          <div className='text-[#2D2D2D] font-semibold bg-[#FFD700] rounded-b-xl shadow-lg text-center p-2 w-1/5 ml-4'>
+        <div className='FeedContainer gap-8 p-6 justify-center items-center w-2/3 rounded'>
+          <div className='text-[#2D2D2D] font-semibold bg-[#FFD700]  shadow-lg rounded-lg text-center p-2 w-1/5 ml-4'>
             <label>Sort By: </label>
-            <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+            <select value={sortOrder} onChange={e => setSortOrder(e.target.value)} className='rounded'>
               <option value="newest">Newest</option>
               <option value="oldest">Oldest</option>
               <option value="stars">Highest Rating</option>
             </select>
           </div>
-          {reviews.map(review => (
-            <div key={review.id} className='PostContainer flex flex-col m-4 p-4 bg-[#F5DEB3] rounded-xl shadow-lg'>
+          {reviews.map((review, index) => (
+            <div key={index} className='PostContainer flex flex-col m-4 p-4 bg-[#F5DEB3] rounded-xl shadow-lg'>
               <p className='PostBody text-[#222222] mb-2 font-semibold'>{review.name}</p>
               <div className='flex flex-row space-x-10 mb-10 h-fit'>
                 <div className='bg-gradient-to-r from-gray-500 to-gray-700 rounded flex flex-col place-content-center p-1 w-fit h-fit'>{ userList.find(user => user.id === review.user_id).picture_url ?
-                  <img className='w-32 h-32 rounded-lg object-cover' src={userList.find(user => user.id === review.user_id).picture_url} alt=''></img>
+                  <img key={review.body} className='w-32 h-32 rounded-lg object-cover' src={userList.find(user => user.id === review.user_id).picture_url} alt=''></img>
                   :
                   <img className='w-32 h-32 rounded-lg object-cover' src='https://th.bing.com/th/id/OIP.eyhIau9Wqaz8_VhUIomLWgAAAA?pid=ImgDet&rs=1' alt=''></img>
                 }
@@ -124,10 +123,10 @@ const LocationReviews = ({ selectedAttic, reviewAdded }) => {
                 <p className='PostBody text-[#222222] mb-10 p-1'>{review.body}</p>
               </div>
               <h2 className='CommentsHeader text-[#2D2D2D] text-xl font-semibold mb-2'>Comments</h2>
-              {review.comments && review.comments.map(comment => (
-                <div className='CommentCard bg-white shadow-xl rounded-xl mb-4 p-3'>
+              {review.comments && review.comments.map((comment, index1) => (
+                <div className='CommentCard bg-white shadow-xl rounded-xl mb-4 p-3' key={index1}>
                   <p className='PostDate text-[#222222]'>{comment.name} on {parseDate(comment.created_at)}</p>
-                  <p key={comment.id} className='Comments text-[#222222] mb-2'>{comment.comment}</p>
+                  <p className='Comments text-[#222222] mb-2'>{comment.comment}</p>
                 </div>
               ))}
               {loggedIn.isLoggedIn ? (

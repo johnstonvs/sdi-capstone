@@ -50,7 +50,6 @@ const Shop = () => {
           if(bases.length === 0) {
             setBases([bopID]);
           } else {
-            console.log(bases)
           }
           filteredArr = newData.filter(item => item.attic_id === bopID)
         }

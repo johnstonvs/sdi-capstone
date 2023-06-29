@@ -100,7 +100,7 @@ const Patch = () => {
             </div>
           </ div>
           :
-          <div className='LogInToPurchase flex flex-col items-center p-8 bg-gray-300 rounded-md shadow-inner m-8'>
+          <div className='LogInToPurchase flex flex-col items-center p-8 bg-gray-300 rounded-md shadow-inner m-8 mt-28'>
             <h1 className='LoginNotification text-[#45A29E] text-2xl mb-4'>You must be logged in to Purchase Patches!</h1>
             <Link to='/login' className='LoginLink bg-[#2ACA90] text-white p-2 rounded hover:bg-[#5DD3CB] hover:scale-105 text-[#45A29E] text-1xl'>Login Here!</Link>
           </div>

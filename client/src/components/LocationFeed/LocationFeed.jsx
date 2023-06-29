@@ -69,22 +69,21 @@ const LocationFeed = ({ selectedAttic }) => {
   return (
     <>
     {posts.length > 0 ? (
-      <div className='FeedContainer gap-8 p-6 mt-4 justify-center items-center w-2/3'>
-      <h1 className='FeedHeader text-[#2D2D2D] text-3xl font-semibold bg-[#0088D0] rounded-t-xl shadow-lg text-center p-4 w-1/5 ml-4'>Feed:</h1>
-      <div className='text-[#2D2D2D] font-semibold bg-[#0088D0] rounded-b-xl shadow-lg text-center p-2 w-1/5 ml-4'>
+      <div className='FeedContainer gap-8 p-6 justify-center items-center w-2/3'>
+      <div className='text-[#2D2D2D] font-semibold bg-[#0088D0] rounded-lg shadow-lg text-center p-2 w-1/5 ml-4'>
         <label>Sort By: </label>
-        <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+        <select value={sortOrder} onChange={e => setSortOrder(e.target.value)} className='rounded'>
         <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
         </select>
       </div>
-        {posts.map(post => (
-            <div key={post.id} className='PostContainer flex flex-col m-4 p-4 bg-[#90E0EF] rounded-xl shadow-lg'>
+        {posts.map((post, index) => (
+            <div key={index} className='PostContainer flex flex-col m-4 p-4 bg-[#90E0EF] rounded-xl shadow-lg'>
                 <h1 className='PostHeader text-[#0077b6] text-3xl font-semibold mb-10'>{post.header}</h1>
                 <p className='PostBody text-[#222222] mb-10'>{post.body}</p>
                 <h2 className='CommentsHeader text-[#0077b6] text-xl font-semibold mb-2'>Comments</h2>
-                {post.comments && post.comments.map(comment => (
-                  <div className='CommentCard bg-white shadow-lg rounded-xl mb-4 p-3'>
+                {post.comments && post.comments.map((comment, index) => (
+                  <div className='CommentCard bg-white shadow-lg rounded-xl mb-4 p-3' key={index}>
                     <p className='PostDate text-[#222222]'>{comment.name} on {parseDate(comment.created_at)}</p>
                     <p key={comment.id} className='Comments text-[#222222] mb-2'>{comment.comment}</p>
                   </div>
