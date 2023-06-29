@@ -10,6 +10,7 @@ const ShipTo = ({ setLocation }) => {
     fetch(`http://localhost:8080/attics`)
     .then(res => res.json())
     .then(data => setAttics(data))
+    .then(setLocation(loggedIn.BOP ? loggedIn.BOP : null))
     .catch(err => console.log(err))
   }, [])
 
@@ -27,15 +28,16 @@ const ShipTo = ({ setLocation }) => {
     <div className='bg-white rounded shadow p-4 m-4 w-3/4 m-auto mt-10'>
       <h2 className='text-[#45A29E] text-3xl font-semibold mb-4 text-center' >Select an attic for shipping:</h2>
       {attics.map((attic) => (
-        <div className='flex items-center bg-gray-300 gap-2 rounded shadow-md p-4 m-4 hover:scale-105' key={attic.location} onClick={() => handleDivClick(attic.location)}>
+        <div className='flex items-center bg-gray-300 gap-2 rounded shadow-md p-4 m-4 hover:scale-105' key={attic.location} onClick={() => {handleDivClick(attic.location)}}>
           <input
             type="radio"
             id={attic.location}
             name="attic"
             value={attic.location}
             checked={selectedAttic === attic.location}
-            onChange={handleAtticSelection}
+            onChange={(event) => {handleAtticSelection(event)}}
             className='text-[#45A29E]'
+            required
           />
           <label className='text-[#222222]' htmlFor={attic.id}>{attic.location}</label>
         </div>

@@ -119,9 +119,9 @@ const Checkout = () => {
             return itemTotal += +item.price;
         });
 
-        let allTotal = (Math.round((Math.round((itemTotal) * 100) / 100) + (Math.round(patchTotal * 100) / 100) * 100) / 100)
+        let allTotal = (Math.round((itemTotal) * 100) / 100) + (Math.round(patchTotal * 100) / 100)
         return (
-            <div className='TotalDisplay flex pt-3 justify-evenly grid grid-rows-3'>
+            <div className='TotalDisplay flex pt-4 justify-left grid grid-rows-3'>
                 <p className='mb-2'>Patch Total: {Math.round(patchTotal * 100) / 100}</p>
                 <p className='mb-2'>Item Total: {Math.round(itemTotal * 100) / 100}</p>
                 <p className='mb-2'>Overall Total: {allTotal}</p>
@@ -129,7 +129,7 @@ const Checkout = () => {
         );
     };
 
-    const setLocation = location => {
+    const setLocation = (location) => {
         setShippingLocation(location)
     };
 
@@ -264,7 +264,7 @@ const Checkout = () => {
             return itemTotal += +item.price;
         });
 
-        let total = (Math.round((Math.round((itemTotal) * 100) / 100) + (Math.round(patchTotal * 100) / 100) * 100) / 100)
+        let total = patchTotal + itemTotal;
 
         if (receipt) {
             let itemsOrdered = itemCartItems.map((item) => `${item.name} (${item.price})`).join('\n')
@@ -312,8 +312,8 @@ const Checkout = () => {
     const summary = () => {
 
         return (
-            <div className='SummaryContainer w-full bg-gray-300 rounded-md shadow p-7'>
-                <div className='PatchSummary pb-3 grid grid-cols-2 gap-3'>
+            <div className='SummaryContainer w-full bg-gray-300 p-6'>
+                <div className='PatchSummary pb-3 mt-3 grid grid-cols-2 gap-3 border-b border-[#222222]'>
                     {matchingPatches.map(patch => {
                         return (
                             <>
@@ -323,7 +323,7 @@ const Checkout = () => {
                         );
                     })}
                 </div>
-                <div className='ItemSummary pb-3 grid grid-cols-2 gap-3'>
+                <div className='ItemSummary pb-3 mt-3 grid grid-cols-2 gap-3 border-b border-[#222222]'>
                     {matchingItems.map(item => {
                         return (
                             <>
@@ -634,7 +634,7 @@ const Checkout = () => {
                 );
             case 1:
                 return (
-                    <form className="CardInformation w-full bg-gray-300 rounded-md shadow p-7 m-auto" onSubmit={(e) => { e.preventDefault(); setFormNotCompleted(false) }}>
+                    <form className="CardInformation w-1/2 m-auto bg-gray-300 rounded-md shadow p-7" onSubmit={(e) => { e.preventDefault(); setFormNotCompleted(false) }}>
                         <h1 className='CardInformationHeader text-[#45A29E] text-3xl font-semibold mb-10 text-center'>Card Information</h1>
                         <h1 className='AcceptedCards text-[#45A29E] text-1x1 font-semibold mb-10 text-left'>Accepted Card Types</h1>
                         {cardTypeProcessing()}
@@ -666,10 +666,10 @@ const Checkout = () => {
                 );
             case 2:
                 return (
-                    <div className='FinalizePayment w-full bg-gray-300 rounded-md shadow p-7 m-auto'>
+                    <div className='FinalizePayment w-1/2 m-auto bg-gray-300 rounded-md shadow p-7'>
                         <div className='SummaryContainer'>
-                            <p>{loggedIn.name}</p>
-                            <p>Order Location: {shippingLocation}</p>
+                            <p className='px-6 py-2'>{loggedIn.name}</p>
+                            <p className='px-6'>Order Location: {shippingLocation}</p>
                             {summary()}
                         </div>
                         <div className="mt-16 flex justify-between">
@@ -697,7 +697,7 @@ const Checkout = () => {
 
     return (
         <>
-            <div className="mt-20 mb-20 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-3">
+            <div className="mt-20 mb-20 flex justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-3">
                 <Stepper
                     activeStep={activeStep}
                     isLastStep={(value) => setIsLastStep(value)}
@@ -716,10 +716,10 @@ const Checkout = () => {
                     </Step>
                 </Stepper>
             </div>
-            <div className='CheckoutContainer mt-14 mb-20 flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-3'>
+            <div className='CheckoutContainer mt-14 mb-20 justify-between mx-4 md:mx-8 lg:mx-16 my-4 gap-3'>
                 <div className='CheckoutInformation flex flex-col md:flex-row justify-between mx-4 md:mx-8 lg:mx-16 gap-5'>
                     {displayCheckout()}
-                    <ConfirmationModal message={`Your items will be shipped out to ${shippingLocation}`} show={showModal} handleClose={clearTheCart} />
+                    <ConfirmationModal message={`Order Successful!`} show={showModal} handleClose={clearTheCart} />
                 </div >
             </div>
         </>

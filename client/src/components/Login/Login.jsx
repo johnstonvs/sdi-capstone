@@ -67,7 +67,7 @@ const Login = () => {
         <label className='NameLabel text-[#222222]'>Password:</label>
         <input className='LoginPassword w-full p-2 mb-4 bg-white rounded-md shadow mt-1' name='password' value={user.password} placeholder='Enter your password' type='password' required onChange={(e) => handleChange(e)} />
         <button className='LoginButton bg-[#2ACA90] text-white p-2 rounded mt-4 hover:bg-[#5DD3CB] hover:scale-105' type='submit' >Login</button>
-        <p className='RetryMessage'>{!buttonClicked ? '' : loggedIn.isLoggedIn ? 'Logged in successfully!' : 'Wrong email or password, try again...'}</p>
+        <p className='RetryMessage mt-8 font-semibold'>{!buttonClicked ? '' : loggedIn.isLoggedIn ? <span className='text-green-500'>Logged in successfully!</span> : <span className='text-red-500'>Wrong email or password, try again...</span>}</p>
       </form>
   )
 }

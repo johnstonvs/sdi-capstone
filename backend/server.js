@@ -141,31 +141,50 @@ server.get('/users/:id/orders', (req, res) => {
     .then(data => {
 
       let itemPromises = data.map(order => {
-        return order.item_id.map(id => {
-          return knex('items')
-            .where('id', id)
-        });
+        if (order.item_id.length[0] !== '') {
+          return order.item_id.map(id => {
+            return knex('items')
+              .where('id', id)
+          });
+        }
       }).reduce((acc, val) => acc.concat(val), [])
       return Promise.all(itemPromises)
     })
 
     .then(itemData => {
       let patchPromises = fixedData.map(order => {
-        return order.patch_id.map(id => {
-          return knex('patches')
-          .where('id', id)
-        })
+        if (order.patch_id[0] !== '') {
+          return order.patch_id.map(id => {
+            return knex('patches')
+              .where('id', id)
+          })
+        }
       }).reduce((acc, val) => acc.concat(val), [])
-      result.items = itemData;
+
+      result.items = [];
+      for (let i = 0; i < itemData.length; i++) {
+        if (!JSON.stringify(result.items).includes(JSON.stringify(itemData[i]))) {
+          result.items.push(itemData[i])
+        } else {
+          continue;
+        }
+      }
       return Promise.all(patchPromises)
     })
 
     .then(patchData => {
-      result.patches = patchData;
+      result.patches = [];
+      for (let i = 0; i < patchData.length; i++) {
+        if (!JSON.stringify(result.patches).includes(JSON.stringify(patchData[i]))) {
+          result.patches.push(patchData[i])
+        } else {
+          continue;
+        }
+      }
       return result;
     })
 
-    .then(finalData => res.status(200).json(result))
+    .then(finalData => { console.log(result); res.status(200).json(result) })
     .catch(err => res.status(404).json({ message: `Could not get order with id ${req.params.id}: ${err}` }))
 })
 
@@ -412,11 +431,11 @@ server.post('/patches_wishlist', (req, res) => {
 
 server.post('/orders', (req, res) => {
   knex('orders')
-  .insert(req.body, ['*'])
-  .then(data => res.status(201).json(data))
-  .catch(err => res.status(500).json({
-    message: `Could not post to orders: ${err}`
-  }))
+    .insert(req.body, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(err => res.status(500).json({
+      message: `Could not post to orders: ${err}`
+    }))
 })
 
 server.post('/patches', upload.single('image'), async (req, res) => {

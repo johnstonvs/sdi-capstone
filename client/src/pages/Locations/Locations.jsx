@@ -108,20 +108,22 @@ const Locations = () => {
       {selectedAttic ? (
         <>
           <div className='LocationAbout flex flex-col p-6 mb-10 w-1/3 bg-gray-300 rounded-xl shadow-lg'>
-            <h1 className='LocationHeader text-[#45A29E] text-3xl font-semibold mb-10 text-center'>{selectedAttic.location}</h1>
-            <div className='LocationContactContainer text-[#222222] text-left mb-5'>
-              <div className="flex justify-center p-2 rounded mb-10">
+            <h1 className='LocationHeader text-[#45A29E] text-3xl font-semibold mb-6 text-center'>{selectedAttic.location}</h1>
+            <div className='LocationContactContainer text-[#222222] text-left mb-2'>
+              <div className='flex flex-row justify-center mb-10'>
+              <div className="flex justify-center bg-gray-400 p-1 rounded-xl shadow-lg">
                 {[...Array(5)].map((_, i = 1) => (
                   <div
                     key={i}
-                    className={"cursor-pointer " + ((starAverage) > i ? 'text-yellow-300' : 'text-white')}
+                    className={((starAverage) > i ? 'text-yellow-300' : 'text-white')}
                   >
                     <FaStar size={25} />
                   </div>
                 ))}
-                <p className='ml-2'>{filteredReviews ? `(${filteredReviews.length} reviews)` : null}</p>
               </div>
-              <img className='w-96 h-96 mb-10 m-auto rounded-lg object-cover' src={selectedAttic.picture_url} alt='AtticImage' />
+                <p className='ml-2'>{filteredReviews ? `${filteredReviews.length} review(s)` :  null}</p>
+              </div>
+              <img className='w-82 h-82 mb-10 m-auto rounded-lg object-cover rounded-lg shadow-lg' src={selectedAttic.picture_url} alt='AtticImage' />
               <h2 className='LocationHeader text-[#222222] mb-2'><span className='font-semibold'>Hours of operation: </span>{selectedAttic.hours}</h2>
               <p className='LocationPhone mb-2'><span className='font-semibold'>Phone #: </span>{selectedAttic.phone}</p>
               <p className='LocationEmail mb-2'><span className='font-semibold'>Email: </span>{selectedAttic.email}</p>
@@ -129,7 +131,7 @@ const Locations = () => {
             </div>
             <p className='LocationContent font-semibold'>About:</p>
             <p className='LocationContent mb-10'>{selectedAttic.about}</p>
-            <button className='BackButton bg-[#2ACA90] text-white p-2 rounded-lg hover:bg-[#5DD3CB] w-1/4 text-center hover:scale-105 transition duration-200 ease-in-out' onClick={() => {
+            <button className='BackButton bg-[#FF3300] text-white p-2 rounded-lg hover:bg-[#FF9980] w-1/4 text-center hover:scale-105 transition duration-200 ease-in-out' onClick={() => {
               setSelectedAttic('');
               setSearchTerm('');
               setSearchTyped(false);

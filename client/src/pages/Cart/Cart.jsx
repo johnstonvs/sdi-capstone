@@ -1,8 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import Checkout from './Checkout';
-import { LoggedInContext, LoadingContext } from '../../App';
-import { PatchCard, ItemCard, Loader } from '../../components/index.js';
+import { LoadingContext } from '../../App';
+import { Loader } from '../../components/index.js';
 
 const Cart = () => {
 

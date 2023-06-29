@@ -30,14 +30,14 @@ exports.seed = async function(knex) {
 
   // Inserts seed data from ../random_data
   await knex('attics').insert(attics);
-  await knex('users').insert(users);
-  await knex('attic_reviews').insert(attic_reviews);
-  await knex('items').insert(items);
-  await knex('user_preference').insert(user_preference);
-  await knex('items_wishlist').insert(items_wishlist);
-  await knex('patches').insert(patches);
-  await knex('patches_wishlist').insert(patches_wishlist);
-  await knex('posts').insert(posts);
-  await knex('comments').insert(comments);
-  await knex('orders').insert(orders);
+  // await knex('users').insert(users);
+  // await knex('attic_reviews').insert(attic_reviews);
+  // await knex('items').insert(items);
+  // await knex('user_preference').insert(user_preference);
+  // await knex('items_wishlist').insert(items_wishlist);
+  // await knex('patches').insert(patches);
+  // await knex('patches_wishlist').insert(patches_wishlist);
+  // await knex('posts').insert(posts);
+  // await knex('comments').insert(comments);
+  // await knex('orders').insert(orders);
 };

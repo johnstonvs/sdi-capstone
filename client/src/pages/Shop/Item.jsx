@@ -112,17 +112,17 @@ const Item = () => {
                 {item.can_ship ?
             <>
               <div className='ItemButtons flex justify-between w-full mt-10'>
+              <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/shop')}>Back</button>
                 <button className='AddToCart bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => { addCartItem() }} >Add to cart</button>
                 <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
-                <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/shop')}>Back</button>
               </div>
             </>
             :
             <>
             <h3 className='ItemShip text-2xl text-[#45A29E] mt-10 mb-5'>'Item cannot be shipped to your local Attic.'</h3>
             <div className='NoShip flex justify-between w-full'>
-              <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
               <button className='BackButton text-white p-2 rounded-md bg-[#FF3300] hover:bg-[#FF9980] hover:scale-105' onClick={() => nav('/shop')}>Back</button>
+              <button className='AddToWishlistButton bg-[#2ACA90] text-white p-2 rounded-md hover:bg-[#5DD3CB] hover:scale-105' onClick={() => addToWishlist()}>Add to Wishlist</button>
             </div>
             </>
           }
