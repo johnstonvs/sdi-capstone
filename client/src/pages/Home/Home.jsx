@@ -135,7 +135,7 @@ const Home = () => {
                           transition={{ delay: index * 0.2, duration: .25 }}
                           key={index}
                         >
-                          <Link to={{ pathname: `/shop/patch/${patch.id}` }}  className='Patch' >
+                          <Link to={{ pathname: `/patches/patch/${patch.id}` }}  className='Patch' >
                             <PatchCard patch={patch} />
                           </Link>
                         </motion.div>

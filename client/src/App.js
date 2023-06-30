@@ -17,7 +17,7 @@ function App() {
     BOP:''
   };
 
-  const [tags] = useState(['OCP', 'Blues', 'Boots', 'Shoes', 'Outdated', 'Hobby', 'Electronics', 'Furniture', 'Baby', 'Toddler', 'Teen', 'Adult', 'Toys', 'Sports', 'Outdoor', 'Workout', 'Housewares', 'Books'])
+  const [tags] = useState(['OCP', 'Blues', 'Boots', 'Shoes', 'Outdated', 'Hobby', 'Electronics', 'Furniture', 'Baby', 'Toddler', 'Teen', 'Adult', 'Toys', 'Sports', 'Outdoor', 'Workout', 'Housewares', 'Books', 'Office', 'Appliance', 'Kitchen', "Jewelry"])
   const [loggedIn, setLoggedIn] = useState(() => {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : defaultLogin;

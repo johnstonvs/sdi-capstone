@@ -342,7 +342,7 @@ const Checkout = () => {
         switch (activeStep) {
             case 0:
                 return (
-                    <form className="BillingAddress w-full bg-gray-300 rounded-md shadow p-7" onSubmit={(e) => { e.preventDefault(); setFormNotCompleted(false) }}>
+                    <form className="BillingAddress w-2/3 m-auto bg-gray-300 rounded-md shadow p-7" onSubmit={(e) => { e.preventDefault(); setFormNotCompleted(false) }}>
                         <h1 className='CardInformationHeader text-[#45A29E] text-3xl font-semibold mb-10 text-center'>Billing/Shipping Information</h1>
                         <label className='StreetAddress text-[#222222]'>Street Address*</label>
                         <input name='StreetAddress' className='StreetAddress w-full p-2 mb-4 bg-white rounded-md shadow mt-1' value={street} required onChange={(e) => setStreet(e.target.value)} />

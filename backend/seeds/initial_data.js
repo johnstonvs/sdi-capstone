@@ -32,7 +32,7 @@ exports.seed = async function(knex) {
   await knex('attics').insert(attics);
   // await knex('users').insert(users);
   // await knex('attic_reviews').insert(attic_reviews);
-  // await knex('items').insert(items);
+  await knex('items').insert(items);
   // await knex('user_preference').insert(user_preference);
   // await knex('items_wishlist').insert(items_wishlist);
   // await knex('patches').insert(patches);

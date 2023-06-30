@@ -119,12 +119,14 @@ const Profile = () => {
   }, [editAttic])
 
   useEffect(() => {
-    setNewAttic({
-      phone: adminAttic.phone,
-      hours: adminAttic.hours,
-      about: adminAttic.about,
-      email: adminAttic.email
-    })
+    if (loggedIn.admin) {
+      setNewAttic({
+        phone: adminAttic.phone,
+        hours: adminAttic.hours,
+        about: adminAttic.about,
+        email: adminAttic.email
+      })
+    }
   }, [adminAttic])
 
   useEffect(() => {

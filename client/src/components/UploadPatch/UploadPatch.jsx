@@ -91,6 +91,7 @@ const UploadPatch = ({ isOpen, closeModal }) => {
           type="file"
           onChange={(e) => setImageUrl(e.target.files[0])}
           accept='image/*'
+          required
         />
         <button
           className="w-full bg-[#2ACA90] text-white p-2 mt-10 rounded hover:bg-[#5DD3CB] text-center hover:scale-105"

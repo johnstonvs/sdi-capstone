@@ -69,7 +69,11 @@ const Navbar = () => {
   }
 
   return (
-    <div className="NavbarContainer fixed inset-x-0 top-0 flex justify-end items-center bg-gray-700/25 p-4 py-3 z-10">
+    <div className="NavbarContainer fixed inset-x-0 top-0 flex justify-between items-center bg-gray-700/25 p-4 py-3 z-10">
+      <div className='flex flex-row justify-center gap-4 text-center items-center text-white font-semibold'>
+        <img className='w-12' src={logo} />
+        <p>Airman's Warehouse</p>
+      </div>
       <nav id='navbar' className="NavbarLinksContainer flex gap-3">
         <NavLink
           className="NavbarLinks rounded border-solid bg-[#C5C6C7] text-gray-800 hover:scale-105 hover:bg-[#5DD3CB] px-2 py-1"

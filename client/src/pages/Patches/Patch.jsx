@@ -75,7 +75,7 @@ const Patch = () => {
     ) : (
       <>
         {loggedIn.isLoggedIn ?
-          <div className='bg-gray-700/25 mt-28 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
+          <div className='bg-gray-700/25 mt-28 mb-20 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
             <div className='PatchContainer flex flex-row items-start relative'>
               <div className="flex justify-start items-start mr-10">
                 <img className="PatchImage w-96 object-cover object-center drop-shadow-xl rounded-lg filter brightness-110 hover:brightness-125 transition-all ease-in-out" src={patch.picture_url} alt={patch.name} />

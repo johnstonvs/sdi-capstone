@@ -74,7 +74,7 @@ const Item = () => {
 
   const fixTags = (data) => {
     let item = data;
-    let tags = item.tags.replace(/\[|\]/g, '').replace(/\{\}/g,'').split(',').map(tag => tag.trim().replace(/['"]/g, ''));
+    let tags = item.tags.replace(/\[|\]/g, '').replace(/[{}]/g,'').split(',').map(tag => tag.trim().replace(/['"]/g, ''));
     item.tags = tags;
 
     return item;
@@ -87,11 +87,11 @@ const Item = () => {
       <Loader />
       </div>
     ) : (
-      <div className='bg-gray-700/25 mt-28 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
+      <div className='bg-gray-700/25 mt-28 mb-20 p-6 rounded-xl shadow-xl m-auto fade-in h-full w-2/3'>
       <div className='ItemContainer flex flex-row items-start'>
-        <div className="flex justify-start items-start mr-10">
-          <img className="ItemImage w-96 object-cover object-center drop-shadow-xl rounded-lg filter brightness-110 hover:brightness-125 transition-all ease-in-out" src={item.picture_url} alt={item.name} />
-        </div>
+      <div className="flex justify-start items-start mr-10">
+        <img className="ItemImage w-96 h-96 object-cover object-center drop-shadow-xl rounded-lg filter brightness-110 hover:brightness-125 transition-all ease-in-out bg-gray-100" src={item.picture_url} alt={item.name} style={{objectFit: 'contain'}} />
+      </div>
         <div>
         <h1 className='ItemTitle text-[#45A29E] text-3xl text-left w-2/3'>{item.name}</ h1>
         {item?.tags?.length > 0 ? (

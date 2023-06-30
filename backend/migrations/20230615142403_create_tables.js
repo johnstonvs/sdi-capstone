@@ -26,7 +26,7 @@ exports.up = function(knex) {
     table.integer('attic_id');
     table.foreign('attic_id').references('attics.id').onUpdate('CASCADE').onDelete('SET NULL');
   })
-  .createTable('attic_reviews', (table) => {
+.createTable('attic_reviews', (table) => {
     table.increments('id');
     table.string('body', 500);
     table.integer('stars');
@@ -41,7 +41,7 @@ exports.up = function(knex) {
     table.string('name');
     table.string('description', 500);
     table.decimal('price');
-    table.string('picture_url');
+    table.string('picture_url', 100000);
     table.boolean('can_ship');
     table.integer('attic_id');
     table.foreign('attic_id').references('attics.id').onUpdate('CASCADE').onDelete('SET NULL');
